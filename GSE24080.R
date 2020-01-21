@@ -1,0 +1,87 @@
+#!/bin/env/Rscript
+#
+# MAQC-II Project: Multiple myeloma (MM) data set
+#
+# Popovici et al. (2010)
+#
+# Note: this dataset appears to use the same samples from GSE2658, but processed in
+# a different manner, and with different metadata.
+#
+# Interestingly, the MAQC-II version of the dataset includes ~2x samples after filtering
+# and also includes survival-related metadata.
+#
+library(GEOquery)
+library(tidyverse)
+
+# GEO accession
+accession <- 'GSE24080'
+
+# directory to store raw and processed data
+base_dir <- file.path('/data/human/geo', accession)
+
+raw_data_dir <- file.path(base_dir, 'raw')
+clean_data_dir <- file.path(base_dir, 'processed')
+
+# create output directories if they don't already exist
+for (dir_ in c(raw_data_dir, clean_data_dir)) {
+  if (!dir.exists(dir_)) {
+      dir.create(dir_, recursive = TRUE)
+  }
+}
+
+# download GEO data;
+eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
+
+# perform size-factor normalization
+exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
+
+# exclude control sequences present in some datasets
+eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
+
+# exclude any probes with zero variance (uninformative)
+eset <- eset[apply(exprs(eset), 1, var, na.rm = TRUE) > 0, ]
+
+# columns to include (GSE24080)
+pfs <- as.numeric(endsWith(pData(eset)[, 'efs milestone outcome (24 months):ch1'], '0'))
+os  <- as.numeric(endsWith(pData(eset)[, 'os milestone outcome (24 months):ch1'], '0'))
+
+sample_metadata <- pData(eset) %>%
+  select(geo_accession, platform_id,
+         gender = `Sex:ch1`,
+         age = `age:ch1`,
+         maqc_status = `maqc_distribution_status:ch1`) %>%
+  add_column(pfs_event = pfs, patient_died = os, .after = 'platform_id')
+
+# add cell type and disease (same for all samples)
+sample_metadata$disease <- 'Multiple Myeloma'
+sample_metadata$cell_type <- 'CD138+'
+
+# get gene symbols
+symbols <- fData(eset)$`Gene symbol`
+
+# get expression data and add gene symbol column
+expr_dat <- exprs(eset) %>%
+  as.data.frame %>%
+  rownames_to_column('probe_id') %>%
+  add_column(symbol = symbols, .after = 1)
+
+# remove five samples with MAQC_Remove flag
+# MAQC_Remove    Training  Validation
+#          5         340         214
+bad_samples <- sample_metadata %>%
+  filter(maqc_status == 'MAQC_Remove') %>%
+  pull(geo_accession)
+
+sample_metadata <- sample_metadata %>%
+  filter(maqc_status != 'MAQC_Remove')
+expr_dat <- expr_dat[, !colnames(expr_dat) %in% bad_samples]
+
+# determine filenames to use for outputs and save to disk
+expr_outfile <- sprintf('%s_gene_expr.csv', accession)
+mdat_outfile <- sprintf('%s_sample_metadata.csv', accession)
+
+# store cleaned expression data and metadata
+write_csv(expr_dat, file.path(clean_data_dir, expr_outfile))
+write_csv(sample_metadata, file.path(clean_data_dir, mdat_outfile))
+
+sessionInfo()

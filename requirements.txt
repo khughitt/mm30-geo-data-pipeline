@@ -1,0 +1,4 @@
+conda-forge::r-base
+r-annotables
+r-geoquery
+r-tidyverse
