@@ -48,7 +48,8 @@ eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 # columns to include (GSE31161)
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
-         treatment = `treatment:ch1`, time_of_testing = `time of testing:ch1`)
+         treatment = `treatment:ch1`, time_of_testing = `time of testing:ch1`) %>%
+  mutate(relapsed = time_of_testing == 'relapse')
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'
