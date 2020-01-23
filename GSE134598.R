@@ -6,6 +6,7 @@
 #
 library(GEOquery)
 library(tidyverse)
+library(feather)
 
 # GEO accession
 accession <- 'GSE134598'
@@ -14,10 +15,10 @@ accession <- 'GSE134598'
 base_dir <- file.path('/data/human/geo', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
-clean_data_dir <- file.path(base_dir, 'processed')
+processed_data_dir <- file.path(base_dir, 'processed')
 
 # create output directories if they don't already exist
-for (dir_ in c(raw_data_dir, clean_data_dir)) {
+for (dir_ in c(raw_data_dir, processed_data_dir)) {
   if (!dir.exists(dir_)) {
       dir.create(dir_, recursive = TRUE)
   }
@@ -35,7 +36,8 @@ if (!file.exists(supp_file)) {
 }
 
 expr <- read_tsv(supp_file) %>%
-  select(-Chromosome, -Start, -End, -Length, -GeneBiotype)
+  select(-Chromosome, -Start, -End, -Length, -GeneBiotype) %>%
+  rename(ensgene = GeneId, symbol = GeneName)
 
 # in order to normalize downstream comparisons across datasets, we will
 # aply a size-factor normalization so that the sample sizes all sum to exactly the
@@ -57,10 +59,10 @@ sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
 # store cleaned expression data and metadata
-expr_outfile <- file.path(clean_data_dir, sprintf('%s_gene_expr.csv', accession))
-mdat_outfile <- file.path(clean_data_dir, sprintf('%s_sample_metadata.csv', accession))
+expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))
+mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', accession))
 
-write_csv(expr, expr_outfile)
-write_csv(sample_metadata, mdat_outfile)
+write_feather(expr, expr_outfile)
+write_tsv(sample_metadata, mdat_outfile)
 
 sessionInfo()

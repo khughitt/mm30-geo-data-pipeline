@@ -6,6 +6,7 @@
 #
 library(GEOquery)
 library(tidyverse)
+library(feather)
 
 # GEO accession
 accession <- 'GSE106218'
@@ -14,10 +15,10 @@ accession <- 'GSE106218'
 base_dir <- file.path('/data/human/geo', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
-clean_data_dir <- file.path(base_dir, 'processed')
+processed_data_dir <- file.path(base_dir, 'processed')
 
 # create output directories if they don't already exist
-for (dir_ in c(raw_data_dir, clean_data_dir)) {
+for (dir_ in c(raw_data_dir, processed_data_dir)) {
   if (!dir.exists(dir_)) {
       dir.create(dir_, recursive = TRUE)
   }
@@ -40,6 +41,9 @@ if (!file.exists(supp_file1)) {
 # load TPM counts
 expr <- read.delim(gzfile(supp_file1), row.names = 1)
 
+# Apply CPM normalization to be consistent with other datasets; already very close
+expr <- sweep(expr, 2, colSums(expr), '/') * 1E6
+
 # load sample metadata
 clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 1))) %>%
   rownames_to_column('patient_id') %>%
@@ -51,7 +55,12 @@ clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 
   mutate(os_event = os_event == "1")
 
 # drop the month component of survival time
-clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0-9]+'))  
+clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0-9]+'))
+
+sample_metadata <- pData(eset) %>%
+  select(geo_accession, platform_id, 
+         patient_id = `patient id:ch1`, gender = `gender:ch1`, 
+         prep_site = `prep-site:ch1`)
 
 sample_metadata <- sample_metadata %>%
   inner_join(clinical_metadata, by = 'patient_id')
@@ -69,9 +78,9 @@ sample_metadata <- sample_metadata %>%
 # Death(alive=0; death=1)    1    1    1
 
 #table(rowSums(expr) == 0)
-# 
-# FALSE  TRUE 
-# 35582 20278 
+#
+# FALSE  TRUE
+# 35582 20278
 
 # remove empty rows
 expr <- expr[rowSums(expr) > 0, ]
@@ -103,11 +112,11 @@ sample_metadata <- sample_metadata %>%
 # [1] TRUE
 
 # determine filenames to use for outputs and save to disk
-expr_outfile <- sprintf('%s_gene_expr.csv', accession)
-mdat_outfile <- sprintf('%s_sample_metadata.csv', accession)
+expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
-# store cleaned expression data and metadata
-write_csv(expr_combined, file.path(clean_data_dir, expr_outfile))
-write_csv(sample_metadata, file.path(clean_data_dir, mdat_outfile))
+# store processed and cleaned expression data and metadata
+write_feather(expr_combined, file.path(processed_data_dir, expr_outfile))
+write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

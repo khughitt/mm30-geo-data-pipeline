@@ -9,6 +9,7 @@
 #
 library(GEOquery)
 library(tidyverse)
+library(feather)
 
 # GEO accession
 accession <- 'GSE7039'
@@ -17,10 +18,10 @@ accession <- 'GSE7039'
 base_dir <- file.path('/data/human/geo', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
-clean_data_dir <- file.path(base_dir, 'processed')
+processed_data_dir <- file.path(base_dir, 'processed')
 
 # create output directories if they don't already exist
-for (dir_ in c(raw_data_dir, clean_data_dir)) {
+for (dir_ in c(raw_data_dir, processed_data_dir)) {
   if (!dir.exists(dir_)) {
       dir.create(dir_, recursive = TRUE)
   }
@@ -35,7 +36,7 @@ for (dir_ in c(raw_data_dir, clean_data_dir)) {
 esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
 
 # load additional survival metadata provided by author
-survival_dat <- read_csv(file.path(base_dir, 'metadata', 'MM survival time GSE7039.csv'))
+survival_dat <- read_csv('/data/human/decaux2008/MM survival time GSE7039.csv')
 
 # combine samples from separate ExpressionSets
 sample_metadata <- pData(esets[[1]]) %>%
@@ -98,11 +99,11 @@ expr_dat <- expr_dat %>%
   add_column(symbol = symbols, .after = 1)
 
 # determine filenames to use for outputs and save to disk
-expr_outfile <- sprintf('%s_gene_expr.csv', accession)
-mdat_outfile <- sprintf('%s_sample_metadata.csv', accession)
+expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
 # store cleaned expression data and metadata
-write_csv(expr_dat, file.path(clean_data_dir, expr_outfile))
-write_csv(sample_metadata, file.path(clean_data_dir, mdat_outfile))
+write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

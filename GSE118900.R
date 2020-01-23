@@ -6,6 +6,7 @@
 #
 library(GEOquery)
 library(tidyverse)
+library(feather)
 
 # GEO accession
 accession <- 'GSE118900'
@@ -14,10 +15,10 @@ accession <- 'GSE118900'
 base_dir <- file.path('/data/human/geo', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
-clean_data_dir <- file.path(base_dir, 'processed')
+processed_data_dir <- file.path(base_dir, 'processed')
 
 # create output directories if they don't already exist
-for (dir_ in c(raw_data_dir, clean_data_dir)) {
+for (dir_ in c(raw_data_dir, processed_data_dir)) {
   if (!dir.exists(dir_)) {
       dir.create(dir_, recursive = TRUE)
   }
@@ -73,11 +74,11 @@ expr <- expr %>%
   rownames_to_column('symbol')
 
 # determine filenames to use for outputs and save to disk
-expr_outfile <- sprintf('%s_gene_expr.csv', accession)
-mdat_outfile <- sprintf('%s_sample_metadata.csv', accession)
+expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
 # store cleaned expression data and metadata
-write_csv(expr, file.path(clean_data_dir, expr_outfile))
-write_csv(sample_metadata, file.path(clean_data_dir, mdat_outfile))
+write_feather(expr, file.path(processed_data_dir, expr_outfile))
+write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

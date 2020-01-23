@@ -1,4 +1,5 @@
 conda-forge::r-base
 r-annotables
+r-feather
 r-geoquery
 r-tidyverse
