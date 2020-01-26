@@ -119,4 +119,9 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_combined, file.path(processed_data_dir, expr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
+# for GSE106218, no multi-mapped gene entries exist, so we can simply store a copy
+# as the non-redundant version
+expr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
+write_feather(expr_combined, file.path(processed_data_dir, expr_outfile))
+
 sessionInfo()

@@ -44,18 +44,29 @@ sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
 # get expression data and add gene symbol column
-gene_symbols <- gene_symbols <- gsub('///', ' // ', fData(eset)$`Gene symbol`)
+gene_symbols <- gsub('///', ' // ', fData(eset)$`Gene symbol`)
 
 expr_dat <- exprs(eset) %>%
   as.data.frame %>%
   rownames_to_column('probe_id') %>%
   add_column(symbol = gene_symbols, .after = 1)
 
-# store cleaned expression data and metadata
-expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))
-mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', accession))
+# only entries which could be mapped to a known gene symbol
+expr_dat_nr <- expr_dat %>%
+  filter(symbol != '') %>%
+  select(-probe_id) %>%
+  separate_rows(symbol, sep = " ?//+ ?") %>%
+  group_by(symbol) %>%
+  summarize_all(median)
 
-write_feather(expr_dat, expr_outfile)
-write_tsv(sample_metadata, mdat_outfile)
+# determine filenames to use for outputs and save to disk
+expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
+mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
+
+# store cleaned expression data and metadata
+write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
+write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

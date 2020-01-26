@@ -35,17 +35,17 @@ if (!file.exists(supp_file)) {
   getGEOSuppFiles(accession, baseDir = raw_data_dir)[[1]]
 }
 
-expr <- read_tsv(supp_file) %>%
+expr_dat <- read_tsv(supp_file) %>%
   select(-Chromosome, -Start, -End, -Length, -GeneBiotype) %>%
   rename(ensgene = GeneId, symbol = GeneName)
 
 # in order to normalize downstream comparisons across datasets, we will
 # aply a size-factor normalization so that the sample sizes all sum to exactly the
 # same amount..
-expr[, -(1:2)] <- sweep(expr[, -(1:2)], 2, colSums(expr[, -(1:2)]), '/') * 1E6
+expr_dat[, -(1:2)] <- sweep(expr_dat[, -(1:2)], 2, colSums(expr_dat[, -(1:2)]), '/') * 1E6
 
 # drop empty rows
-expr <- expr[rowSums(expr[, -(1:2)]) > 0, ]
+expr_dat <- expr_dat[rowSums(expr_dat[, -(1:2)]) > 0, ]
 
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%
@@ -58,11 +58,22 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
-# store cleaned expression data and metadata
-expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))
-mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', accession))
+# only entries which could be mapped to a known gene symbol
+expr_dat_nr <- expr_dat %>%
+  filter(symbol != '') %>%
+  select(-ensgene) %>%
+  separate_rows(symbol, sep = " ?//+ ?") %>%
+  group_by(symbol) %>%
+  summarize_all(median)
 
-write_feather(expr, expr_outfile)
-write_tsv(sample_metadata, mdat_outfile)
+# determine filenames to use for outputs and save to disk
+expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
+mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
+
+# store cleaned expression data and metadata
+write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
+write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

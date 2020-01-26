@@ -54,21 +54,23 @@ expr_dat <- exprs(eset) %>%
   rownames_to_column('probe_id') %>%
   add_column(symbol = symbols, .after = 1)
 
-#table(symbols == '')
-#
-# FALSE  TRUE
-# 45108  9505
-
-# drop unmapped probes
-expr_dat <- expr_dat %>%
-  filter(symbol != '')
+# create a version of gene expression data with a single entry per gene, including
+# only entries which could be mapped to a known gene symbol
+expr_dat_nr <- expr_dat %>%
+  filter(symbol != '') %>%
+  select(-probe_id) %>%
+  separate_rows(symbol, sep = " ?//+ ?") %>%
+  group_by(symbol) %>%
+  summarize_all(median)
 
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+expr_outfile_nr <- sprintf('%s_gene_expr_nr.feather', accession)
 mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
 # store cleaned expression data and metadata
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat_nr, file.path(processed_data_dir, expr_outfile_nr))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

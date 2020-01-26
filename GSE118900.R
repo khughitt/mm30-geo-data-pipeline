@@ -37,28 +37,28 @@ if (!file.exists(supp_file)) {
   getGEOSuppFiles(accession, baseDir = raw_data_dir, filter_regex = 'tpm.pass')
 }
 
-expr <- read.delim(gzfile(supp_file), row.names = 1)
+expr_dat <- read.delim(gzfile(supp_file), row.names = 1)
 
 # replace rownames with gene symbol
 
-#head(rownames(expr))
+#head(rownames(expr_dat))
 # [1] "AADACL3|chr1|12776118" "AADACL4|chr1|12704566" "ABCA4|chr1|94458394"   "ABCB10|chr1|229652329"
 # [5] "ABCD3|chr1|94883933"   "ABL2|chr1|179068462"
 
-symbols <- str_split(rownames(expr), '\\|', simplify = TRUE)[, 1]
+symbols <- str_split(rownames(expr_dat), '\\|', simplify = TRUE)[, 1]
 
 # remove small number of duplicated gene symbol entries
 mask <- !duplicated(symbols)
 
-expr <- expr[mask, ]
-rownames(expr) <- symbols[mask]
+expr_dat <- expr_dat[mask, ]
+rownames(expr_dat) <- symbols[mask]
 
 # perform size-factor normalization
-expr <- sweep(expr, 2, colSums(expr), '/') * 1E6
+expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
 
 # exclude any zero variance genes present
-row_vars <- apply(expr, 1, var)
-expr <- expr[row_vars != 0, ]
+row_vars <- apply(expr_dat, 1, var)
+expr_dat <- expr_dat[row_vars != 0, ]
 
 # columns to include (GSE118900)
 sample_metadata <- pData(eset) %>%
@@ -70,15 +70,25 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'CD138+'
 
-expr <- expr %>%
+expr_dat <- expr_dat %>%
   rownames_to_column('symbol')
+
+# create a version of gene expression data with a single entry per gene, including
+# only entries which could be mapped to a known gene symbol
+expr_dat_nr <- expr_dat %>%
+  filter(symbol != '') %>%
+  separate_rows(symbol, sep = " ?//+ ?") %>%
+  group_by(symbol) %>%
+  summarize_all(median)
 
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
 mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
 # store cleaned expression data and metadata
-write_feather(expr, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()

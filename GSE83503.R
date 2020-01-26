@@ -67,11 +67,22 @@ expr_dat <- exprs(eset) %>%
   rownames_to_column('probe_id') %>%
   add_column(symbol = symbols, .after = 1)
 
+# create a version of gene expression data with a single entry per gene, including
+# only entries which could be mapped to a known gene symbol
+expr_dat_nr <- expr_dat %>%
+  filter(symbol != '') %>%
+  select(-probe_id) %>%
+  separate_rows(symbol, sep = " ?//+ ?") %>%
+  group_by(symbol) %>%
+  summarize_all(median)
+
 # store cleaned expression data and metadata
 expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))
+expr_outfile_nr <- file.path(processed_data_dir, sprintf('%s_gene_expr_nr.feather', accession))
 mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', accession))
 
 write_feather(expr_dat, expr_outfile)
+write_feather(expr_dat_nr, expr_outfile_nr)
 write_tsv(sample_metadata, mdat_outfile)
 
 sessionInfo()

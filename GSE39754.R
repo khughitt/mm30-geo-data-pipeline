@@ -27,7 +27,7 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 }
 
 # download GEO data;
-eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
+eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
 # perform size-factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
@@ -74,12 +74,23 @@ expr_dat <- expr_dat[, c(TRUE, TRUE, mask)]
 sample_metadata <- sample_metadata %>%
   select(-diagnosis)
 
+# create a version of gene expression data with a single entry per gene, including
+# only entries which could be mapped to a known gene symbol
+expr_dat_nr <- expr_dat %>%
+  filter(symbol != '') %>%
+  select(-probe_id) %>%
+  separate_rows(symbol, sep = " ?//+ ?") %>%
+  group_by(symbol) %>%
+  summarize_all(median)
+
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+expr_outfile_nr <- sprintf('%s_gene_expr_nr.feather', accession)
 mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
 # store cleaned expression data and metadata
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat_nr, file.path(processed_data_dir, expr_outfile_nr))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 sessionInfo()
