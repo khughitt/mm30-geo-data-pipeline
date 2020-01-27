@@ -63,6 +63,7 @@ expr_dat <- expr_dat[row_vars != 0, ]
 # columns to include (GSE118900)
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
+         sample_id = description,
          patient = `patient:ch1`,
          mm_stage = `tumor stage:ch1`)
 
@@ -71,12 +72,22 @@ sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'CD138+'
 
 expr_dat <- expr_dat %>%
-  rownames_to_column('symbol')
+  rownames_to_column('symbol') %>%
+  filter(symbol != '')
+
+# normalize sample ids "IgM.MGUS1_C37" -> "IgM-MGUS1_C37"
+colnames(expr_dat) <- gsub('\\.', '-', colnames(expr_dat))
+
+# match order
+expr_dat <- expr_dat[, c('symbol', as.character(sample_metadata$sample_id))]
+
+if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
+  stop("Sample ID mismatch!")
+}
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -90,5 +101,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()

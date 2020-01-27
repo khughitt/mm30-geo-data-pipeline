@@ -49,13 +49,15 @@ gene_symbols <- gsub('///', ' // ', gene_symbols)
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%
   as.data.frame %>%
-  rownames_to_column('probe_id') %>%
-  add_column(symbol = gene_symbols, .after = 1)
+  add_column(symbol = gene_symbols, .before = 1) %>%
+  filter(symbol != '')
+
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+  stop("Sample ID mismatch!")
+}
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -69,5 +71,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()

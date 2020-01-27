@@ -91,15 +91,15 @@ sample_metadata$cell_type <- 'CD138+'
 # collapse patient samples
 expr_patient_ids <- str_match(colnames(expr), 'MM[0-9]+')
 
-expr_combined <- NULL
+expr_dat <- NULL
 
 for (patient_id in unique(expr_patient_ids)) {
   dat <- rowMeans(expr[, expr_patient_ids == patient_id])
-  expr_combined <- cbind(expr_combined, dat)
+  expr_dat <- cbind(expr_dat, dat)
 }
-colnames(expr_combined) <- unique(expr_patient_ids)
+colnames(expr_dat) <- unique(expr_patient_ids)
 
-expr_combined <- expr_combined %>%
+expr_dat <- expr_dat %>%
   as.data.frame() %>%
   rownames_to_column('symbol')
 
@@ -108,20 +108,21 @@ sample_metadata <- sample_metadata %>%
   group_by(patient_id) %>%
   slice(1)
 
-#all(colnames(expr_combined) == sample_metadata$patient_id)
-# [1] TRUE
+if (!all(colnames(expr_dat)[-1] == sample_metadata$patient_id)) {
+  stop("Sample ID mismatch!")
+}
 
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)
 mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
 # store processed and cleaned expression data and metadata
-write_feather(expr_combined, file.path(processed_data_dir, expr_outfile))
+write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 
 # for GSE106218, no multi-mapped gene entries exist, so we can simply store a copy
 # as the non-redundant version
-expr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
-write_feather(expr_combined, file.path(processed_data_dir, expr_outfile))
+expr_outfile_nr <- sprintf('%s_gene_expr_nr.feather', accession)
+write_feather(expr_dat, file.path(processed_data_dir, expr_outfile_nr))
 
 sessionInfo()

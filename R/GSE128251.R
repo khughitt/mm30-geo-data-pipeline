@@ -36,7 +36,8 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
-         treatment = `treatment:ch1`, replicate = `replicate:ch1`)
+         treatment = `treatment:ch1`, replicate = `replicate:ch1`,
+         cell_line = source_name_ch1)
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'
@@ -45,13 +46,15 @@ sample_metadata$cell_type <- 'BM-CD138+'
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%
   as.data.frame %>%
-  rownames_to_column('probe_id') %>%
-  add_column(symbol = fData(eset)$`Gene symbol`, .after = 1)
+  add_column(symbol = fData(eset)$`Gene symbol`, .before = 1) %>%
+  filter(symbol != '')
+
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+  stop("Sample ID mismatch!")
+}
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -65,5 +68,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()

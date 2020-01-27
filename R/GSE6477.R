@@ -55,17 +55,18 @@ sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
 # load expression data and add gene symbol column
-expr_dat <- as.data.frame(exprs(eset))
+expr_dat <- exprs(eset) %>%
+  as.data.frame() %>%
+  add_column(symbol = fData(eset)$`Gene symbol`, .before = 1)
 
-expr_dat <- expr_dat %>%
-  rownames_to_column('probe_id') %>%
-  add_column(symbol = fData(eset)$`Gene symbol`, .after = 1)
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+  stop("Sample ID mismatch!")
+}
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
   filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -78,5 +79,3 @@ mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', 
 write_feather(expr_dat, path = expr_outfile)
 write_feather(expr_dat_nr, path = expr_nr_outfile)
 write_tsv(sample_metadata, path = mdat_outfile)
-
-sessionInfo()

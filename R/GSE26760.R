@@ -60,7 +60,7 @@ sample_metadata$mm_stage[grepl('Multiple Myeloma', sample_metadata$mm_stage)] <-
 sample_metadata$mm_stage[grepl('Leukemia', sample_metadata$mm_stage)] <- 'PCL'
 sample_metadata$mm_stage[sample_metadata$mm_stage == 'Smoldering Myeloma'] <- 'SMM'
 
-table(sample_metadata$mm_stage)
+#table(sample_metadata$mm_stage)
 #
 # MGUS   MM  PCL  SMM
 #    2  224    3   10
@@ -72,24 +72,20 @@ symbols <- fData(eset)$`Gene symbol`
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%
   as.data.frame %>%
-  rownames_to_column('probe_id') %>%
-  add_column(symbol = symbols, .after = 1)
+  add_column(symbol = symbols, .before = 1) %>%
+  filter(symbol != '')
 
-# drop samples with no available metadata
-mask <- colnames(expr_dat) %in% c('probe_id', 'symbol', sample_metadata$geo_accession)
+# drop samples with no available metadata and normalize order
+ind <- c('symbol', sample_metadata$geo_accession)
+expr_dat <- expr_dat[, ind]
 
-#table(mask)
-# mask
-# FALSE  TRUE
-#    64   242
-
-expr_dat <- expr_dat[, mask]
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+  stop("Sample ID mismatch!")
+}
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)

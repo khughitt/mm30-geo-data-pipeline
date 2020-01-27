@@ -7,7 +7,7 @@
 # Note: this dataset appears to use the same samples from GSE2658, but processed in
 # a different manner, and with different metadata.
 #
-# Interestingly, the MAQC-II version of the dataset includes ~2x samples after filtering
+# Interestingly, the MAQC-II version of the dataset includes ~2x samples.before filtering
 # and also includes survival-related metadata.
 #
 library(GEOquery)
@@ -62,9 +62,9 @@ symbols <- fData(eset)$`Gene symbol`
 
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%
-  as.data.frame %>%
-  rownames_to_column('probe_id') %>%
-  add_column(symbol = symbols, .after = 1)
+  as.data.frame() %>%
+  add_column(symbol = symbols, .before = 1) %>%
+  filter(symbol != '')
 
 # remove five samples with MAQC_Remove flag
 # MAQC_Remove    Training  Validation
@@ -75,12 +75,15 @@ bad_samples <- sample_metadata %>%
 
 sample_metadata <- sample_metadata %>%
   filter(maqc_status != 'MAQC_Remove')
+
 expr_dat <- expr_dat[, !colnames(expr_dat) %in% bad_samples]
+
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+  stop("Sample ID mismatch!")
+}
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -94,5 +97,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()

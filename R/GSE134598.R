@@ -35,21 +35,34 @@ if (!file.exists(supp_file)) {
   getGEOSuppFiles(accession, baseDir = raw_data_dir)[[1]]
 }
 
-expr_dat <- read_tsv(supp_file) %>%
-  select(-Chromosome, -Start, -End, -Length, -GeneBiotype) %>%
-  rename(ensgene = GeneId, symbol = GeneName)
+# get expression data;
+# note that ensgene is stored as GeneId, but is not used for this analysis..
+expr_dat <- read_tsv(supp_file, col_types = cols()) %>%
+  select(-Chromosome, -Start, -End, -Length, -GeneBiotype, -GeneId) %>%
+  rename(symbol = GeneName) %>%
+  filter(symbol != '')
+
+# mistake in supplemental file (excel gene symbol issue...):
+# > expr_dat_nr[1:3, 1:3]
+# A tibble: 3 x 3                            
+#   symbol KMS26_Control KMS26_APY0201_100nM
+#   <chr>          <dbl>               <dbl>
+# 1 1-Dec        0                   0
+# 2 1-Mar        0.00229             0.00255
+# 3 1-Sep        1.57                1.61
 
 # in order to normalize downstream comparisons across datasets, we will
 # aply a size-factor normalization so that the sample sizes all sum to exactly the
 # same amount..
-expr_dat[, -(1:2)] <- sweep(expr_dat[, -(1:2)], 2, colSums(expr_dat[, -(1:2)]), '/') * 1E6
+expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
 
 # drop empty rows
-expr_dat <- expr_dat[rowSums(expr_dat[, -(1:2)]) > 0, ]
+expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
+         sample_id = title,
          cell_line = `cell line:ch1`,
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
@@ -58,10 +71,12 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
+if (!all(colnames(expr_dat)[-1] == sample_metadata$title)) {
+  stop("Sample ID mismatch!")
+}
+
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-ensgene) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -75,5 +90,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()

@@ -84,7 +84,7 @@ sample_metadata$cell_type <- 'BM-CD138+'
 #table_s11 <- read_csv(file.path(base_dir, 'metadata', 'broyl2010_supp_table_s11.csv'))
 
 # load survival metadata from Kuiper et al. (2012)
-survival_mdata <- read_csv('/data/human/kuiper2012/kuiper2012_supp_patient_survival.csv')
+survival_mdata <- read_csv('/data/human/kuiper2012/kuiper2012_supp_patient_survival.csv', col_types = cols())
 
 survival_mdata <- survival_mdata %>%
   rename(geo_accession = Patient) %>%
@@ -111,13 +111,15 @@ expr_dat <- as.data.frame(exprs(eset))
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%
   as.data.frame %>%
-  rownames_to_column('probe_id') %>%
-  add_column(symbol = fData(eset)$`Gene symbol`, .after = 1)
+  add_column(symbol = fData(eset)$`Gene symbol`, .before = 1) %>%
+  filter(symbol != '')
+
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+  stop("Sample ID mismatch!")
+}
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
@@ -131,5 +133,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()
