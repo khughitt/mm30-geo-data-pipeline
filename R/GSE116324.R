@@ -59,8 +59,8 @@ expr_dat <- expr_dat[row_vars != 0, ]
 
 # columns to include (GSE116324)
 sample_metadata <- pData(eset) %>%
-  select(geo_accession, platform_id,
-         sample_id = title,
+  select(sample_id = title,
+         geo_accession, platform_id,
          iss_stage = `iss stage:ch1`,
          subtype = `subtype:ch1`,
          treatment_response = `bortezomib response:ch1`,

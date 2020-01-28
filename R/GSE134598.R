@@ -61,8 +61,8 @@ expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%
-  select(geo_accession, platform_id,
-         sample_id = title,
+  select(sample_id = title,
+         geo_accession, platform_id,
          cell_line = `cell line:ch1`,
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
@@ -71,7 +71,7 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
-if (!all(colnames(expr_dat)[-1] == sample_metadata$title)) {
+if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
   stop("Sample ID mismatch!")
 }
 

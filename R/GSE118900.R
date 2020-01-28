@@ -62,8 +62,8 @@ expr_dat <- expr_dat[row_vars != 0, ]
 
 # columns to include (GSE118900)
 sample_metadata <- pData(eset) %>%
-  select(geo_accession, platform_id,
-         sample_id = description,
+  select(sample_id = description,
+         geo_accession, platform_id,
          patient = `patient:ch1`,
          mm_stage = `tumor stage:ch1`)
 

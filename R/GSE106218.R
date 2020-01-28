@@ -58,8 +58,9 @@ clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 
 clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0-9]+'))
 
 sample_metadata <- pData(eset) %>%
-  select(geo_accession, platform_id, 
-         patient_id = `patient id:ch1`, gender = `gender:ch1`, 
+  select(patient_id = `patient id:ch1`,
+         geo_accession, platform_id, 
+         gender = `gender:ch1`, 
          prep_site = `prep-site:ch1`)
 
 sample_metadata <- sample_metadata %>%
@@ -124,5 +125,3 @@ write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
 # as the non-redundant version
 expr_outfile_nr <- sprintf('%s_gene_expr_nr.feather', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile_nr))
-
-sessionInfo()
