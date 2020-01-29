@@ -95,7 +95,8 @@ gene_symbols <- gene_symbols[mask]
 # get expression data and add gene symbol column
 expr_dat <- expr_dat %>%
   as.data.frame() %>%
-  add_column(symbol = gene_symbols, .before = 1)
+  add_column(symbol = gene_symbols, .before = 1) %>%
+  filter(symbol != '')
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
@@ -104,8 +105,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  select(-probe_id) %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
