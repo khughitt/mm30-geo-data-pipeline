@@ -75,11 +75,11 @@ expr_dat <- expr_dat %>%
   rownames_to_column('symbol') %>%
   filter(symbol != '')
 
-# normalize sample ids "IgM.MGUS1_C37" -> "IgM-MGUS1_C37"
-colnames(expr_dat) <- gsub('\\.', '-', colnames(expr_dat))
+# normalize sample ids "IgM-MGUS1_C37" -> "IgM.MGUS1_C37"
+sample_metadata$sample_id <- gsub('-', '.', sample_metadata$sample_id)
 
 # match order
-expr_dat <- expr_dat[, c('symbol', as.character(sample_metadata$sample_id))]
+expr_dat <- expr_dat[, c('symbol', sample_metadata$sample_id)]
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
   stop("Sample ID mismatch!")

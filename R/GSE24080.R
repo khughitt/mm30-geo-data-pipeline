@@ -14,6 +14,8 @@ library(GEOquery)
 library(tidyverse)
 library(feather)
 
+options(stringsAsFactors = FALSE)
+
 # GEO accession
 accession <- 'GSE24080'
 
@@ -42,20 +44,29 @@ eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 # exclude any probes with zero variance (uninformative)
 eset <- eset[apply(exprs(eset), 1, var, na.rm = TRUE) > 0, ]
 
-# columns to include (GSE24080)
-pfs <- as.numeric(endsWith(pData(eset)[, 'efs milestone outcome (24 months):ch1'], '0'))
-os  <- as.numeric(endsWith(pData(eset)[, 'os milestone outcome (24 months):ch1'], '0'))
-
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
-         gender = `Sex:ch1`,
-         age = `age:ch1`,
-         maqc_status = `maqc_distribution_status:ch1`) %>%
-  add_column(pfs_event = pfs, patient_died = os, .after = 'platform_id')
+         sample_id = title,
+         maqc_status = `maqc_distribution_status:ch1`) 
+
+sample_metadata$sample_id <- as.character(sample_metadata$sample_id)
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'CD138+'
+
+# load supplemental clinical metadata;
+# ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE24nnn/GSE24080/suppl/GSE24080%5FMM%5FUAMS565%5FClinInfo%5F27Jun2008%5FLS%5Fclean%2Exls%2Egz
+clinical_metadata <- read_tsv('../supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv', 
+                              col_types = cols())
+
+clinical_metadata <- clinical_metadata %>%
+  mutate(sample_id = sub('.CEL', '', cel_filename)) %>%
+  select(-cel_filename)
+
+# add to sample metadata table
+sample_metadata <- sample_metadata %>%
+  inner_join(clinical_metadata, by = 'sample_id')
 
 # get gene symbols
 symbols <- fData(eset)$`Gene symbol`

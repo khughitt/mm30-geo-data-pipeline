@@ -78,7 +78,9 @@ expr_dat <- expr_dat %>%
   add_column(symbol = symbols, .before = 1) %>%
   filter(symbol != '')
 
-colnames(expr_dat) <- sub('\\.', '-', colnames(expr_dat))
+# normalize sample names;
+# "PAD-004" -> "PAD.004"
+sample_metadata$sample_id <- sub('-', '.', sample_metadata$sample_id)
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
   stop("Sample ID mismatch!")
