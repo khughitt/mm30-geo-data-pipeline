@@ -39,6 +39,7 @@ esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
 survival_dat <- read_csv('/data/human/decaux2008/MM survival time GSE7039.csv')
 
 # combine samples from separate ExpressionSets
+# survival units: days
 sample_metadata <- pData(esets[[1]]) %>%
   mutate(patient_id = sub('_A', '', title)) %>%
   select(geo_accession, platform_id, patient_id) %>%
