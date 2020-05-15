@@ -15,7 +15,7 @@ library(feather)
 accession <- 'GSE7039'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo', accession)
+base_dir <- file.path('/data/human/geo/1.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
