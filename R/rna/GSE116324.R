@@ -50,9 +50,6 @@ expr_dat <- read.csv(gzfile(supp_file), row.names = 1)
 
 rownames(expr_dat) <- sub('\\.\\d+', '', rownames(expr_dat))
 
-# perform size-factor normalization
-expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
-
 # exclude zero variance genes
 row_vars <- apply(expr_dat, 1, var)
 expr_dat <- expr_dat[row_vars != 0, ]

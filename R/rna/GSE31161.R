@@ -40,9 +40,6 @@ num_missing <- apply(exprs(eset), 2, function(x) {
 
 eset <- eset[, num_missing == 0]
 
-# perform size-factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # exclude control sequences present in some datasets
 eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 

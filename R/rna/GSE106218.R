@@ -41,9 +41,6 @@ if (!file.exists(supp_file1)) {
 # load TPM counts
 expr <- read.delim(gzfile(supp_file1), row.names = 1)
 
-# Apply CPM normalization to be consistent with other datasets; already very close
-expr <- sweep(expr, 2, colSums(expr), '/') * 1E6
-
 # load sample metadata
 clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 1))) %>%
   rownames_to_column('patient_id') %>%

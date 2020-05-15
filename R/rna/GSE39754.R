@@ -29,9 +29,6 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # download GEO data;
 eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
-# perform size-factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # exclude any probes with zero variance (uninformative)
 eset <- eset[apply(exprs(eset), 1, var, na.rm = TRUE) > 0, ]
 

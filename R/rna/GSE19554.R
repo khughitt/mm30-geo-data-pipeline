@@ -28,11 +28,6 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # result is a list with a single entry containing an ExpressionSet instance
 eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
 
-# in order to normalize downstream comparisons across datasets, we will
-# aply a size-factor normalization so that the sample sizes all sum to exactly the
-# same amount..
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # get relevant sample metadata
 # "treatment_protocol_ch1" is another alias for death;
 # "grow_protocol_ch1" is an alias for relapse;

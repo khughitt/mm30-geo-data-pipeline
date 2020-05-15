@@ -37,9 +37,6 @@ eset <- eset[mask, ]
 # exclude any probes with zero variance (uninformative)
 eset <- eset[apply(exprs(eset), 1, var) > 0, ]
 
-# perform size factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # get relevant sample metadata
 # "treatment_protocol_ch1" is another alias for death;
 # "grow_protocol_ch1" is an alias for relapse;

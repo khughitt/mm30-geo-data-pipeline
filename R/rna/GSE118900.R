@@ -53,9 +53,6 @@ mask <- !duplicated(symbols)
 expr_dat <- expr_dat[mask, ]
 rownames(expr_dat) <- symbols[mask]
 
-# perform size-factor normalization
-expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
-
 # exclude any zero variance genes present
 row_vars <- apply(expr_dat, 1, var)
 expr_dat <- expr_dat[row_vars != 0, ]

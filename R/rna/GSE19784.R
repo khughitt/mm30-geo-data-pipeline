@@ -38,11 +38,6 @@ eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 #range(colSums(exprs(eset)))
 # [1] 212082.1 239655.9
 
-# in order to normalize downstream comparisons across datasets, however, we will
-# aply a size-factor normalization so that the sample sizes all sum to exactly the
-# same amount..
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # list the columns that are neither all different or all unique
 covariates <- c()
 

@@ -28,9 +28,6 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # download GEO data;
 eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
 
-# perform size-factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # columns to include (GSE47552)
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,

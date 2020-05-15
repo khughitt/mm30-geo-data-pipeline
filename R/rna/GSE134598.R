@@ -66,11 +66,6 @@ expr_dat <- expr_dat %>%
 # drop entries that could not be mapped to gene symbols
 expr_dat <- expr_dat[!is.na(expr_dat$symbol), ]
 
-# in order to normalize downstream comparisons across datasets, we will
-# aply a size-factor normalization so that the sample sizes all sum to exactly the
-# same amount..
-expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
-
 # drop empty rows
 expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 

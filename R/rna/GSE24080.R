@@ -35,9 +35,6 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # download GEO data;
 eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
 
-# perform size-factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # exclude control sequences present in some datasets
 eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 

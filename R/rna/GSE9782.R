@@ -165,9 +165,6 @@ symbols2 <- symbols2[mask]
 expr_dat <- rbind(e1, e2)
 symbols <- c(symbols1, symbols2)
 
-# perform size factor adjustment
-expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
-
 # get expression data and add gene symbol column
 expr_dat <- expr_dat %>%
   as.data.frame() %>%

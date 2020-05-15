@@ -83,9 +83,6 @@ disease[grepl('CLL', desc)] <- "Chronic Lymphocytic Leukemia"
 sample_metadata$disease <- disease
 sample_metadata$mm_stage <- disease
 
-# perform size-factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
 # exclude control sequences present in some datasets
 eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 

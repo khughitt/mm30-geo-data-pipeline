@@ -58,12 +58,9 @@ sample_metadata$cell_type <- 'CD138+'
 sample_metadata$tissue <- 'Bone Marrow'
 sample_metadata$sample_type <- 'Patient'
 
-# adjust for size separately and then combine
+# remove AFFX- probes seprately and then combine
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])
-
-e1 <- sweep(e1, 2, colSums(e1), '/') * 1E6
-e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
 
 mask1 <- !startsWith(rownames(e1), 'AFFX-')
 mask2 <- !startsWith(rownames(e2), 'AFFX-')
