@@ -1,9 +1,18 @@
 #!/bin/env/Rscript
 #
+# GSE116324
+#
 # RNA-Seq of newly diagnosed patients in the PADIMAC study leads to a
 # bortezomib/lenalidomide decision signature
 #
 # Chapman et al. (2018)
+#
+# EXCLUDED (May 14, 2020)
+#
+# GSE116324 found to have little/no overlap with all other datasets used in MM25, and
+# the top putative myeloma-associated genes do not appear to relate to the disease. It's
+# possible that samples in either the GEO metadata or supplemental file containing the
+# expression data are mislabeled.
 #
 library(annotables)
 library(GEOquery)
@@ -48,10 +57,20 @@ expr_dat <- read.csv(gzfile(supp_file), row.names = 1)
 # ENSG00000227232.4      45    1242     223
 # ENSG00000243485.2       0       0       0
 
+# drop .N suffixes from ENSEMBL gene ids
 rownames(expr_dat) <- sub('\\.\\d+', '', rownames(expr_dat))
 
+#range(colSums(expr_dat))
+# [1]  2912575 14114474
+
 # exclude zero variance genes
-row_vars <- apply(expr_dat, 1, var)
+row_vars <- apply(expr_dat[, -1], 1, var)
+
+#table(row_vars == 0)
+# 
+# FALSE  TRUE 
+# 39790 18030 
+
 expr_dat <- expr_dat[row_vars != 0, ]
 
 # columns to include (GSE116324)
@@ -86,7 +105,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 
