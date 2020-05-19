@@ -7,12 +7,12 @@
 # Note: this dataset appears to use the same samples from GSE2658, but processed in
 # a different manner, and with different metadata.
 #
-# Interestingly, the MAQC-II version of the dataset includes ~2x samples.before filtering
-# and also includes survival-related metadata.
+# Interestingly, the MAQC-II version of the dataset includes ~2x samples before
+# filtering and also includes survival-related metadata.
 #
 library(GEOquery)
 library(tidyverse)
-library(feather)
+library(arrow)
 
 options(stringsAsFactors = FALSE)
 
@@ -54,7 +54,7 @@ sample_metadata$cell_type <- 'CD138+'
 
 # load supplemental clinical metadata;
 # ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE24nnn/GSE24080/suppl/GSE24080%5FMM%5FUAMS565%5FClinInfo%5F27Jun2008%5FLS%5Fclean%2Exls%2Egz
-clinical_metadata <- read_tsv('../supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv', 
+clinical_metadata <- read_tsv('../../supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv', 
                               col_types = cols())
 
 clinical_metadata <- clinical_metadata %>%

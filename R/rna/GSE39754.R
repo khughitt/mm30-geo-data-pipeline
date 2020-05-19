@@ -6,7 +6,7 @@
 #
 library(GEOquery)
 library(tidyverse)
-library(feather)
+library(arrow)
 
 options(stringsAsFactors = FALSE)
 

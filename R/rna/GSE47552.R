@@ -7,7 +7,7 @@
 #
 library(GEOquery)
 library(tidyverse)
-library(feather)
+library(arrow)
 
 # GEO accession
 accession <- 'GSE47552'
