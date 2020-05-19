@@ -15,7 +15,7 @@ library(arrow)
 accession <- 'GSE7039'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -58,10 +58,14 @@ sample_metadata$cell_type <- 'CD138+'
 sample_metadata$tissue <- 'Bone Marrow'
 sample_metadata$sample_type <- 'Patient'
 
-# remove AFFX- probes seprately and then combine
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])
 
+# size factor normalization
+e1 <- sweep(e1, 2, colSums(e1), '/') * 1E6
+e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
+
+# remove AFFX- probes seprately and then combine
 mask1 <- !startsWith(rownames(e1), 'AFFX-')
 mask2 <- !startsWith(rownames(e2), 'AFFX-')
 

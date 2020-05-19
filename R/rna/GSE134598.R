@@ -13,7 +13,7 @@ library(arrow)
 accession <- 'GSE134598'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -68,6 +68,9 @@ expr_dat <- expr_dat[!is.na(expr_dat$symbol), ]
 
 # drop empty rows
 expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
+
+# size factor normalization
+expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
 
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%

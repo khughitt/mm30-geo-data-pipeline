@@ -13,7 +13,7 @@ library(arrow)
 accession <- 'GSE31161'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -39,6 +39,9 @@ num_missing <- apply(exprs(eset), 2, function(x) {
 #  1035     3
 
 eset <- eset[, num_missing == 0]
+
+# size factor normalization
+exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # exclude control sequences present in some datasets
 eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]

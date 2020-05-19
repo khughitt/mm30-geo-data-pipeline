@@ -13,7 +13,7 @@ library(arrow)
 accession <- 'GSE6691'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -82,6 +82,9 @@ disease[grepl('CLL', desc)] <- "Chronic Lymphocytic Leukemia"
 #                              20
 sample_metadata$disease <- disease
 sample_metadata$mm_stage <- disease
+
+# size factor normalization
+exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # exclude control sequences present in some datasets
 eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]

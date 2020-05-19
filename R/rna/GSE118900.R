@@ -12,7 +12,7 @@ library(arrow)
 accession <- 'GSE118900'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -52,6 +52,9 @@ mask <- !duplicated(symbols)
 
 expr_dat <- expr_dat[mask, ]
 rownames(expr_dat) <- symbols[mask]
+
+# size factor normalization
+expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
 
 # exclude any zero variance genes present
 row_vars <- apply(expr_dat, 1, var)

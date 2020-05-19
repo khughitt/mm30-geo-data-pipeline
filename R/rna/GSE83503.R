@@ -14,7 +14,7 @@ library(arrow)
 accession <- 'GSE83503'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -30,12 +30,15 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # result is a list with a single entry containing an ExpressionSet instance
 eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
-# exclude control spots (4130 / 22011 samples)
+# exclude control spots (4130 / 22011 probes)
 mask <- fData(eset)$SPOT_ID != 'control'
 eset <- eset[mask, ]
 
 # exclude any probes with zero variance (uninformative)
 eset <- eset[apply(exprs(eset), 1, var) > 0, ]
+
+# size factor normalization
+exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # get relevant sample metadata
 # "treatment_protocol_ch1" is another alias for death;

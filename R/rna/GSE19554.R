@@ -12,7 +12,7 @@ library(arrow)
 accession <- 'GSE19554'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/1.1', accession)
+base_dir <- file.path('/data/human/geo/2.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -27,6 +27,9 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # download GEO data;
 # result is a list with a single entry containing an ExpressionSet instance
 eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
+
+# size factor normalization
+exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # get relevant sample metadata
 # "treatment_protocol_ch1" is another alias for death;
