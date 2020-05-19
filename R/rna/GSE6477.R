@@ -76,6 +76,6 @@ expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', ac
 expr_nr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr_nr.feather', accession))
 mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', accession))
 
-write_feather(expr_dat, path = expr_outfile)
-write_feather(expr_dat_nr, path = expr_nr_outfile)
-write_tsv(sample_metadata, path = mdat_outfile)
+write_feather(expr_dat, expr_outfile)
+write_feather(expr_dat_nr, expr_nr_outfile)
+write_tsv(sample_metadata, mdat_outfile)
