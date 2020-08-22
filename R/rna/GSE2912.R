@@ -4,16 +4,16 @@
 #
 # Agnelli et al. (2005)
 #
-library(annotables)
 library(GEOquery)
 library(tidyverse)
 library(arrow)
+source("../util/eset.R")
 
 # GEO accession
 accession <- 'GSE2912'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -27,13 +27,10 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 
 # download GEO data;
 # result is a list with a single entry containing an ExpressionSet instance
-eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
+eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
-# exclude control sequences present in some datasets
-eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 
 # metadata stored separately (source: Agnelli et al, 2005, Appendix A)
 mdat <- read.csv('/data/human/agnelli2005/Agnelli2005.csv')
@@ -59,11 +56,7 @@ sample_metadata$mm_stage <- mdat[, STAGE_IND]
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
-# get expression data and add gene symbol column
-expr_dat <- exprs(eset) %>%
-  as.data.frame() %>%
-  add_column(symbol = fData(eset)$`Gene symbol`, .before = 1) %>%
-  filter(symbol != '')
+expr_dat <- process_eset(eset)
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
@@ -72,7 +65,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 

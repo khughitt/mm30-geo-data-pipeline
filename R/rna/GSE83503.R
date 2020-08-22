@@ -14,7 +14,7 @@ library(arrow)
 accession <- 'GSE83503'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -50,21 +50,25 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
+# Note: GSE83503 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
+# probes for each exon. The result of this is that >95% of the probes map to multiple
+# genes, and thus simply discarding multi-mapped probes will not be helpful.
 # get gene symbols associated with each probe; gene symbols are stored at every
+
 # [(N-1) + 2]th position (i.e. 2, 7, 12, 17..)
 gene_parts <- str_split(fData(eset)$gene_assignment, '//', simplify = TRUE)
-symbols <- gene_parts[, seq(2, ncol(gene_parts), by = 5)]
+gene_symbols <- gene_parts[, seq(2, ncol(gene_parts), by = 5)]
 
 # collapse into the form "symbol 1 // symbol 2 // symbol 3 // ..."
-symbols <- apply(symbols, 1, function(x) {
+gene_symbols <- apply(gene_symbols, 1, function(x) {
   str_trim(x)[x != '']
 })
-symbols <- unlist(lapply(symbols, paste, collapse = ' // '))
+gene_symbols <- unlist(lapply(gene_symbols, paste, collapse = ' // '))
 
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%
   as.data.frame() %>%
-  add_column(symbol = symbols, .before = 1) %>%
+  add_column(symbol = gene_symbols, .before = 1) %>%
   filter(symbol != '')
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
@@ -77,6 +81,28 @@ expr_dat_nr <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
+
+# for genes not already using symbols in GRCh38, attempt to map the symbols 
+# missing_symbols <- !expr_dat_nr$symbol %in% grch38$symbol
+
+#table(missing_symbols)
+# missing_symbols
+# FALSE  TRUE 
+# 16813  2537 
+
+# load GRCh38 gene symbol mapping
+gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+
+# mask indicating which genes are to be updated
+mask <- !expr_dat_nr$symbol %in% grch38$symbol & expr_dat_nr$symbol %in% gene_mapping$alt_symbol
+
+#table(mask)
+# mask
+# FALSE  TRUE 
+# 17563  1787 
+
+expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask], 
+                                                      gene_mapping$alt_symbol)]
 
 # store cleaned expression data and metadata
 expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))

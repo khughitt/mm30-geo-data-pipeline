@@ -7,12 +7,13 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
+source("../util/eset.R")
 
 # GEO accession
 accession <- 'GSE16791'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -26,7 +27,7 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 
 # download GEO data;
 # result is a list with a single entry containing an ExpressionSet instance
-eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
+eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
@@ -41,13 +42,8 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'BM-CD138+'
 
-# get expression data and add gene symbol column
-gene_symbols <- gsub('///', ' // ', fData(eset)$`Gene symbol`)
-
-expr_dat <- exprs(eset) %>%
-  as.data.frame() %>%
-  add_column(symbol = gene_symbols, .before = 1) %>%
-  filter(symbol != '')
+# extract gene expression data
+expr_dat <- process_eset(eset)
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
@@ -55,7 +51,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 

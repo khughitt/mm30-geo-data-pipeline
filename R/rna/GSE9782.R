@@ -8,12 +8,13 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
+source("../util/eset.R")
 
 # GEO accession
 accession <- 'GSE9782'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -28,7 +29,7 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 # download GEO data;
 # for GSE9782, data includes two separate esets with a small number of overlapping
 # probes
-esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
+esets <- getGEO(accession, destdir = raw_data_dir)
 
 #
 # Note: some of the metadata fields appear to be incorrectly encoded, e.g.:
@@ -52,6 +53,7 @@ esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
 # to get around this, we will manually detect and parse those fields..
 sample_metadata <- pData(esets[[1]]) %>%
   mutate(
+    patient_id         = title,
     study_code         = as.numeric(str_match(characteristics_ch1, '\\d+$')),
     treatment          = str_match(characteristics_ch1.1, '\\w+$'),
     gender             = str_match(characteristics_ch1.2, '\\w+$'),
@@ -59,9 +61,14 @@ sample_metadata <- pData(esets[[1]]) %>%
     age                = as.numeric(str_match(characteristics_ch1.4, '\\d+$')),
     treatment_response = str_match(characteristics_ch1.7, '\\w+$'),
     patient_subgroup   = str_match(characteristics_ch1.8, '\\w+$')) %>%
-  select(geo_accession, platform_id, study_code, treatment, gender,
+  select(patient_id, geo_accession, platform_id, study_code, treatment, gender,
           ethnicity, age, treatment_response, patient_subgroup) %>%
-  add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 1)
+  add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 2)
+
+# sanity check (comparing patient ids for two 133A/B to make sure they match)
+if (!all(pData(esets[[1]])$title == pData(esets[[2]])$title)) {
+  stop("Sample mismatch!")
+}
 
 # convert metadata from factor to character columns for parsing
 str_mdat <- pData(esets[[1]])
@@ -128,60 +135,32 @@ sample_metadata$patient_died <- patient_died
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- NA # likely CD138+, but not 100% certain
 
-# for GSE7039, data includes two separate esets with a small number of overlapping probes
-e1 <- exprs(esets[[1]])
-e2 <- exprs(esets[[2]])
+# likely CD138+, but not 100% certain
+sample_metadata$cell_type <- NA
 
-symbols1 <- fData(esets[[1]])[, 'Gene symbol']
-symbols2 <- fData(esets[[2]])[, 'Gene symbol']
-
-mask1 <- !startsWith(rownames(e1), 'AFFX-')
-mask2 <- !startsWith(rownames(e2), 'AFFX-')
-
-e1 <- e1[mask1, ]
-e2 <- e2[mask2, ]
-
-symbols1 <- symbols1[mask1]
-symbols2 <- symbols2[mask2]
-
-# small number of shared probes exist...
-#length(intersect(rownames(e1), rownames(e2)))
-# [1] 168
-
-#head(intersect(rownames(e1), rownames(e2)))
-# [1] "200000_s_at" "200001_at"   "200002_at"   "200003_s_at" "200004_at"   "200005_at"
-
-# use average values for those probes..
-shared_probes <- intersect(rownames(e1), rownames(e2))
-
-e1[shared_probes, ] <- (e1[shared_probes, ] + e2[shared_probes, ]) / 2
-
-mask <- !rownames(e2) %in% shared_probes
-e2 <- e2[mask, ]
-symbols2 <- symbols2[mask]
-
-expr_dat <- rbind(e1, e2)
-symbols <- c(symbols1, symbols2)
+# GSE7039 includes two esets/arrays for each patient, Affy HG-U133A & HG-U133B, which
+# overlap in a very small number of probes (n = 168).
+# Below, the two arrays are processed separately following the usual approach, and then
+# bound together at the end before deduplication.
 
 # size factor normalization
-expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
+exprs(esets[[1]]) <- sweep(exprs(esets[[1]]), 2, colSums(exprs(esets[[1]])), '/') * 1E6
+exprs(esets[[2]]) <- sweep(exprs(esets[[2]]), 2, colSums(exprs(esets[[2]])), '/') * 1E6
 
-# get expression data and add gene symbol column
-expr_dat <- expr_dat %>%
-  as.data.frame() %>%
-  add_column(symbol = symbols, .before = 1) %>%
-  filter(symbol != '')
+# extract and process gene expression data from each, separately
+expr_dat1 <- process_eset(esets[[1]])
+expr_dat2 <- process_eset(esets[[2]])
 
-if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
-  stop("Sample ID mismatch!")
-}
+colnames(expr_dat1) <- c('symbol', sample_metadata$patient_id)
+colnames(expr_dat2) <- c('symbol', sample_metadata$patient_id)
+
+# join datasets
+expr_dat <- rbind(expr_dat1, expr_dat2)
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 

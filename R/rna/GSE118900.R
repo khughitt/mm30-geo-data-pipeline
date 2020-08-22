@@ -4,6 +4,7 @@
 #
 # Jang et al. (2019)
 #
+library(annotables)
 library(GEOquery)
 library(tidyverse)
 library(arrow)
@@ -12,7 +13,7 @@ library(arrow)
 accession <- 'GSE118900'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -45,20 +46,43 @@ expr_dat <- read.delim(gzfile(supp_file), row.names = 1)
 # [1] "AADACL3|chr1|12776118" "AADACL4|chr1|12704566" "ABCA4|chr1|94458394"   "ABCB10|chr1|229652329"
 # [5] "ABCD3|chr1|94883933"   "ABL2|chr1|179068462"
 
-symbols <- str_split(rownames(expr_dat), '\\|', simplify = TRUE)[, 1]
+gene_symbols <- str_split(rownames(expr_dat), '\\|', simplify = TRUE)[, 1]
+
+# load GRCh38 gene symbol mapping
+gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+
+# mask indicating which genes are to be updated
+mask <- !gene_symbols %in% grch38$symbol & gene_symbols %in% gene_mapping$alt_symbol
+
+#table(mask)
+# mask
+# FALSE  TRUE 
+# 21156  2242 
+
+gene_symbols[mask] <- gene_mapping$symbol[match(gene_symbols[mask],
+                                                gene_mapping$alt_symbol)]
 
 # remove small number of duplicated gene symbol entries
-mask <- !duplicated(symbols)
+# mask <- !duplicated(gene_symbols)
 
-expr_dat <- expr_dat[mask, ]
-rownames(expr_dat) <- symbols[mask]
+# expr_dat <- expr_dat[mask, ]
+# rownames(expr_dat) <- gene_symbols[mask]
 
 # size factor normalization
 expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
 
+expr_dat <- expr_dat %>%
+  as.data.frame() %>%
+  add_column(symbol = gene_symbols, .before = 1)
+
 # exclude any zero variance genes present
-row_vars <- apply(expr_dat, 1, var)
-expr_dat <- expr_dat[row_vars != 0, ]
+mask <- apply(expr_dat[, -1], 1, var) > 0
+expr_dat <- expr_dat[mask, ]
+
+# table(mask)
+# mask
+# FALSE  TRUE 
+#  3789 19609 
 
 # columns to include (GSE118900)
 sample_metadata <- pData(eset) %>%
@@ -71,14 +95,10 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'CD138+'
 
-expr_dat <- expr_dat %>%
-  rownames_to_column('symbol') %>%
-  filter(symbol != '')
-
-# normalize sample ids "IgM-MGUS1_C37" -> "IgM.MGUS1_C37"
+# normalize sample ids, ex: "IgM-MGUS1_C37" -> "IgM.MGUS1_C37"
 sample_metadata$sample_id <- gsub('-', '.', sample_metadata$sample_id)
 
-# match order
+# match sample order to metadata
 expr_dat <- expr_dat[, c('symbol', sample_metadata$sample_id)]
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
@@ -88,7 +108,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 

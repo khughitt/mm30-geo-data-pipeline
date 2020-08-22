@@ -13,7 +13,7 @@ library(arrow)
 accession <- 'GSE134598'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -37,11 +37,10 @@ if (!file.exists(supp_file)) {
 }
 
 # get expression data;
-# note that ensgene is stored as GeneId, but is not used for this analysis..
 expr_dat <- read_tsv(supp_file, col_types = cols()) %>%
   select(-Chromosome, -Start, -End, -Length, -GeneBiotype, -GeneName) 
 
-# mistake in supplemental file (excel gene symbol issue...):
+# mistake in supplemental file when attempting to use the "GeneName" field (excel gene symbol issue...):
 # > expr_dat_nr[1:3, 1:3]
 # A tibble: 3 x 3                            
 #   symbol KMS26_Control KMS26_APY0201_100nM
@@ -49,13 +48,9 @@ expr_dat <- read_tsv(supp_file, col_types = cols()) %>%
 # 1 1-Dec        0                   0
 # 2 1-Mar        0.00229             0.00255
 # 3 1-Sep        1.57                1.61
-
 # (reported upstream jan 26, 2020)
 
-# Note: after comparing GeneId and GeneName with both GRCh37 / GRCh38, the best
-# mapping appears to be between the "GeneId" field and GRCh38 ensgenes.
-# these will be used to remap identifiers to avoid issues with corrupt gene symbols,
-# etc.
+# map from ensgene -> grch38
 ind <- match(expr_dat$GeneId, grch38$ensgene)
 gene_symbols <- grch38$symbol[ind]
 
@@ -63,14 +58,14 @@ expr_dat <- expr_dat %>%
   select(-GeneId) %>%
   add_column(symbol = gene_symbols, .before = 1)
 
+# size factor normalization
+expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
+
 # drop entries that could not be mapped to gene symbols
 expr_dat <- expr_dat[!is.na(expr_dat$symbol), ]
 
 # drop empty rows
 expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
-
-# size factor normalization
-expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
 
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%
@@ -90,7 +85,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 

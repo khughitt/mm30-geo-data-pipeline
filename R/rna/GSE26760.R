@@ -7,6 +7,7 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
+source("../util/eset.R")
 
 options(stringsAsFactors = FALSE)
 
@@ -14,7 +15,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE26760'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -27,13 +28,10 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 }
 
 # download GEO data;
-eset <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)[[1]]
+eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
-# exclude control sequences present in some datasets
-eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
 
 # "Sample from patient MMRC0091" -> "MMRC0091"
 patient_ids <- str_split(pData(eset)$source_name_ch1, ' ', simplify = TRUE)[, 4]
@@ -66,14 +64,8 @@ sample_metadata$mm_stage[sample_metadata$mm_stage == 'Smoldering Myeloma'] <- 'S
 #    2  224    3   10
 #
 
-# get gene symbols
-symbols <- fData(eset)$`Gene symbol`
-
-# get expression data and add gene symbol column
-expr_dat <- exprs(eset) %>%
-  as.data.frame %>%
-  add_column(symbol = symbols, .before = 1) %>%
-  filter(symbol != '')
+# extract gene expression data
+expr_dat <- process_eset(eset)
 
 # drop samples with no available metadata and normalize order
 ind <- c('symbol', sample_metadata$geo_accession)
@@ -86,7 +78,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 
@@ -99,5 +90,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
-sessionInfo()

@@ -8,12 +8,13 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
+source("../util/eset.R")
 
 # GEO accession
 accession <- 'GSE6691'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -67,12 +68,12 @@ sample_metadata$cell_type <- NA
 #                                                                                                                                               9
 #  PC from WM patient, isolated using Kappa or Lambda-fluorescein isothiocyanate, CD10-PE,CD38-PerCPCy5.5,CD19-PE-Cy7, CD34-APC and CD45-APC-Cy7.
 #                                                                                                                                               1
-desc <- pData(eset)$characteristics_ch1
+patient_desc <- pData(eset)$characteristics_ch1
 
-disease <- rep('Multiple Myeloma', length(desc))
-disease[grepl('healthy', desc)] <- "Healthy"
-disease[grepl('WM', desc)] <- "Waldenström's Macroglobulinemia"
-disease[grepl('CLL', desc)] <- "Chronic Lymphocytic Leukemia"
+disease <- rep('Multiple Myeloma', length(patient_desc))
+disease[grepl('healthy', patient_desc)] <- "Healthy"
+disease[grepl('WM', patient_desc)] <- "Waldenström's Macroglobulinemia"
+disease[grepl('CLL', patient_desc)] <- "Chronic Lymphocytic Leukemia"
 
 #table(disease)
 # disease
@@ -86,9 +87,6 @@ sample_metadata$mm_stage <- disease
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
-# exclude control sequences present in some datasets
-eset <- eset[!startsWith(rownames(eset), 'AFFX-'), ]
-
 # keep only healthy / myeloma samples
 mask <- sample_metadata$disease %in% c('Healthy', 'Multiple Myeloma')
 
@@ -100,32 +98,12 @@ mask <- sample_metadata$disease %in% c('Healthy', 'Multiple Myeloma')
 eset <- eset[, mask]
 sample_metadata <- sample_metadata[mask, ]
 
-# get gene symbols
-symbols <- fData(eset)$`Gene Symbol`
-
-# get expression data and add gene symbol column
-expr_dat <- exprs(eset) %>%
-  as.data.frame %>%
-  add_column(symbol = symbols, .before = 1)
-
-table(expr_dat$symbol == '')
-#
-# FALSE  TRUE
-# 20599  1000
-
-# drop unmapped genes
-expr_dat <- expr_dat %>%
-  filter(symbol != '')
-
-if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
-  stop("Sample ID mismatch!")
-}
+# extract gene expression data
+expr_dat <- process_eset(eset)
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
-  filter(symbol != '') %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
 

@@ -14,7 +14,7 @@ library(arrow)
 accession <- 'GSE117847'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -44,6 +44,16 @@ sample_metadata$cell_type <- 'CD138+'
 # map from ensgenes to gene symbols
 ensgenes <- fData(eset)$SPOT_ID
 gene_symbols <- grch38$symbol[match(ensgenes, grch38$ensgene)]
+
+ind <- which(is.na(gene_symbols))
+unmapped_ensgenes <- ensgenes[ind]
+
+gene_symbols[ind] <- grch37$symbol[match(unmapped_ensgenes, grch37$ensgene)]
+
+#table(is.na(gene_symbols))
+# 
+# FALSE  TRUE 
+# 53531     7 
 
 # get expression data and add gene symbol column
 expr_dat <- exprs(eset) %>%

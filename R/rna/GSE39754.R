@@ -4,6 +4,7 @@
 #
 # Chauhan et al. (2012)
 #
+library(annotables)
 library(GEOquery)
 library(tidyverse)
 library(arrow)
@@ -14,7 +15,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE39754'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -45,6 +46,10 @@ sample_metadata$cell_type <- 'CD138+'
 sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$disease[grepl('Healthy', sample_metadata$diagnosis)] <- 'Healthy'
 
+# Note: GSE39754 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
+# probes for each exon. The result of this is that >95% of the probes map to multiple
+# genes, and thus simply discarding multi-mapped probes will not be helpful.
+
 # get gene symbols associated with each probe; gene symbols are stored at every
 # [(N-1) + 2]th position (i.e. 2, 7, 12, 17..)
 gene_parts <- str_split(fData(eset)$gene_assign, ' ///? ', simplify = TRUE)
@@ -72,6 +77,28 @@ expr_dat_nr <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
+
+# for genes not already using symbols in GRCh38, attempt to map the symbols 
+missing_symbols <- !expr_dat_nr$symbol %in% grch38$symbol
+
+#table(missing_symbols)
+# missing_symbols
+# FALSE  TRUE 
+# 17266  2666 
+
+# load GRCh38 gene symbol mapping
+gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+
+# mask indicating which genes are to be updated
+mask <- !expr_dat_nr$symbol %in% grch38$symbol & expr_dat_nr$symbol %in% gene_mapping$alt_symbol
+
+# table(mask)
+# mask
+# FALSE  TRUE 
+# 18061  1871 
+
+expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask], 
+                                                      gene_mapping$alt_symbol)]
 
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)

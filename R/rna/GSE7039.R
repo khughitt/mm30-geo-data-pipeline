@@ -7,6 +7,7 @@
 # Note: Survival data provided by corresponding author (Stéphane Minvielle) via email
 # on June 6, 2019.
 #
+library(annotables)
 library(GEOquery)
 library(tidyverse)
 library(arrow)
@@ -15,7 +16,7 @@ library(arrow)
 accession <- 'GSE7039'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/2.0', accession)
+base_dir <- file.path('/data/human/geo/3.0', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -36,7 +37,7 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
 
 # load additional survival metadata provided by author
-survival_dat <- read_csv('/data/human/decaux2008/MM survival time GSE7039.csv')
+survival_dat <- read_csv('/data/human/decaux2008/MM survival time GSE7039.csv', col_types = cols())
 
 # combine samples from separate ExpressionSets
 # survival units: days
@@ -61,16 +62,16 @@ sample_metadata$sample_type <- 'Patient'
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])
 
-# size factor normalization
-e1 <- sweep(e1, 2, colSums(e1), '/') * 1E6
-e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
-
 # remove AFFX- probes seprately and then combine
 mask1 <- !startsWith(rownames(e1), 'AFFX-')
 mask2 <- !startsWith(rownames(e2), 'AFFX-')
 
 e1 <- e1[mask1, ]
 e2 <- e2[mask2, ]
+
+# size factor normalization
+e1 <- sweep(e1, 2, colSums(e1), '/') * 1E6
+e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
 
 # no shared probe ids
 # length(intersect(rownames(e1), rownames(e2)))
@@ -110,6 +111,20 @@ expr_dat_nr <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
+
+# load GRCh38 gene symbol mapping
+gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+
+# mask indicating which genes are to be updated
+mask <- !expr_dat_nr$symbol %in% grch38$symbol & expr_dat_nr$symbol %in% gene_mapping$alt_symbol
+
+#table(mask)
+# mask
+# FALSE  TRUE
+# 7188   1331
+
+expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask],
+                                                      gene_mapping$alt_symbol)]
 
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)
