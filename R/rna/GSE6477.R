@@ -44,9 +44,13 @@ sample_metadata <- pData(eset) %>%
                     ifelse(grepl('Smoldering', title), 'Smoldering', 'Normal')))))) %>%
   select(-title)
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+# add disease stage
+sample_metadata <- sample_metadata %>%
+  mutate(disease_stage = recode(mm_stage, Normal = 'Healthy', New = 'MM',
+                                Relapsed = 'RRMM', Smoldering = 'SMM'))
+
+# add cell type
+sample_metadata$cell_type <- 'CD138+'
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

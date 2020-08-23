@@ -53,11 +53,11 @@ sample_metadata <- pData(esets[[1]]) %>%
 #all(sample_metadata$patient_id == sub('_B', '', pData(esets[[2]])$title))
 # [1] TRUE
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+# add cell type and disease stage (same for all samples)
+sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
+
 sample_metadata$tissue <- 'Bone Marrow'
-sample_metadata$sample_type <- 'Patient'
 
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])

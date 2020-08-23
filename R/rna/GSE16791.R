@@ -38,9 +38,9 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id, mm_stage = `stage:ch1`, age = `age:ch1`)
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+# add cell type and disease stage (same for all samples)
+sample_metadata$cell_type <- 'CD138+'
+sample_metadata$disease_stage <- "MM"
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

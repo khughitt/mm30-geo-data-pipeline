@@ -40,7 +40,7 @@ sample_metadata <- pData(eset) %>%
          os_event = `os censored:ch1`)
 
 # add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+sample_metadata$disease <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
 
 # extract gene expression data

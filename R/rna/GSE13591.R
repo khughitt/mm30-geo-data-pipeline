@@ -42,6 +42,8 @@ sample_metadata$mm_stage <- sample_metadata$sample_type
 sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'TC')] <- 'MM'
 sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'N')] <- 'Healthy'
 
+sample_metadata$disease_stage <- sample_metadata$mm_stage
+
 #table(sample_metadata$sample_type)
 # 
 # MGUS    N  PCL  TC1  TC2  TC3  TC4  TC5 
@@ -52,11 +54,8 @@ sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'N')] <- 'Healthy'
 # MGUS   MM    N  PCL 
 #   11  133    5    9 
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$disease[sample_metadata$mm_stage == 'Healthy'] <- 'Healthy'
-
-sample_metadata$cell_type <- 'BM-CD138+'
+# add cell type
+sample_metadata$cell_type <- 'CD138+'
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

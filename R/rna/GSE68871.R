@@ -39,9 +39,9 @@ sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
          treatment_response = `response to vtd therapy:ch1`)
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+# add cell type and disease stage (same for all samples)
+sample_metadata$disease_stage <- 'MM'
+sample_metadata$cell_type <- 'CD138+'
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

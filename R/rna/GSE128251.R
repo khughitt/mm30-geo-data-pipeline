@@ -40,7 +40,8 @@ sample_metadata <- pData(eset) %>%
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+sample_metadata$disease_stage <- 'MM'
+sample_metadata$cell_type <- 'H929'
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

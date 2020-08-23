@@ -52,9 +52,9 @@ sample_metadata$gender <- mdat[, GENDER_IND]
 sample_metadata$age <- mdat[, AGE_IND]
 sample_metadata$mm_stage <- mdat[, STAGE_IND]
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+# add cell type and disease stage (same for all samples)
+sample_metadata$disease_stage <- 'MM'
+sample_metadata$cell_type <- 'CD138+'
 
 expr_dat <- process_eset(eset)
 

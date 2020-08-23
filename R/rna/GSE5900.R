@@ -41,11 +41,9 @@ sample_metadata$mm_stage <- rep('Healthy', nrow(sample_metadata))
 sample_metadata$mm_stage[grepl('MGUS', group)] <- 'MGUS'
 sample_metadata$mm_stage[grepl('smoldering', group)] <- 'SMM'
 
-sample_metadata$disease <- rep('Healthy', nrow(sample_metadata))
-sample_metadata$disease[!grepl('healthy', group)] <- 'Multiple Myeloma'
+sample_metadata$disease_stage <- sample_metadata$mm_stage
 
-
-# add cell type and disease (same for all samples)
+# add cell type
 sample_metadata$cell_type <- 'CD138+'
 
 table(sample_metadata$mm_stage)

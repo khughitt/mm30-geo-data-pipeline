@@ -44,11 +44,12 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 # "treatment_protocol_ch1" is another alias for death;
 # "grow_protocol_ch1" is an alias for relapse;
 sample_metadata <- pData(eset) %>%
-  select(geo_accession, platform_id, patient_died = `death:ch1`, pfs_event = `relapse:ch1`)
+  select(geo_accession, platform_id, patient_died = `death:ch1`, pfs_event = `relapse:ch1`) %>%
+  mutate(pfs_event = ifelse(pfs_event == 0, 0, 1))
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+# add cell type and disease stage
+sample_metadata$disease_stage <- ifelse(sample_metadata$pfs_event == 1, 'RRMM', 'MM')
+sample_metadata$cell_type <- 'CD138+'
 
 # Note: GSE83503 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
 # probes for each exon. The result of this is that >95% of the probes map to multiple
@@ -82,13 +83,13 @@ expr_dat_nr <- expr_dat %>%
   group_by(symbol) %>%
   summarize_all(median)
 
-# for genes not already using symbols in GRCh38, attempt to map the symbols 
+# for genes not already using symbols in GRCh38, attempt to map the symbols
 # missing_symbols <- !expr_dat_nr$symbol %in% grch38$symbol
 
 #table(missing_symbols)
 # missing_symbols
-# FALSE  TRUE 
-# 16813  2537 
+# FALSE  TRUE
+# 16813  2537
 
 # load GRCh38 gene symbol mapping
 gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
@@ -98,10 +99,10 @@ mask <- !expr_dat_nr$symbol %in% grch38$symbol & expr_dat_nr$symbol %in% gene_ma
 
 #table(mask)
 # mask
-# FALSE  TRUE 
-# 17563  1787 
+# FALSE  TRUE
+# 17563  1787
 
-expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask], 
+expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask],
                                                       gene_mapping$alt_symbol)]
 
 # store cleaned expression data and metadata

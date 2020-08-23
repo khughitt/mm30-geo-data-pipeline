@@ -68,8 +68,8 @@ sample_metadata <- pData(eset) %>%
          patient_subgroup = `cluster:ch1`)
 
 # add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+sample_metadata$disease_stage <- 'MM'
+sample_metadata$cell_type <- 'CD138+'
 
 # Note; there is not sufficient information provided to link patients in table S11 to
 # GSM sample identifiers; skipping.

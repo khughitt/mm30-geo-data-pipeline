@@ -47,14 +47,13 @@ sample_metadata$treatment[grepl('ATO 24', sample_metadata$title)] <- 'ATO (24 hr
 sample_metadata$treatment[grepl('ATO 48', sample_metadata$title)] <- 'ATO (48 hrs)'
 
 # cell line
-sample_metadata$cell_line <- 'U266'
-sample_metadata$cell_line[grepl('MM.1s', sample_metadata$title)] <- 'MM.1s'
-sample_metadata$cell_line[grepl('KMS11', sample_metadata$title)] <- 'KMS11'
-sample_metadata$cell_line[grepl('8226', sample_metadata$title)] <- '8226'
+sample_metadata$cell_type <- 'U266'
+sample_metadata$cell_type[grepl('MM.1s', sample_metadata$title)] <- 'MM.1s'
+sample_metadata$cell_type[grepl('KMS11', sample_metadata$title)] <- 'KMS11'
+sample_metadata$cell_type[grepl('8226', sample_metadata$title)] <- '8226'
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+# disease stage
+sample_metadata$disease_stage <- 'MM'
 
 # get expression data and add gene symbol column
 # gene_symbols <- gsub('///', ' // ', fData(eset)$`Gene symbol`)

@@ -38,11 +38,8 @@ sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
          mm_stage_raw = `cell type:ch1`)
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+# add cell type
 sample_metadata$cell_type <- 'CD138+'
-
-sample_metadata$disease[grepl('NPC', sample_metadata$mm_stage_raw)] <- 'Healthy'
 
 sample_metadata$mm_stage <- rep('MM', length(sample_metadata$mm_stage_raw))
 
@@ -52,6 +49,9 @@ sample_metadata$mm_stage[grepl('SMM', sample_metadata$mm_stage_raw)] <- 'SMM'
 
 sample_metadata <- sample_metadata %>%
   select(-mm_stage_raw)
+
+# add disease stage
+sample_metadata$disease_stage <- sample_metadata$mm_stage
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

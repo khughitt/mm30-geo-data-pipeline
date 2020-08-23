@@ -46,8 +46,8 @@ sample_metadata <- pData(eset) %>%
 
 sample_metadata$sample_id <- as.character(sample_metadata$sample_id)
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+# add cell type and disease stage (same for all samples)
+sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
 
 # load supplemental clinical metadata;

@@ -133,11 +133,11 @@ sample_metadata$pfs_event_reason <- pfs_event_reason
 sample_metadata$os_time <- os_time
 sample_metadata$patient_died <- patient_died
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+# add disease stage
+sample_metadata$disease <- 'RRMM'
 
-# likely CD138+, but not 100% certain
-sample_metadata$cell_type <- NA
+# add cell type
+sample_metadata$cell_type <- "CD138+"
 
 # GSE7039 includes two esets/arrays for each patient, Affy HG-U133A & HG-U133B, which
 # overlap in a very small number of probes (n = 168).

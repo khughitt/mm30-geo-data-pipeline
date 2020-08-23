@@ -71,13 +71,13 @@ expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 sample_metadata <- pData(eset) %>%
   select(sample_id = title,
          geo_accession, platform_id,
-         cell_line = `cell line:ch1`,
+         cell_type = `cell line:ch1`,
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
 
 # add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$cell_type <- 'BM-CD138+'
+sample_metadata$cell_type[is.na(sample_metadata$cell_type)] <- 'CD138+'
+sample_metadata$disease_stage <- "MM"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
   stop("Sample ID mismatch!")

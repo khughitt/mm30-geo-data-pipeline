@@ -35,7 +35,8 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 # columns to include (GSE31161)
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id, mm_stage = `patient diagnosis:ch1`) %>%
-  mutate(mm_stage = recode(mm_stage, `active MM` = 'MM'))
+  mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
+  mutate(disease_stage = mm_stage)
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'

@@ -52,15 +52,17 @@ clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 
          os_time = `Survival time(EM;month)`,
          heavy_chain = `Heavy chain`,
          light_chain = `Light chain`) %>%
-  mutate(os_event = os_event == "1")
+  mutate(os_event = os_event == "1",
+         disease_stage = 'MM')
 
 # drop the month component of survival time
 clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0-9]+'))
 
 sample_metadata <- pData(eset) %>%
   select(patient_id = `patient id:ch1`,
-         geo_accession, platform_id, 
-         gender = `gender:ch1`, 
+         geo_accession, platform_id,
+         disease_stage,
+         gender = `gender:ch1`,
          prep_site = `prep-site:ch1`)
 
 sample_metadata <- sample_metadata %>%
@@ -94,8 +96,8 @@ expr_patient_ids <- str_match(colnames(tpm_counts), 'MM[0-9]+')
 
 # sort(table(expr_patient_ids))
 # expr_patient_ids
-# MM33 MM16 MM28 MM30 MM17 MM36 MM38 MM25 MM02 MM34 
-#   13   24   28   31   38   47   49   52   77  129 
+# MM33 MM16 MM28 MM30 MM17 MM36 MM38 MM25 MM02 MM34
+#   13   24   28   31   38   47   49   52   77  129
 
 expr_dat <- NULL
 
@@ -121,9 +123,9 @@ gene_symbols[mapped_mask] <- grch38$symbol[match(ensgenes[mapped_mask], grch38$e
 expr_dat$symbol[grch37_mask] <- gene_symbols
 
 # table(expr_dat$symbol %in% grch38$symbol)
-# 
-# FALSE  TRUE 
-#  1242 34340 
+#
+# FALSE  TRUE
+#  1242 34340
 
 # limit sample metadata to first sample for each patient
 sample_metadata <- sample_metadata %>%

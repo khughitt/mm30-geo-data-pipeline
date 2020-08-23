@@ -88,8 +88,10 @@ expr_dat <- expr_dat[mask, ]
 sample_metadata <- pData(eset) %>%
   select(sample_id = description,
          geo_accession, platform_id,
+         disease_stage = `tumor stage:ch1`,
          patient = `patient:ch1`,
-         mm_stage = `tumor stage:ch1`)
+         mm_stage = `tumor stage:ch1`) %>%
+  mutate(disease_stage = recode(disease_stage, `IgM-MGUS` = 'MGUS', `NDMM` = 'MM'))
 
 # add cell type and disease (same for all samples)
 sample_metadata$disease <- 'Multiple Myeloma'

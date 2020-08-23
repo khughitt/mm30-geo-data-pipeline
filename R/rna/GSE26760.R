@@ -41,12 +41,12 @@ sample_metadata <- pData(eset) %>%
 
 sample_metadata$patient_id <- patient_ids
 
-# add cell type and disease (same for all samples)
+# add cell type (same for all samples)
 sample_metadata$cell_type <- 'CD138+'
 
 # add additional metadata from
 # http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
-mdat <- read_tsv('/data/human/mmrc/mmrc.sample.information.txt') %>%
+mdat <- read_tsv('/data/human/mmrc/mmrc.sample.information.tsv', col_types = cols()) %>%
   select(patient_id = Array, age = `Age at Diagnosis`, gender = Gender,
          race = Race, mm_stage = Diagnosis)
 
@@ -63,6 +63,8 @@ sample_metadata$mm_stage[sample_metadata$mm_stage == 'Smoldering Myeloma'] <- 'S
 # MGUS   MM  PCL  SMM
 #    2  224    3   10
 #
+
+sample_metadata$disease_stage <- sample_metadata$mm_stage
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

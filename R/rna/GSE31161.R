@@ -51,7 +51,7 @@ sample_metadata <- pData(eset) %>%
   mutate(relapsed = time_of_testing == 'relapse')
 
 # add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+sample_metadata$disease_stage <- ifelse(sample_metadata$relapsed, 'RRMM', 'MM')
 sample_metadata$cell_type <- 'CD138+'
 
 # extract gene expression data

@@ -11,10 +11,10 @@ ids <- ids[startsWith(ids, "GSE")]
 
 geo_metadata <- NULL
 
-for (gse in ids) { 
-  dir_ <- file.path('/data/human/geo', gse, 'raw') 
+for (gse in ids) {
+  dir_ <- file.path('/data/human/geo', gse, 'raw')
 
-  eset <- getGEO(gse, destdir = dir_)[[1]] 
+  eset <- getGEO(gse, destdir = dir_)[[1]]
 
   mdat <- c(
     gse,
@@ -32,7 +32,7 @@ for (gse in ids) {
   )
 
   geo_metadata <- rbind(geo_metadata, mdat)
-} 
+}
 
 geo_metadata <- as.data.frame(geo_metadata)
 

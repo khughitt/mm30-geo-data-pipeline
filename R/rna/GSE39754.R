@@ -43,8 +43,8 @@ sample_metadata <- pData(eset) %>%
 # add cell type and disease (same for all samples)
 sample_metadata$cell_type <- 'CD138+'
 
-sample_metadata$disease <- 'Multiple Myeloma'
-sample_metadata$disease[grepl('Healthy', sample_metadata$diagnosis)] <- 'Healthy'
+sample_metadata$disease_stage <- 'MM'
+sample_metadata$disease_stage[grepl('Healthy', sample_metadata$diagnosis)] <- 'Healthy'
 
 # Note: GSE39754 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
 # probes for each exon. The result of this is that >95% of the probes map to multiple

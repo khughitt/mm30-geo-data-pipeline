@@ -42,7 +42,7 @@ sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id)
 
 # add cell type and disease
-sample_metadata$cell_type <- NA
+sample_metadata$cell_type <- 'CD138+'
 
 #table(pData(eset)$characteristics_ch1)
 #
@@ -70,25 +70,23 @@ sample_metadata$cell_type <- NA
 #                                                                                                                                               1
 patient_desc <- pData(eset)$characteristics_ch1
 
-disease <- rep('Multiple Myeloma', length(patient_desc))
+disease <- rep('MM', length(patient_desc))
 disease[grepl('healthy', patient_desc)] <- "Healthy"
 disease[grepl('WM', patient_desc)] <- "Waldenström's Macroglobulinemia"
 disease[grepl('CLL', patient_desc)] <- "Chronic Lymphocytic Leukemia"
 
-#table(disease)
+table(disease)
 # disease
-#    Chronic Lymphocytic Leukemia                         Healthy                Multiple Myeloma
-#                              11                              13                              12
-# Waldenström's Macroglobulinemia
-#                              20
-sample_metadata$disease <- disease
+#    Chronic Lymphocytic Leukemia                         Healthy                              MM Waldenström's Macroglobulinemia 
+#                              11                              13                              12                              20 
 sample_metadata$mm_stage <- disease
+sample_metadata$disease_stage <- disease
 
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # keep only healthy / myeloma samples
-mask <- sample_metadata$disease %in% c('Healthy', 'Multiple Myeloma')
+mask <- sample_metadata$disease_stage %in% c('Healthy', 'MM')
 
 #table(mask)
 # mask
