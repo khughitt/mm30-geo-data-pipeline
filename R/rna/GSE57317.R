@@ -39,8 +39,8 @@ sample_metadata <- pData(eset) %>%
          os_time = `OS time:ch1`,
          os_event = `os censored:ch1`)
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'MM'
+# add cell type and disease stage (same for all samples)
+sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
 
 # extract gene expression data

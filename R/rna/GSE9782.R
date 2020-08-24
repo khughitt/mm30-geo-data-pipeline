@@ -134,7 +134,7 @@ sample_metadata$os_time <- os_time
 sample_metadata$patient_died <- patient_died
 
 # add disease stage
-sample_metadata$disease <- 'RRMM'
+sample_metadata$disease_stage <- 'RRMM'
 
 # add cell type
 sample_metadata$cell_type <- "CD138+"

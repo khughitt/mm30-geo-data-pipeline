@@ -61,7 +61,6 @@ clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0
 sample_metadata <- pData(eset) %>%
   select(patient_id = `patient id:ch1`,
          geo_accession, platform_id,
-         disease_stage,
          gender = `gender:ch1`,
          prep_site = `prep-site:ch1`)
 
@@ -88,7 +87,6 @@ sample_metadata <- sample_metadata %>%
 # remove empty rows
 tpm_counts <- tpm_counts[rowSums(tpm_counts) > 0, ]
 
-sample_metadata$disease <- "Multiple Myeloma"
 sample_metadata$cell_type <- 'CD138+'
 
 # collapse patient samples
@@ -149,4 +147,3 @@ mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
 write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
-
