@@ -49,10 +49,16 @@ sample_metadata$disease_stage <- sample_metadata$mm_stage
 # MGUS    N  PCL  TC1  TC2  TC3  TC4  TC5 
 #   11    5    9   29   25   49   24    6 
 
-# table(sample_metadata$mm_stage)
+#table(sample_metadata$disease_stage)
 # 
-# MGUS   MM    N  PCL 
-#   11  133    5    9 
+# Healthy    MGUS      MM     PCL 
+#       5      11     133       9 
+
+# drop PCL samples
+mask <- sample_metadata$mm_stage  != 'PCL'
+
+sample_metadata <- sample_metadata[mask, ]
+eset <- eset[, mask]
 
 # add cell type
 sample_metadata$cell_type <- 'CD138+'
