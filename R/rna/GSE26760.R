@@ -64,6 +64,12 @@ sample_metadata$mm_stage[sample_metadata$mm_stage == 'Smoldering Myeloma'] <- 'S
 #    2  224    3   10
 #
 
+# drop PCL samples
+mask <- sample_metadata$mm_stage != 'PCL'
+
+sample_metadata <- sample_metadata[mask, ]
+eset <- eset[, mask]
+
 sample_metadata$disease_stage <- sample_metadata$mm_stage
 
 # extract gene expression data
