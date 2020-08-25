@@ -86,26 +86,28 @@ expr_dat <- expr_dat[mask, ]
 
 # columns to include (GSE118900)
 sample_metadata <- pData(eset) %>%
-  select(sample_id = description,
-         geo_accession, platform_id,
+  select(geo_accession, platform_id,
+         sample_name = description,
          disease_stage = `tumor stage:ch1`,
          patient = `patient:ch1`,
          mm_stage = `tumor stage:ch1`) %>%
   mutate(disease_stage = recode(disease_stage, `IgM-MGUS` = 'MGUS', `NDMM` = 'MM'))
 
-# add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
+# add cell type 
 sample_metadata$cell_type <- 'CD138+'
 
 # normalize sample ids, ex: "IgM-MGUS1_C37" -> "IgM.MGUS1_C37"
-sample_metadata$sample_id <- gsub('-', '.', sample_metadata$sample_id)
+sample_metadata$sample_name <- gsub('-', '.', sample_metadata$sample_name)
 
 # match sample order to metadata
-expr_dat <- expr_dat[, c('symbol', sample_metadata$sample_id)]
+expr_dat <- expr_dat[, c('symbol', sample_metadata$sample_name)]
 
-if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
+if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_name)) {
   stop("Sample ID mismatch!")
 }
+
+# for consistency, use GEO sample accessions as ids
+colnames(expr_dat) <- c('symbol', sample_metadata$geo_accession)
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol

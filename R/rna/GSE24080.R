@@ -41,10 +41,10 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
-         sample_id = title,
+         sample_name = title,
          maqc_status = `maqc_distribution_status:ch1`) 
 
-sample_metadata$sample_id <- as.character(sample_metadata$sample_id)
+sample_metadata$sample_name <- as.character(sample_metadata$sample_name)
 
 # add cell type and disease stage (same for all samples)
 sample_metadata$disease_stage <- 'MM'
@@ -56,12 +56,12 @@ clinical_metadata <- read_tsv('../../supp/clean/GSE24080_MM_UAMS565_ClinInfo_27J
                               col_types = cols())
 
 clinical_metadata <- clinical_metadata %>%
-  mutate(sample_id = sub('.CEL', '', cel_filename)) %>%
+  mutate(sample_name = sub('.CEL', '', cel_filename)) %>%
   select(-cel_filename)
 
 # add to sample metadata table
 sample_metadata <- sample_metadata %>%
-  inner_join(clinical_metadata, by = 'sample_id')
+  inner_join(clinical_metadata, by = 'sample_name')
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

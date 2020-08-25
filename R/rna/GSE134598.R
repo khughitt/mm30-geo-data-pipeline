@@ -69,8 +69,8 @@ expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 
 # get relevant sample metadata
 sample_metadata <- pData(eset) %>%
-  select(sample_id = title,
-         geo_accession, platform_id,
+  select(geo_accession, platform_id,
+         sample_name = title,
          cell_type = `cell line:ch1`,
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
@@ -79,9 +79,12 @@ sample_metadata <- pData(eset) %>%
 sample_metadata$cell_type[is.na(sample_metadata$cell_type)] <- 'CD138+'
 sample_metadata$disease_stage <- "MM"
 
-if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_id)) {
+if (!all(colnames(expr_dat)[-1] == sample_metadata$sample_name)) {
   stop("Sample ID mismatch!")
 }
+
+# for consistency, use GEO sample accessions as ids
+colnames(expr_dat) <- c('symbol', sample_metadata$geo_accession)
 
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
