@@ -36,10 +36,9 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id, mm_stage = `patient diagnosis:ch1`) %>%
   mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
-  mutate(disease_stage = mm_stage)
+  mutate(disease_stage = recode(mm_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
 
 # add cell type and disease (same for all samples)
-sample_metadata$disease <- 'Multiple Myeloma'
 sample_metadata$cell_type <- 'CD138+'
 
 # map from ensgenes to gene symbols

@@ -59,8 +59,8 @@ clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 
 clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0-9]+'))
 
 sample_metadata <- pData(eset) %>%
-  select(patient_id = `patient id:ch1`,
-         geo_accession, platform_id,
+  select(geo_accession, platform_id,
+         patient_id = `patient id:ch1`,
          gender = `gender:ch1`,
          prep_site = `prep-site:ch1`)
 
@@ -105,6 +105,21 @@ for (patient_id in unique(expr_patient_ids)) {
 }
 colnames(expr_dat) <- unique(expr_patient_ids)
 
+# collapse sample metadata to match dimensions of expression data;
+# for each patient, we will keep one representative geo accession to use for the
+# aggregated sample id
+sample_metadata <- sample_metadata %>% 
+  group_by(patient_id) %>% 
+  arrange(geo_accession) %>%
+  slice(1)
+
+if (!all(sample_metadata$patient_id == colnames(expr_dat))) {
+  stop("Column mismatch!")
+}
+
+# use geo accession ids for column names
+colnames(expr_dat) <- sample_metadata$geo_accession
+
 expr_dat <- expr_dat %>%
   as.data.frame() %>%
   rownames_to_column('symbol')
@@ -125,12 +140,7 @@ expr_dat$symbol[grch37_mask] <- gene_symbols
 # FALSE  TRUE
 #  1242 34340
 
-# limit sample metadata to first sample for each patient
-sample_metadata <- sample_metadata %>%
-  group_by(patient_id) %>%
-  slice(1)
-
-if (!all(colnames(expr_dat)[-1] == sample_metadata$patient_id)) {
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 

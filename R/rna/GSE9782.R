@@ -61,9 +61,9 @@ sample_metadata <- pData(esets[[1]]) %>%
     age                = as.numeric(str_match(characteristics_ch1.4, '\\d+$')),
     treatment_response = str_match(characteristics_ch1.7, '\\w+$'),
     patient_subgroup   = str_match(characteristics_ch1.8, '\\w+$')) %>%
-  select(patient_id, geo_accession, platform_id, study_code, treatment, gender,
+  select(geo_accession, patient_id, platform_id, study_code, treatment, gender,
           ethnicity, age, treatment_response, patient_subgroup) %>%
-  add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 2)
+  add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 1)
 
 # sanity check (comparing patient ids for two 133A/B to make sure they match)
 if (!all(pData(esets[[1]])$title == pData(esets[[2]])$title)) {
@@ -152,8 +152,8 @@ exprs(esets[[2]]) <- sweep(exprs(esets[[2]]), 2, colSums(exprs(esets[[2]])), '/'
 expr_dat1 <- process_eset(esets[[1]])
 expr_dat2 <- process_eset(esets[[2]])
 
-colnames(expr_dat1) <- c('symbol', sample_metadata$patient_id)
-colnames(expr_dat2) <- c('symbol', sample_metadata$patient_id)
+colnames(expr_dat1) <- c('symbol', sample_metadata$geo_accession)
+colnames(expr_dat2) <- c('symbol', sample_metadata$geo_accession)
 
 # join datasets
 expr_dat <- rbind(expr_dat1, expr_dat2)
