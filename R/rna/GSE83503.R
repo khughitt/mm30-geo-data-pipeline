@@ -76,34 +76,30 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
+# load GRCh38 gene symbol mapping
+gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+
+# mask indicating which genes are to be updated
+mask <- !expr_dat$symbol %in% grch38$symbol & expr_dat$symbol %in% gene_mapping$alt_symbol
+
+# table(mask)
+# mask
+# FALSE  TRUE
+# 17558    76
+
+expr_dat$symbol[mask] <- gene_mapping$symbol[match(expr_dat$symbol[mask],
+                                                   gene_mapping$alt_symbol)]
+
+# table(duplicated(expr_dat$symbol))
+# FALSE  TRUE
+# 17602    32
+
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?") %>%
   group_by(symbol) %>%
   summarize_all(median)
-
-# for genes not already using symbols in GRCh38, attempt to map the symbols
-# missing_symbols <- !expr_dat_nr$symbol %in% grch38$symbol
-
-#table(missing_symbols)
-# missing_symbols
-# FALSE  TRUE
-# 16813  2537
-
-# load GRCh38 gene symbol mapping
-gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
-
-# mask indicating which genes are to be updated
-mask <- !expr_dat_nr$symbol %in% grch38$symbol & expr_dat_nr$symbol %in% gene_mapping$alt_symbol
-
-#table(mask)
-# mask
-# FALSE  TRUE
-# 17563  1787
-
-expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask],
-                                                      gene_mapping$alt_symbol)]
 
 # store cleaned expression data and metadata
 expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))
