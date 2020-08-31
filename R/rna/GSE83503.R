@@ -76,6 +76,10 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
+# split multi-mapped symbols
+expr_dat_nr <- expr_dat %>%
+  separate_rows(symbol, sep = " ?//+ ?")
+
 # load GRCh38 gene symbol mapping
 gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
 

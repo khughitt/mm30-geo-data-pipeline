@@ -73,13 +73,11 @@ if(!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
-expr_dat_nr <- expr_dat %>%
-  separate_rows(symbol, sep = " ?//+ ?") %>%
-  group_by(symbol) %>%
-  summarize_all(median)
+expr_dat <- expr_dat %>%
+  separate_rows(symbol, sep = " ?//+ ?")
 
 # for genes not already using symbols in GRCh38, attempt to map the symbols 
-missing_symbols <- !expr_dat_nr$symbol %in% grch38$symbol
+missing_symbols <- !expr_dat$symbol %in% grch38$symbol
 
 #table(missing_symbols)
 # missing_symbols
@@ -90,15 +88,19 @@ missing_symbols <- !expr_dat_nr$symbol %in% grch38$symbol
 gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
 
 # mask indicating which genes are to be updated
-mask <- !expr_dat_nr$symbol %in% grch38$symbol & expr_dat_nr$symbol %in% gene_mapping$alt_symbol
+mask <- !expr_dat$symbol %in% grch38$symbol & expr_dat$symbol %in% gene_mapping$alt_symbol
 
 # table(mask)
 # mask
 # FALSE  TRUE 
 # 18061  1871 
 
-expr_dat_nr$symbol[mask] <- gene_mapping$symbol[match(expr_dat_nr$symbol[mask], 
-                                                      gene_mapping$alt_symbol)]
+expr_dat$symbol[mask] <- gene_mapping$symbol[match(expr_dat$symbol[mask], 
+                                                   gene_mapping$alt_symbol)]
+
+expr_dat_nr <- expr_dat %>%
+  group_by(symbol) %>%
+  summarize_all(median)
 
 # determine filenames to use for outputs and save to disk
 expr_outfile <- sprintf('%s_gene_expr.feather', accession)
