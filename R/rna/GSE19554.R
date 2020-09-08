@@ -13,7 +13,7 @@ source("../util/eset.R")
 accession <- 'GSE19554'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -38,9 +38,19 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id, tumor_stage = `tumor stage:ch1`)
 
-# add cell type and disease (same for all samples)
+# add platform, cell type and disease (same for all samples)
 sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
+sample_metadata$platform_type <- 'Microarray'
+
+# exclude outlier samples (median pairwise correlation 0.26, 0.41 vs. >0.9 for most
+# others)
+exclude_samples <- c('GSM487486', 'GSM487507')
+
+eset <- eset[, !colnames(eset) %in% exclude_samples]
+
+sample_metadata <- sample_metadata %>%
+  filter(!geo_accession %in% exclude_samples)
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

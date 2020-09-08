@@ -13,7 +13,7 @@ source("../util/eset.R")
 accession <- 'GSE14519'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -54,6 +54,9 @@ sample_metadata$cell_type[grepl('8226', sample_metadata$title)] <- '8226'
 
 # disease stage
 sample_metadata$disease_stage <- 'MM'
+
+# platform type
+sample_metadata$platform_type <- 'Microarray'
 
 # get expression data and add gene symbol column
 # gene_symbols <- gsub('///', ' // ', fData(eset)$`Gene symbol`)

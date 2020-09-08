@@ -15,7 +15,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE39754'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -40,11 +40,13 @@ sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
          diagnosis = `diagnosis:ch1`, treatment_response = `treatment_response:ch1`)
 
-# add cell type and disease (same for all samples)
+# add platform, cell type and disease stage
+sample_metadata$platform_type <- 'Microarray'
 sample_metadata$cell_type <- 'CD138+'
 
 sample_metadata$disease_stage <- 'MM'
 sample_metadata$disease_stage[grepl('Healthy', sample_metadata$diagnosis)] <- 'Healthy'
+
 
 # Note: GSE39754 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
 # probes for each exon. The result of this is that >95% of the probes map to multiple

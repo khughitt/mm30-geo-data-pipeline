@@ -15,7 +15,7 @@ library(arrow)
 accession <- 'GSE106218'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -88,6 +88,7 @@ sample_metadata <- sample_metadata %>%
 tpm_counts <- tpm_counts[rowSums(tpm_counts) > 0, ]
 
 sample_metadata$cell_type <- 'CD138+'
+sample_metadata$platform_type <- 'RNA-Seq'
 
 # collapse patient samples
 expr_patient_ids <- str_match(colnames(tpm_counts), 'MM[0-9]+')

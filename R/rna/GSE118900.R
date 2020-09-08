@@ -13,7 +13,7 @@ library(arrow)
 accession <- 'GSE118900'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -75,15 +75,6 @@ expr_dat <- expr_dat %>%
   as.data.frame() %>%
   add_column(symbol = gene_symbols, .before = 1)
 
-# exclude any zero variance genes present
-mask <- apply(expr_dat[, -1], 1, var) > 0
-expr_dat <- expr_dat[mask, ]
-
-# table(mask)
-# mask
-# FALSE  TRUE 
-#  3789 19609 
-
 # columns to include (GSE118900)
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
@@ -93,11 +84,34 @@ sample_metadata <- pData(eset) %>%
          mm_stage = `tumor stage:ch1`) %>%
   mutate(disease_stage = recode(disease_stage, `IgM-MGUS` = 'MGUS', `NDMM` = 'MM'))
 
-# add cell type 
+# add cell and platform type 
 sample_metadata$cell_type <- 'CD138+'
+sample_metadata$platform_type <- 'RNA-Seq'
 
 # normalize sample ids, ex: "IgM-MGUS1_C37" -> "IgM.MGUS1_C37"
 sample_metadata$sample_name <- gsub('-', '.', sample_metadata$sample_name)
+
+# drop single outlier patient NDMM7 whose samples had a low correlation with all other
+# patient samples (median pairwise correlation ~0.06 vs. 0.6 for other patients)
+exclude_patient <- 'NDMM7'
+
+exclude_samples <- sample_metadata %>%
+  filter(patient == exclude_patient) %>%
+  pull(geo_accession)
+
+expr_dat <- expr_dat[, !startsWith(colnames(expr_dat), exclude_patient)]
+
+sample_metadata <- sample_metadata %>%
+  filter(patient != exclude_patient)
+
+# exclude any zero variance genes present
+mask <- apply(expr_dat[, -1], 1, var) > 0
+expr_dat <- expr_dat[mask, ]
+
+# table(mask)
+# mask
+# FALSE  TRUE 
+#  3925 19473 
 
 # match sample order to metadata
 expr_dat <- expr_dat[, c('symbol', sample_metadata$sample_name)]

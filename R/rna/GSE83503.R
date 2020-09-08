@@ -14,7 +14,7 @@ library(arrow)
 accession <- 'GSE83503'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -50,6 +50,8 @@ sample_metadata <- pData(eset) %>%
 # add cell type and disease stage
 sample_metadata$disease_stage <- ifelse(sample_metadata$pfs_event == 1, 'RRMM', 'MM')
 sample_metadata$cell_type <- 'CD138+'
+
+sample_metadata$platform_type <- 'Microarray'
 
 # Note: GSE83503 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
 # probes for each exon. The result of this is that >95% of the probes map to multiple

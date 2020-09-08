@@ -21,7 +21,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE24080'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -46,9 +46,10 @@ sample_metadata <- pData(eset) %>%
 
 sample_metadata$sample_name <- as.character(sample_metadata$sample_name)
 
-# add cell type and disease stage (same for all samples)
+# add platform, cell type and disease stage (same for all samples)
 sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
+sample_metadata$platform_type <- 'Microarray'
 
 # load supplemental clinical metadata;
 # ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE24nnn/GSE24080/suppl/GSE24080%5FMM%5FUAMS565%5FClinInfo%5F27Jun2008%5FLS%5Fclean%2Exls%2Egz

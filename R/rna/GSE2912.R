@@ -13,7 +13,7 @@ source("../util/eset.R")
 accession <- 'GSE2912'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -55,6 +55,8 @@ sample_metadata$mm_stage <- mdat[, STAGE_IND]
 # add cell type and disease stage (same for all samples)
 sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
+
+sample_metadata$platform_type <- 'Microarray'
 
 expr_dat <- process_eset(eset)
 

@@ -16,7 +16,7 @@ library(arrow)
 accession <- 'GSE7039'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -58,6 +58,7 @@ sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
 
 sample_metadata$tissue <- 'Bone Marrow'
+sample_metadata$platform_type <- 'Microarray'
 
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])
@@ -77,6 +78,16 @@ e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
 # length(intersect(rownames(e1), rownames(e2)))
 # [1] 0
 expr_dat <- rbind(e1, e2)
+
+# exclude outlier samples;
+# these samples were found to have very median pairwise correlations (0.03 - 0.17) 
+# compared to all other samples (average > 0.6).
+exclude_samples <- c("GSM162390", "GSM162298", "GSM162472")
+
+expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
+
+sample_metadata <- sample_metadata %>% 
+  filter(!geo_accession %in% exclude_samples) 
 
 # get gene symbols
 gene_symbols <- c(fData(esets[[1]])[, 'Gene symbol'][mask1],

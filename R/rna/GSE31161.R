@@ -14,7 +14,7 @@ source("../util/eset.R")
 accession <- 'GSE31161'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -41,6 +41,13 @@ num_missing <- apply(exprs(eset), 2, function(x) {
 
 eset <- eset[, num_missing == 0]
 
+# exclude outlier samples;
+# these samples were found to have very median pairwise correlations (0.38 - 0.68) 
+# compared to all other samples (>0.9 for most)
+exclude_samples <- c("GSM771497", "GSM772341", "GSM772335")
+
+eset <- eset[, !colnames(eset) %in% exclude_samples]
+
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
@@ -50,9 +57,12 @@ sample_metadata <- pData(eset) %>%
          treatment = `treatment:ch1`, time_of_testing = `time of testing:ch1`) %>%
   mutate(relapsed = time_of_testing == 'relapse')
 
-# add cell type and disease (same for all samples)
+# add disease stage
 sample_metadata$disease_stage <- ifelse(sample_metadata$relapsed, 'RRMM', 'MM')
+
+# add platform and cell type (same for all samples)
 sample_metadata$cell_type <- 'CD138+'
+sample_metadata$platform_type <- 'Microarray'
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

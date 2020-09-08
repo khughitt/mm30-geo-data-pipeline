@@ -14,7 +14,7 @@ source("../util/eset.R")
 accession <- 'GSE47552'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -46,6 +46,8 @@ sample_metadata$mm_stage <- rep('MM', length(sample_metadata$mm_stage_raw))
 sample_metadata$mm_stage[grepl('Normal', sample_metadata$mm_stage_raw)] <- 'Healthy'
 sample_metadata$mm_stage[grepl('MGUS', sample_metadata$mm_stage_raw)] <- 'MGUS'
 sample_metadata$mm_stage[grepl('SMM', sample_metadata$mm_stage_raw)] <- 'SMM'
+
+sample_metadata$platform_type <- 'Microarray'
 
 sample_metadata <- sample_metadata %>%
   select(-mm_stage_raw)

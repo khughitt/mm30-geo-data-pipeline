@@ -15,7 +15,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE26760'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.0', accession)
+base_dir <- file.path('/data/human/geo/3.1', accession)
 
 raw_data_dir <- file.path(base_dir, 'raw')
 processed_data_dir <- file.path(base_dir, 'processed')
@@ -43,6 +43,8 @@ sample_metadata$patient_id <- patient_ids
 
 # add cell type (same for all samples)
 sample_metadata$cell_type <- 'CD138+'
+
+sample_metadata$platform_type <- 'Microarray'
 
 # add additional metadata from
 # http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
