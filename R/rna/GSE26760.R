@@ -15,10 +15,8 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE26760'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.1', accession)
-
-raw_data_dir <- file.path(base_dir, 'raw')
-processed_data_dir <- file.path(base_dir, 'processed')
+raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
 for (dir_ in c(raw_data_dir, processed_data_dir)) {
@@ -48,7 +46,7 @@ sample_metadata$platform_type <- 'Microarray'
 
 # add additional metadata from
 # http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
-mdat <- read_tsv('/data/human/mmrc/mmrc.sample.information.tsv', col_types = cols()) %>%
+mdat <- read_tsv('/data/raw/mmrc/mmrc.sample.information.tsv', col_types = cols()) %>%
   select(patient_id = Array, age = `Age at Diagnosis`, gender = Gender,
          race = Race, mm_stage = Diagnosis)
 

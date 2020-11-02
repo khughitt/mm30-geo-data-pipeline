@@ -16,10 +16,8 @@ library(arrow)
 accession <- 'GSE7039'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.1', accession)
-
-raw_data_dir <- file.path(base_dir, 'raw')
-processed_data_dir <- file.path(base_dir, 'processed')
+raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
 for (dir_ in c(raw_data_dir, processed_data_dir)) {
@@ -37,7 +35,7 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
 
 # load additional survival metadata provided by author
-survival_dat <- read_csv('/data/human/decaux2008/MM survival time GSE7039.csv', col_types = cols())
+survival_dat <- read_csv('/data/raw/decaux2008/MM survival time GSE7039.csv', col_types = cols())
 
 # combine samples from separate ExpressionSets
 # survival units: days

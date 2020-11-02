@@ -13,10 +13,8 @@ source("../util/eset.R")
 accession <- 'GSE6477'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.1', accession)
-
-raw_data_dir <- file.path(base_dir, 'raw')
-processed_data_dir <- file.path(base_dir, 'processed')
+raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
 for (dir_ in c(raw_data_dir, processed_data_dir)) {
@@ -59,7 +57,8 @@ exclude_samples <- c("GSM149035", "GSM149037")
 
 eset <- eset[, !colnames(eset) %in% exclude_samples]
 
-sample_metadata
+sample_metadata <- sample_metadata %>%
+  filter(!geo_accession %in% exclude_samples)
 
 # extract gene expression data
 expr_dat <- process_eset(eset)

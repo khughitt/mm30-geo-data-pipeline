@@ -13,10 +13,8 @@ source("../util/eset.R")
 accession <- 'GSE2912'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.1', accession)
-
-raw_data_dir <- file.path(base_dir, 'raw')
-processed_data_dir <- file.path(base_dir, 'processed')
+raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
 for (dir_ in c(raw_data_dir, processed_data_dir)) {
@@ -33,7 +31,7 @@ eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # metadata stored separately (source: Agnelli et al, 2005, Appendix A)
-mdat <- read.csv('/data/human/agnelli2005/Agnelli2005.csv')
+mdat <- read.csv('/data/raw/agnelli2005/Agnelli2005.csv')
 
 patient_ids <- str_match(pData(eset)$title, 'MM-[0-9]+')
 

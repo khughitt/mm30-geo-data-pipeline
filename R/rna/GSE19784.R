@@ -16,10 +16,8 @@ source("../util/eset.R")
 accession <- 'GSE19784'
 
 # directory to store raw and processed data
-base_dir <- file.path('/data/human/geo/3.1', accession)
-
-raw_data_dir <- file.path(base_dir, 'raw')
-processed_data_dir <- file.path(base_dir, 'processed')
+raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
 for (dir_ in c(raw_data_dir, processed_data_dir)) {
@@ -77,7 +75,7 @@ sample_metadata$platform_type <- 'Microarray'
 #table_s11 <- read_csv(file.path(base_dir, 'metadata', 'broyl2010_supp_table_s11.csv'))
 
 # load survival metadata from Kuiper et al. (2012)
-survival_mdata <- read_csv('/data/human/kuiper2012/kuiper2012_supp_patient_survival.csv', col_types = cols())
+survival_mdata <- read_csv('/data/raw/kuiper2012/kuiper2012_supp_patient_survival.csv', col_types = cols())
 
 survival_mdata <- survival_mdata %>%
   rename(geo_accession = Patient) %>%
