@@ -70,6 +70,10 @@ expr_dat_nr <- expr_dat %>%
   group_by(symbol) %>%
   summarize_all(median)
 
+print("Final dimensions:")
+print(paste0("- Num rows: ", nrow(expr_dat_nr)))
+print(paste0("- Num cols: ", ncol(expr_dat_nr)))
+
 # store cleaned expression data and metadata
 expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', accession))
 expr_outfile_nr <- file.path(processed_data_dir, sprintf('%s_gene_expr_nr.feather', accession))

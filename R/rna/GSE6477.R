@@ -78,6 +78,10 @@ expr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr.feather', ac
 expr_nr_outfile <- file.path(processed_data_dir, sprintf('%s_gene_expr_nr.feather', accession))
 mdat_outfile <- file.path(processed_data_dir, sprintf('%s_sample_metadata.tsv', accession))
 
+print("Final dimensions:")
+print(paste0("- Num rows: ", nrow(expr_dat_nr)))
+print(paste0("- Num cols: ", ncol(expr_dat_nr)))
+
 write_feather(expr_dat, expr_outfile)
 write_feather(expr_dat_nr, expr_nr_outfile)
 write_tsv(sample_metadata, mdat_outfile)

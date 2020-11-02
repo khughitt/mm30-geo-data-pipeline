@@ -140,6 +140,10 @@ expr_outfile <- sprintf('%s_gene_expr.feather', accession)
 expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
 mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
 
+print("Final dimensions:")
+print(paste0("- Num rows: ", nrow(expr_dat_nr)))
+print(paste0("- Num cols: ", ncol(expr_dat_nr)))
+
 # store cleaned expression data and metadata
 write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
 write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
