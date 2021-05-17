@@ -26,7 +26,7 @@ process_eset <- function(eset) {
                 num_biomart + num_manual, nrow(eset),
                 num_biomart, num_manual))
 
-  # drop any duplicate entries in mapping; should be few 
+  # drop any duplicate entries in mapping; should be few
   probe_mapping <- probe_mapping[!duplicated(probe_mapping), ]
 
   # in some cases, probes may be mapped to a very large number of genes (e.g. 30-50..)
@@ -108,8 +108,8 @@ get_biomart_mapping <- function(eset) {
 
   # query biomart for mapping;
   #
-  # note: in testing, ensembl gene ids were found to be more reliable to map to GRCh38 symbols
-  # than using the symbols returned by biomaRt
+  # note: in testing, ensembl gene ids were found to be more reliable to map to GRCh38
+  # symbols than using the symbols returned by biomaRt
   res <- biomaRt::getBM(
     attributes = c(
       platform_attr,
@@ -165,7 +165,7 @@ get_manual_mapping <- function(eset) {
 
   ind <- match(alt_mapping$symbol[mask2], annotables::grch38$symbol)
   alt_mapping$ensgene[mask2] <- annotables::grch38$ensgene[ind]
-  
+
   # drop any probes that could not be mapped manually
   alt_mapping <- alt_mapping[!is.na(alt_mapping$ensgene), ]
 
