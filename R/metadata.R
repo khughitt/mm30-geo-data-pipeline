@@ -11,13 +11,13 @@ ids <- ids[startsWith(ids, "GSE")]
 
 geo_metadata <- NULL
 
-for (gse in ids) {
-  dir_ <- file.path('/data/human/geo', gse, 'raw')
+for (accession in ids) {
+  dir_ <- file.path('/data/raw', accession)
 
-  eset <- getGEO(gse, destdir = dir_)[[1]]
+  eset <- getGEO(accession, destdir = dir_)[[1]]
 
   mdat <- c(
-    gse,
+    accession,
     eset@experimentData@title,
     eset@experimentData@name,
     eset@experimentData@abstract,
@@ -41,5 +41,5 @@ colnames(geo_metadata) <- c('geo_id', 'title', 'name', 'abstract',
                             'platform_id', 'type', 'url', 'pubmed_ids',
                             'supplementary_file')
 
-write_tsv(geo_metadata, '/data/human/geo/metadata.tsv')
+write_tsv(geo_metadata, '/data/metadata.tsv')
 

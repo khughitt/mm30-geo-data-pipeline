@@ -1,5 +1,0 @@
-conda-forge::r-base
-bioconductor-geoquery
-r-annotables
-r-arrow
-r-tidyverse

@@ -15,7 +15,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE39754'
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+raw_data_dir <- file.path('/data/raw', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
@@ -85,7 +85,7 @@ missing_symbols <- !expr_dat$symbol %in% grch38$symbol
 # 17266  2666 
 
 # load GRCh38 gene symbol mapping
-gene_mapping <- read_tsv('../../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+gene_mapping <- read_tsv('../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
 
 # mask indicating which genes are to be updated
 mask <- !expr_dat$symbol %in% grch38$symbol & expr_dat$symbol %in% gene_mapping$alt_symbol

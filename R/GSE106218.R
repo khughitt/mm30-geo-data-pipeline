@@ -15,7 +15,7 @@ library(arrow)
 accession <- 'GSE106218'
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+raw_data_dir <- file.path('/data/raw', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist

@@ -1,19 +1,21 @@
 #!/bin/env/Rscript
 #
-# Molecular classification of multiple myeloma
+# MMRC expression reference collection
 #
-# Agnelli et al. (2005)
+# Chapman et al. (2011)
 #
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("../util/eset.R")
+source("util/eset.R")
+
+options(stringsAsFactors = FALSE)
 
 # GEO accession
-accession <- 'GSE2912'
+accession <- 'GSE26760'
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+raw_data_dir <- file.path('/data', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
@@ -24,43 +26,61 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 }
 
 # download GEO data;
-# result is a list with a single entry containing an ExpressionSet instance
 eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
-# metadata stored separately (source: Agnelli et al, 2005, Appendix A)
-mdat <- read.csv('/data/raw/agnelli2005/Agnelli2005.csv')
+# "Sample from patient MMRC0091" -> "MMRC0091"
+patient_ids <- str_split(pData(eset)$source_name_ch1, ' ', simplify = TRUE)[, 4]
 
-patient_ids <- str_match(pData(eset)$title, 'MM-[0-9]+')
-
-# reoder patient metadata
-mdat <- mdat[match(mdat$Patient, patient_ids), ]
-
-# get relevant sample metadata
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id)
 
-GENDER_IND <- 3
-AGE_IND <- 5
-STAGE_IND <- 6
+sample_metadata$patient_id <- patient_ids
 
-sample_metadata$gender <- mdat[, GENDER_IND]
-sample_metadata$age <- mdat[, AGE_IND]
-sample_metadata$mm_stage <- mdat[, STAGE_IND]
-
-# add cell type and disease stage (same for all samples)
-sample_metadata$disease_stage <- 'MM'
+# add cell type (same for all samples)
 sample_metadata$cell_type <- 'CD138+'
 
 sample_metadata$platform_type <- 'Microarray'
 
-expr_dat <- process_eset(eset)
+# add additional metadata from
+# http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
+mdat <- read_tsv('/data/raw/mmrc/mmrc.sample.information.tsv', col_types = cols()) %>%
+  select(patient_id = Array, age = `Age at Diagnosis`, gender = Gender,
+         race = Race, mm_stage = Diagnosis)
 
-if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+sample_metadata <- sample_metadata %>%
+  inner_join(mdat, by = 'patient_id') %>%
+  filter(mm_stage != 'Unknown')
+
+sample_metadata$mm_stage[grepl('Multiple Myeloma', sample_metadata$mm_stage)] <- 'MM'
+sample_metadata$mm_stage[grepl('Leukemia', sample_metadata$mm_stage)] <- 'PCL'
+sample_metadata$mm_stage[sample_metadata$mm_stage == 'Smoldering Myeloma'] <- 'SMM'
+
+#table(sample_metadata$mm_stage)
+#
+# MGUS   MM  PCL  SMM
+#    2  224    3   10
+#
+
+# drop samples with no available metadata and normalize order
+eset <- eset[, sample_metadata$geo_accession] 
+
+if (!all(colnames(eset) == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
+
+# drop PCL samples
+mask <- sample_metadata$mm_stage != 'PCL'
+
+sample_metadata <- sample_metadata[mask, ]
+eset <- eset[, mask]
+
+sample_metadata$disease_stage <- sample_metadata$mm_stage
+
+# extract gene expression data
+expr_dat <- process_eset(eset)
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol

@@ -1,6 +1,5 @@
 #
 # Helper function to map from microarray probe ID's to updated gene symbol assignments.
-#
 # Probes mapping to multiple gene ids are dropped from the dataset.
 #
 # V. Keith Hughitt

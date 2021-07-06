@@ -1,19 +1,19 @@
 #!/bin/env/Rscript
 #
-# Integrated genomics approach to detect allelic imbalances in multiple myeloma
+# Molecular classification of multiple myeloma
 #
-# Agnelli et al. (2009)
+# Agnelli et al. (2005)
 #
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("../util/eset.R")
+source("util/eset.R")
 
 # GEO accession
-accession <- 'GSE13591'
+accession <- 'GSE2912'
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+raw_data_dir <- file.path('/data/raw', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
@@ -30,47 +30,40 @@ eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 # size factor normalization
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
+# metadata stored separately (source: Agnelli et al, 2005, Appendix A)
+mdat <- read.csv('/data/raw/agnelli2005/Agnelli2005.csv')
+
+patient_ids <- str_match(pData(eset)$title, 'MM-[0-9]+')
+
+# reoder patient metadata
+mdat <- mdat[match(mdat$Patient, patient_ids), ]
+
 # get relevant sample metadata
-# "treatment_protocol_ch1" is another alias for death;
-# "grow_protocol_ch1" is an alias for relapse;
 sample_metadata <- pData(eset) %>%
-  select(geo_accession, platform_id, sample_type = `sample type:ch1`)
+  select(geo_accession, platform_id)
 
-sample_metadata$mm_stage <- sample_metadata$sample_type
-sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'TC')] <- 'MM'
-sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'N')] <- 'Healthy'
+GENDER_IND <- 3
+AGE_IND <- 5
+STAGE_IND <- 6
 
-sample_metadata$disease_stage <- sample_metadata$mm_stage
+sample_metadata$gender <- mdat[, GENDER_IND]
+sample_metadata$age <- mdat[, AGE_IND]
+sample_metadata$mm_stage <- mdat[, STAGE_IND]
 
-#table(sample_metadata$sample_type)
-# 
-# MGUS    N  PCL  TC1  TC2  TC3  TC4  TC5 
-#   11    5    9   29   25   49   24    6 
-
-#table(sample_metadata$disease_stage)
-# 
-# Healthy    MGUS      MM     PCL 
-#       5      11     133       9 
-
-# drop PCL samples
-mask <- sample_metadata$mm_stage  != 'PCL'
-
-sample_metadata <- sample_metadata[mask, ]
-eset <- eset[, mask]
-
-# add cell type
+# add cell type and disease stage (same for all samples)
+sample_metadata$disease_stage <- 'MM'
 sample_metadata$cell_type <- 'CD138+'
 
 sample_metadata$platform_type <- 'Microarray'
 
-# extract gene expression data
 expr_dat <- process_eset(eset)
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-# average multi-mapped probes
+# create a version of gene expression data with a single entry per gene, including
+# only entries which could be mapped to a known gene symbol
 expr_dat_nr <- expr_dat %>%
   group_by(symbol) %>%
   summarize_all(median)

@@ -13,7 +13,7 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("../util/eset.R")
+source("util/eset.R")
 
 options(stringsAsFactors = FALSE)
 
@@ -21,7 +21,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE24080'
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw/geo/3.1', accession)
+raw_data_dir <- file.path('/data/raw', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
@@ -51,7 +51,7 @@ sample_metadata$platform_type <- 'Microarray'
 
 # load supplemental clinical metadata;
 # ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE24nnn/GSE24080/suppl/GSE24080%5FMM%5FUAMS565%5FClinInfo%5F27Jun2008%5FLS%5Fclean%2Exls%2Egz
-clinical_metadata <- read_tsv('../../supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv', 
+clinical_metadata <- read_tsv('../supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv', 
                               col_types = cols())
 
 clinical_metadata <- clinical_metadata %>%
