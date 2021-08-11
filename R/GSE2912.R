@@ -7,7 +7,7 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("util/eset.R")
+source("R/util/eset.R")
 
 # GEO accession
 accession <- 'GSE2912'
@@ -31,7 +31,8 @@ eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 
 # metadata stored separately (source: Agnelli et al, 2005, Appendix A)
-mdat <- read.csv('/data/raw/agnelli2005/Agnelli2005.csv')
+# https://pubmed.ncbi.nlm.nih.gov/16129847/
+mdat <- read.csv('supp/clean/agnelli2005.csv')
 
 patient_ids <- str_match(pData(eset)$title, 'MM-[0-9]+')
 

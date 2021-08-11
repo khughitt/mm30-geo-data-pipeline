@@ -19,6 +19,9 @@ accession <- 'GSE7039'
 raw_data_dir <- file.path('/data/raw', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
+# load survival metadata provided by author
+survival_dat <- read_csv('supp/clean/GSE7039_MM_Survival_time.csv', col_types = cols())
+
 # create output directories if they don't already exist
 for (dir_ in c(raw_data_dir, processed_data_dir)) {
   if (!dir.exists(dir_)) {
@@ -33,9 +36,6 @@ for (dir_ in c(raw_data_dir, processed_data_dir)) {
 
 # The GEO project includes two replicates ("_A" and "_B") for each patient.
 esets <- getGEO(accession, destdir = raw_data_dir, AnnotGPL = TRUE)
-
-# load additional survival metadata provided by author
-survival_dat <- read_csv('/data/raw/decaux2008/MM survival time GSE7039.csv', col_types = cols())
 
 # combine samples from separate ExpressionSets
 # survival units: days
@@ -115,7 +115,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 }
 
 # load GRCh38 gene symbol mapping
-gene_mapping <- read_tsv('../annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+gene_mapping <- read_tsv('annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
 
 # mask indicating which genes are to be updated
 mask <- !expr_dat$symbol %in% grch38$symbol & expr_dat$symbol %in% gene_mapping$alt_symbol

@@ -2,31 +2,37 @@
 # MM25 GEO Data Docker Image Construction
 # V. Keith Hughitt
 #
-# - built on top of the rocker/4.1.0 image
-# - renv is used to retrieve specific package versions
-#
 FROM rocker/r-ver:4.1.0
 MAINTAINER keith.hughitt@nih.gov
 
-# install libcurl
-RUN apt update
-RUN apt-get install -y libcurl4-openssl-dev libssl-dev libpng-dev libxml2-dev
+# conda/snakemake setup
+ENV PATH /opt/conda/bin:${PATH}
+ENV LANG C.UTF-8
+ENV SHELL /bin/bash
 
-# install renv
-ENV RENV_VERSION 0.13.2
-RUN R -e "install.packages('remotes', repos = c(CRAN = 'https://cloud.r-project.org'))"
-RUN R -e "remotes::install_github('rstudio/renv@${RENV_VERSION}')"
+RUN apt-get update
+
+RUN apt-get install -y wget curl bzip2 ca-certificates gnupg2 squashfs-tools git
+
+RUN /bin/bash -c "curl -L https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh > miniconda.sh && \
+    bash miniconda.sh -b -p /opt/conda && \
+    rm miniconda.sh"
+
+RUN /bin/bash -c "conda install -y -c conda-forge mamba && \
+    mamba create -q -y -c conda-forge -c bioconda -n snakemake && \
+    source activate snakemake && \
+    mamba install -q -y -c conda-forge -c bioconda \
+    snakemake-minimal singularity r-annotables r-arrow r-tidyverse bioconductor-geoquery bioconductor-biomart"
+
+RUN echo "source activate snakemake" > ~/.bashrc
+ENV PATH /opt/conda/envs/snakemake/bin:${PATH}
 
 # copy code over
 WORKDIR /geo
 COPY annot/ annot/
-COPY extra/ extra/
 COPY R/ R/
+COPY Snakefile Snakefile
 COPY supp/ supp/
-COPY renv.lock renv.lock
-
-# restore renv snapshot
-RUN R -e 'renv::restore()'
 
 # launch bash when container is started
 ENTRYPOINT ["bash"]

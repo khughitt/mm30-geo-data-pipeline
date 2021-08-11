@@ -6,8 +6,7 @@ library(GEOquery)
 library(readr)
 options(stringAsFactors = FALSE)
 
-ids <- sub(".R", "", list.files("."))
-ids <- ids[startsWith(ids, "GSE")]
+ids <- list.files("/data/raw")
 
 geo_metadata <- NULL
 
@@ -31,6 +30,7 @@ for (accession in ids) {
     eset@experimentData@other$supplementary_file
   )
 
+  message(sprintf("%s: %s", accession, ncol(mdat))) 
   geo_metadata <- rbind(geo_metadata, mdat)
 }
 

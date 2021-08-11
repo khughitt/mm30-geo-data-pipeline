@@ -10,7 +10,7 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("util/eset.R")
+source("R/util/eset.R")
 
 # GEO accession
 accession <- 'GSE19784'
@@ -75,7 +75,7 @@ sample_metadata$platform_type <- 'Microarray'
 #table_s11 <- read_csv(file.path(base_dir, 'metadata', 'broyl2010_supp_table_s11.csv'))
 
 # load survival metadata from Kuiper et al. (2012)
-survival_mdata <- read_csv('/data/raw/kuiper2012/kuiper2012_supp_patient_survival.csv', col_types = cols())
+survival_mdata <- read_csv('supp/clean/kuiper2012_supp_patient_survival.csv', col_types = cols())
 
 survival_mdata <- survival_mdata %>%
   rename(geo_accession = Patient) %>%

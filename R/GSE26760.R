@@ -7,7 +7,7 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("util/eset.R")
+source("R/util/eset.R")
 
 options(stringsAsFactors = FALSE)
 
@@ -15,7 +15,7 @@ options(stringsAsFactors = FALSE)
 accession <- 'GSE26760'
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data', accession)
+raw_data_dir <- file.path('/data/raw', accession)
 processed_data_dir <- sub('raw', 'clean', raw_data_dir)
 
 # create output directories if they don't already exist
@@ -46,7 +46,7 @@ sample_metadata$platform_type <- 'Microarray'
 
 # add additional metadata from
 # http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
-mdat <- read_tsv('/data/raw/mmrc/mmrc.sample.information.tsv', col_types = cols()) %>%
+mdat <- read_csv('supp/clean/mmrc.sample.information.csv', col_types = cols()) %>%
   select(patient_id = Array, age = `Age at Diagnosis`, gender = Gender,
          race = Race, mm_stage = Diagnosis)
 

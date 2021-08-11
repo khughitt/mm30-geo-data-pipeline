@@ -7,7 +7,7 @@
 library(GEOquery)
 library(tidyverse)
 library(arrow)
-source("util/eset.R")
+source("R/util/eset.R")
 
 # GEO accession
 accession <- 'GSE14519'
