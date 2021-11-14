@@ -15,6 +15,13 @@ for (accession in ids) {
 
   eset <- getGEO(accession, destdir = dir_)[[1]]
 
+  # supplementary file field is sometimes NULL
+  supp_file <- eset@experimentData@other$supplementary_file
+
+  if (is.null(supp_file)) {
+    supp_file <- ""
+  }
+
   mdat <- c(
     accession,
     eset@experimentData@title,
@@ -27,10 +34,9 @@ for (accession in ids) {
     eset@experimentData@other$type,
     eset@experimentData@url,
     eset@experimentData@pubMedIds,
-    eset@experimentData@other$supplementary_file
+    supp_file
   )
 
-  message(sprintf("%s: %s", accession, ncol(mdat))) 
   geo_metadata <- rbind(geo_metadata, mdat)
 }
 
@@ -38,8 +44,15 @@ geo_metadata <- as.data.frame(geo_metadata)
 
 colnames(geo_metadata) <- c('geo_id', 'title', 'name', 'abstract',
                             'overall_design', 'submission_date', 'last_update_date',
-                            'platform_id', 'type', 'url', 'pubmed_ids',
-                            'supplementary_file')
+                            'platform_ids', 'type', 'urls', 'pubmed_ids',
+                            'supplementary_files')
 
-write_tsv(geo_metadata, '/data/metadata.tsv')
+# replace newlines to avoid issues in rendered tsv file
+geo_metadata$abstract <- gsub("\n", " ", geo_metadata$abstract)
+geo_metadata$overall_design <- gsub("\n", " ", geo_metadata$overall_design)
+geo_metadata$platform_ids <- gsub("\n", "; ", geo_metadata$platform_ids)
+geo_metadata$pubmed_ids <- gsub("\n", "; ", geo_metadata$pubmed_ids)
+geo_metadata$urls <- gsub("\n", "; ", geo_metadata$urls)
+geo_metadata$supplementary_files <- gsub("\n", "; ", geo_metadata$supplementary_files)
 
+write_tsv(geo_metadata, snakemake@output[[1]])
