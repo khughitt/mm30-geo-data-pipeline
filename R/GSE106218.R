@@ -54,7 +54,7 @@ clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 
          disease_stage = 'MM')
 
 # drop the month component of survival time
-clinical_metadata$os_time <- as.numeric(str_match(clinical_metadata$os_time, '[0-9]+'))
+clinical_metadata$os_time <- as.numeric(str_extract(clinical_metadata$os_time, '[0-9]+'))
 
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id,
@@ -89,7 +89,7 @@ sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
 
 # collapse patient samples
-expr_patient_ids <- str_match(colnames(tpm_counts), 'MM[0-9]+')
+expr_patient_ids <- str_extract(colnames(tpm_counts), 'MM[0-9]+')
 
 # sort(table(expr_patient_ids))
 # expr_patient_ids

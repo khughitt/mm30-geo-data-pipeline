@@ -8,9 +8,11 @@
 #
 # process geo eset using biomart to map probe ids
 #
-process_eset <- function(eset) {
+process_eset <- function(eset, ensembl_version=104) {
+  print("Calling get_biomart_mapping()...")
+
   # generate probe -> gene mapping
-  probe_mapping <- get_biomart_mapping(eset)
+  probe_mapping <- get_biomart_mapping(eset, ensembl_version)
 
   # extend mapping manually
   missing_mask <- !rownames(eset) %in% probe_mapping$probe_id
@@ -90,10 +92,11 @@ process_eset <- function(eset) {
 #
 # queries biomart for a mapping from probe to gene symbols
 #
-get_biomart_mapping <- function(eset) {
+get_biomart_mapping <- function(eset, ensembl_version=104) {
   # load biomaRt
-  mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL")
-  mart <- biomaRt::useDataset("hsapiens_gene_ensembl", mart)
+  mart <- biomaRt::useEnsembl(biomart = 'genes', 
+                              dataset = 'hsapiens_gene_ensembl',
+                              version = ensembl_version)
 
   # determine biomart platform attribute
   platform <- pData(eset)[1, ]$platform_id

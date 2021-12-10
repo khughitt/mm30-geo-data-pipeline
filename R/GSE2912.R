@@ -34,7 +34,7 @@ exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
 # https://pubmed.ncbi.nlm.nih.gov/16129847/
 mdat <- read.csv('supp/clean/agnelli2005.csv')
 
-patient_ids <- str_match(pData(eset)$title, 'MM-[0-9]+')
+patient_ids <- str_extract(pData(eset)$title, 'MM-[0-9]+')
 
 # reoder patient metadata
 mdat <- mdat[match(mdat$Patient, patient_ids), ]

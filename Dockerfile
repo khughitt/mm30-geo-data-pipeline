@@ -22,7 +22,7 @@ RUN /bin/bash -c "conda install -y -c conda-forge mamba && \
     mamba create -q -y -c conda-forge -c bioconda -n snakemake && \
     source activate snakemake && \
     mamba install -q -y -c conda-forge -c bioconda \
-    snakemake-minimal singularity r-annotables r-arrow r-tidyverse bioconductor-geoquery bioconductor-biomart"
+    snakemake-minimal singularity r-annotables r-arrow r-r.utils r-tidyverse bioconductor-geoquery bioconductor-biomart"
 
 RUN echo "source activate snakemake" > ~/.bashrc
 ENV PATH /opt/conda/envs/snakemake/bin:${PATH}

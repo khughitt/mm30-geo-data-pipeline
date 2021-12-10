@@ -52,13 +52,13 @@ esets <- getGEO(accession, destdir = raw_data_dir)
 sample_metadata <- pData(esets[[1]]) %>%
   mutate(
     patient_id         = title,
-    study_code         = as.numeric(str_match(characteristics_ch1, '\\d+$')),
-    treatment          = str_match(characteristics_ch1.1, '\\w+$'),
-    gender             = str_match(characteristics_ch1.2, '\\w+$'),
-    ethnicity          = str_match(characteristics_ch1.3, '\\w+$'),
-    age                = as.numeric(str_match(characteristics_ch1.4, '\\d+$')),
-    treatment_response = str_match(characteristics_ch1.7, '\\w+$'),
-    patient_subgroup   = str_match(characteristics_ch1.8, '\\w+$')) %>%
+    study_code         = as.numeric(str_extract(characteristics_ch1, '\\d+$')),
+    treatment          = str_extract(characteristics_ch1.1, '\\w+$'),
+    gender             = str_extract(characteristics_ch1.2, '\\w+$'),
+    ethnicity          = str_extract(characteristics_ch1.3, '\\w+$'),
+    age                = as.numeric(str_extract(characteristics_ch1.4, '\\d+$')),
+    treatment_response = str_extract(characteristics_ch1.7, '\\w+$'),
+    patient_subgroup   = str_extract(characteristics_ch1.8, '\\w+$')) %>%
   select(geo_accession, patient_id, platform_id, study_code, treatment, gender,
           ethnicity, age, treatment_response, patient_subgroup) %>%
   add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 1)
@@ -98,7 +98,7 @@ for (sample_num in 1:nrow(pData(esets[[1]]))) {
   if (length(ind) == 0) {
     pfs_time <- c(pfs_time, NA)
   } else {
-    pfs_time <- c(pfs_time, as.numeric(str_match(str_mdat[sample_num, ind], '\\d+$')))
+    pfs_time <- c(pfs_time, as.numeric(str_extract(str_mdat[sample_num, ind], '\\d+$')))
   }
 
   # PGx Censor Reason
@@ -107,7 +107,7 @@ for (sample_num in 1:nrow(pData(esets[[1]]))) {
   if (length(ind) == 0) {
       pfs_event_reason <- c(pfs_event_reason, NA)
   } else {
-    pfs_event_reason <- c(pfs_event_reason, trimws(str_match(str_mdat[sample_num, ind], '[ \\w]+$')))
+    pfs_event_reason <- c(pfs_event_reason, trimws(str_extract(str_mdat[sample_num, ind], '[ \\w]+$')))
   }
 
   # Deceased
@@ -121,7 +121,7 @@ for (sample_num in 1:nrow(pData(esets[[1]]))) {
 
   # Days Survived
   ind <- which(grepl('Days_Survived', str_mdat[sample_num, ]))
-  os_time <- c(os_time, as.numeric(str_match(str_mdat[sample_num, ind], '\\d+$')))
+  os_time <- c(os_time, as.numeric(str_extract(str_mdat[sample_num, ind], '\\d+$')))
 }
 
 # add to sample metadata

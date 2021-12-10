@@ -9,8 +9,6 @@ library(tidyverse)
 library(arrow)
 source("R/util/eset.R")
 
-options(stringsAsFactors = FALSE)
-
 # GEO accession
 accession <- 'GSE26760'
 

@@ -9,8 +9,6 @@ library(GEOquery)
 library(tidyverse)
 library(arrow)
 
-options(stringsAsFactors = FALSE)
-
 # GEO accession
 accession <- 'GSE39754'
 
