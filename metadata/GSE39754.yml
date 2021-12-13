@@ -1,0 +1,36 @@
+data:
+  dataset:
+    id: "GSE39754"
+    title: "Gene Expression profiling of Multiple Myeloma"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  processing: "orig"
+  version: "v0.5.0"
+biodat:
+  assay: "microarray"
+  datatype: "experimental_dataset"
+  platform:
+    - "GPL5175"
+  sample_type:
+    - "patient"
+  disease:
+    - D009101
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+provenance:
+  action: "download data"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2019-08-01"
+  contact: "Nikhil C Munshi <nikhil_munshi@dfci.harvard.edu>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE39754"
+  description: "Gene Expression profiling of 170 newly diagnosed Multiple Myeloma patients"
+  design: "Cells from Healthy donors and Multiple myeloma patients were profiled using Affymetrix Exon-1.0 ST microarrays"
+  citations:
+    - "10.1016/j.ccr.2012.08.007"
+    - "10.1111/bjh.12544"
+    - "10.1038/onc.2017.172"

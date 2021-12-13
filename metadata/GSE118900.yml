@@ -1,0 +1,37 @@
+data:
+  dataset:
+    id: "GSE118900"
+    title: "Molecular Signatures of Multiple Myeloma Progression through Single Cell RNA-Seq"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  processing: "orig"
+  version: "v0.5.0"
+biodat:
+  assay: "single_cell_rnaseq"
+  datatype: "experimental_dataset"
+  platform:
+    - "GPL16791"
+  sample_type:
+    - "patient"
+  disease:
+    - D009101
+    - D000075122
+    - T752316
+    - C4551538 
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+provenance:
+  action: "download data"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2019-03-27"
+  contact: "Jie Sun"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE118900"
+  description: "Multiple myeloma (MM) is a malignant plasma cell disorder with well-defined clonal genetic/cytogenetic abnormalities. However, cellular heterogeneity is a key factor in MM’s progression, therapeutic decision, and response to treatment. Single cell whole transcriptome profiling (scRNA-Seq) offers an opportunity to dissect this molecular heterogeneity during MM progression to better understand the disease and guide rational therapy. Here, we examined 597 CD138 positive cells from 15 patients at different stages of MM progression using scRNA-Seq. We selected 790 genes based on a Coefficient of Variation (CV) approach which organized cells into four clusters (L1-L4) based on unsupervised clustering. Plasma cells from each patient contained a mixed population of plasma cells at different state of aggressiveness based on gene expression signature reflecting the inter-cellular heterogeneous nature of MM. Cells in the L1 group is characterized by low level expression of genes involved in the oxidative phosphorylation, Myc targets, and mTORC1 signaling pathway having most cells from MGUS patients (p < 1.2x10-14). In contrast, low level of these genes in L1 group increased progressively and were the highest in the L4 group containing only cells from high-risk MM patients with t(4;14) translocations. Furthermore, 44 genes consistently overexpressed by pair-wised comparisons of the four groups strongly associated with a reduced overall survival in MM patients (APEX trial, p < 0.0001; Hazard Ratio (HR), 1.83; 95% CI, 1.33 to 2.52), particularly those in the bortezomib treated group (p < 0.0001; HR, 2.00; 95% CI, 1.39 to 2.89). No survival significance was observed for the dexamethasone treated group. Our study at the resolution of single cells showed that there is a mixed population of cells in each patient at different stages of MM progression and these cells can be organized into four different subgroups (L1 to L4). Consistent overexpression of the 44 genes from L1 to L4 groups is associated with patient outcome and treatment response. Our results show that oxidative phosphorylation, Myc target, and mTORC1 signaling genes are significant pathways for MM progression and affect MM prognosis and treatment stratification."
+  design: "597 single cell libraries passed QC and were included in the downstream analysis"
+  citations:
+    - "10.1038/s41408-018-0160-x"

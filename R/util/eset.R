@@ -131,7 +131,7 @@ get_biomart_mapping <- function(eset, ensembl_version=104) {
 #
 get_manual_mapping <- function(eset) {
   # mapping from old/alt gene symbols to versions used in GRCh38
-  grch38_mapping <- read_tsv('annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+  grch38_mapping <- read_tsv('identifiers/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
 
   # determine name of gene symbol field in fData
   fdata_fields <- c('Gene Symbol', 'Gene symbol', 'Symbol')

@@ -81,7 +81,7 @@ expr_dat_nr <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
 
 # load GRCh38 gene symbol mapping
-gene_mapping <- read_tsv('annot/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+gene_mapping <- read_tsv('identifiers/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
 
 # mask indicating which genes are to be updated
 mask <- !expr_dat$symbol %in% grch38$symbol & expr_dat$symbol %in% gene_mapping$alt_symbol

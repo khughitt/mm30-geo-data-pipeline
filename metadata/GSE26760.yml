@@ -1,0 +1,36 @@
+data:
+  dataset:
+    id: "GSE26760"
+    title: "MMRC expression reference collection"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  processing: "orig"
+  version: "v0.5.0"
+biodat:
+  assay: "microarray"
+  datatype: "experimental_dataset"
+  platform:
+    - "GPL570"
+  sample_type:
+    - "patient"
+  disease:
+    - D009101
+    - D000075122
+    - T752316
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+provenance:
+  action: "download data"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2019-03-25"
+  contact: "Michael Anthony Chapman <mchapman@broadinstitute.org>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE26760"
+  description: "The MMRC reference collection is a dataset of gene expression profiling, array comparative genomic hybridization, and re-sequencing created as a resource for the Multiple Myeloma research community."
+  design: "CD138 purified bone marrow cells from patients with newly diagnosed and relapsed Multiple Myeloma."
+  citations:
+    - "10.1038/nature09837"

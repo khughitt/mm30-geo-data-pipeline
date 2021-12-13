@@ -1,0 +1,34 @@
+data:
+  dataset:
+    id: "GSE14519"
+    title: "Expression data from multiple myeloma cells treated with arsenic"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  processing: "orig"
+  version: "v0.5.0"
+biodat:
+  assay: "microarray"
+  datatype: "experimental_dataset"
+  platform: 
+    - "GPL570"
+  sample_type:
+    - "cell_line"
+  disease:
+    - D009101
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+provenance:
+  action: "download data"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2019-05-25"
+  contact: "Larry Boise"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE14519"
+  description: "We used microarrays to examine changes in gene expression in multiple myeloma cell lines following treatment with arsenic trioxide and darinaparsin"
+  design: "Four multiple myeloma cell lines (U266, MM.1s, KMS11, 8226/S) were treated with either arsenic trioxide (ATO) for 6, 24, or 48 hours or darinaparsin (DAR) for 6 or 24 hours; RNA was extracted from treated and control cells for microarray analysis"
+  citations:
+    - "10.1158/1535-7163.MCT-08-1072"

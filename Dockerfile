@@ -29,7 +29,7 @@ ENV PATH /opt/conda/envs/snakemake/bin:${PATH}
 
 # copy code over
 WORKDIR /geo
-COPY annot/ annot/
+COPY identifiers/ identifiers/
 COPY R/ R/
 COPY Snakefile Snakefile
 COPY supp/ supp/

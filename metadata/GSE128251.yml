@@ -1,0 +1,34 @@
+data:
+  dataset:
+    id: "GSE128251"
+    title: "Potent Anti-Myeloma Activity of the TOPK inhibitor OTS514 in Pre-Clinical Models"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  processing: "orig"
+  version: "v0.5.0"
+biodat:
+  assay: "expression_beadchip"
+  datatype: "experimental_dataset"
+  platform:
+    - "GPL10558"
+  sample_type:
+    - "cell_line"
+  disease:
+    - D009101
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+provenance:
+  action: "download data"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2020-03-04"
+  contact: "Andrzej Jakubowiak"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE128251"
+  description: "Evaluation of gene expression upon treatment with OTS514 in combination with existing thereapeutics in H929 cells"
+  design: "H929 cells treated for 24h with DMSO control or OTS514 (15 nM) and/or carfilzomib(CFZ, 5nM) and/or lenalidomide (LEN, 15µM)"
+  citations:
+    - "10.1002/cam4.2695"
