@@ -22,8 +22,11 @@ biodat:
     - 9606
 rows: "probe_id"
 columns: "sample_id"
+styles:
+  columns:
+    color: "disease_stage"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-05-26"
   contact: "Luca Agnelli <luca.agnelli@unimi.it>"
@@ -34,3 +37,7 @@ provenance:
   citations:
     - "10.3324/haematol.2018.209999"
     - "10.3390/cancers12040782"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

@@ -24,7 +24,7 @@ cache_dir <- dirname(snakemake@output[[1]])
 # download & GEO data
 eset <- getGEO(snakemake@params[["accession"]], destdir = cache_dir)[[1]]
 
-expr <- exprs(eset) %>%
+expr_dat <- exprs(eset) %>%
   as.data.frame() %>%
   rownames_to_column("feature")
 
@@ -39,8 +39,14 @@ recipe <- normalizePath(file.path("metadata", fname))
 pkg_dir <- dirname(snakemake@output[[2]])
 setwd(pkg_dir)
 
+resources <- list(
+  "data" = expr_dat,
+  "row-metadata" = fdata,
+  "column-metadata" = pdata
+)
+
 pkgr <- Packager$new()
-pkg <- pkgr$build_package(recipe, expr, fdata, pdata)
+pkg <- pkgr$build_package(recipe, resources)
 
 pkg %>%
   write_package(pkg_dir)

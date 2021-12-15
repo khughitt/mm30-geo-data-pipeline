@@ -24,7 +24,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2018-07-26"
   contact: "Norma C. Gutiérrez <normagu@usal.es>"
@@ -34,3 +34,7 @@ provenance:
   design: "Bone marrow (BM) samples were obtained from 20 patients with MGUS, 33 with high-risk SMM and 41 with MM. All samples corresponded to newly diagnosed untreated patients. To avoid misclassification or overlapping entities we decided to focus on MGUS patients with more than two years of stable follow-up. Samples were classified according to the International Myeloma Working Group criteria. The criteria for defining high-risk SMM has been described previously. In addition, five healthy donors were also included in order to relate the deregulation of gene expression profiling of clonal populations to normal condition. The study was approved by the research ethic committees of all participating centers and written informed consent was obtained from all patients in accordance with the Helsinki Declaration. The main clinical and laboratory characteristics of these patients are shown in Supplementary Table 1."
   citations:
     - "10.3324/haematol.2013.087809"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

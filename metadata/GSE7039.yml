@@ -23,7 +23,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2013-01-17"
   contact: "Wilfried Gouraud"
@@ -33,3 +33,7 @@ provenance:
   design: "250 myeloma patients at diagnosis examined with spotted cDNA nylon membrane"
   citations:
     - "10.1200/JCO.2007.13.8545"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

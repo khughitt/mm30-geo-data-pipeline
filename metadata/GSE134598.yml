@@ -23,7 +23,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-02-03"
   contact: "Cecilia Bonolo de Campos <campos.cecilia@mayo.edu>"
@@ -33,3 +33,7 @@ provenance:
   design: "Five human myeloma cell lines were treated with a DMSO control or 100nM of APY0201 for 24 hours and four human multiple myeloma primary patient samples treated with a DMSO control or 50nM and 500nM of APY0201 for 24 hours and were sent for RNA sequencing"
   citations:
     - "10.3324/haematol.2019.222729"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

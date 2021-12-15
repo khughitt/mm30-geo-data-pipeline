@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2018-08-10"
   contact: "Norma Carmen Gutierrez <normagu@usal.es>"
@@ -32,3 +32,7 @@ provenance:
   design: "Bone marrow (BM) samples from 10 patients with Waldenström’s macroglobulinemia (WM), 12 with multiple myeloma (MM) and 11 with chronic lymphocytic leukemia (CLL) were included in the study. All samples corresponded to newly diagnosed untreated patients. In addition, 8 normal B lymphocytes samples (NBL) from peripheral blood and 5 normal plasma cells (NPC) from bone marrow of healthy donors were also selected in order to relate the deregulation of GEP of clonal populations to normal condition. The study was approved by the local research ethics committee and written informed consent was obtained from all patients and healthy donors."
   citations:
     - "10.1038/sj.leu.2404520"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

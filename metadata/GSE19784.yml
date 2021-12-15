@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-01-29"
   contact: "Mark van Duin"
@@ -38,3 +38,7 @@ provenance:
     - "10.1186/s12920-015-0161-6"
     - "10.1038/ncomms12050"
     - "10.1038/s41467-018-05348-5"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

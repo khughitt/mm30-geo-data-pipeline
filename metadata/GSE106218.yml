@@ -21,7 +21,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-10-17"
   contact:
@@ -32,3 +32,7 @@ provenance:
   design: "We performed single cell RNA sequencing (RNA-seq) for multiple myeloma from the bone marrow and/or extramedullary sites from 10 patients. Additional bulk RNA sequencing was performed with CD138-negative non-myeloma populations from the same patients. Data contain 477 single-cell RNA-seq and 11 bulk RNA-seq."
   citations:
     - "10.1158/1078-0432.CCR-19-0694"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

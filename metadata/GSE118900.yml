@@ -25,7 +25,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-03-27"
   contact: "Jie Sun"
@@ -35,3 +35,7 @@ provenance:
   design: "597 single cell libraries passed QC and were included in the downstream analysis"
   citations:
     - "10.1038/s41408-018-0160-x"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

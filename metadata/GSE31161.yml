@@ -23,7 +23,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-07-18"
   contact: "Joshua Epstein <epsteinjoshua@uams.edu>"
@@ -34,3 +34,7 @@ provenance:
   citations:
     - "10.1038/s41467-018-04989-w"
     - "10.1038/ncomms12050"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

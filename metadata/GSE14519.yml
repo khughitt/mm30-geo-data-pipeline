@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-05-25"
   contact: "Larry Boise"
@@ -32,3 +32,7 @@ provenance:
   design: "Four multiple myeloma cell lines (U266, MM.1s, KMS11, 8226/S) were treated with either arsenic trioxide (ATO) for 6, 24, or 48 hours or darinaparsin (DAR) for 6 or 24 hours; RNA was extracted from treated and control cells for microarray analysis"
   citations:
     - "10.1158/1535-7163.MCT-08-1072"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

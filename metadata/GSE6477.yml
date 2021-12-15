@@ -25,7 +25,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-02-13"
   contact: "Rafael Fonseca <fonseca.rafael@mayo.edu>"
@@ -38,3 +38,7 @@ provenance:
     - "10.1182/blood-2009-09-243980"
     - "10.1038/leu.2010.21"
     - "10.1038/leu.2011.53"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

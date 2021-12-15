@@ -24,7 +24,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-03-25"
   contact: "Michael Anthony Chapman <mchapman@broadinstitute.org>"
@@ -34,3 +34,7 @@ provenance:
   design: "CD138 purified bone marrow cells from patients with newly diagnosed and relapsed Multiple Myeloma."
   citations:
     - "10.1038/nature09837"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

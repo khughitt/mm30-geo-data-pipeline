@@ -23,7 +23,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-02-18"
   contact: "Wilfried Gouraud"
@@ -33,3 +33,7 @@ provenance:
   design: "602 myeloma patients examined with regulatory network on gene expression profiling"
   citations:
     - "10.1038/s41598-017-09378-9"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

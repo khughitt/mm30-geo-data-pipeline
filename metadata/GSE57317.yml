@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-03-25"
   contact: "Christoph J Heuck <cjheuck@uams.edu>"
@@ -32,3 +32,7 @@ provenance:
   design: "We analyzed CD138+ selected cells of previously treated MM patients by microarray"
   citations:
     - "10.1038/leu.2014.232"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

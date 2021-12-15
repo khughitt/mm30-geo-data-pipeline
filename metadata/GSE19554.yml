@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-03-25"
   contact: "Fenghuang Zhan <fenghuang.zhan@hsc.utah.edu>"
@@ -32,3 +32,7 @@ provenance:
   design: "Myeloma tumor cells from bone marrow aspirates were collected at baseline and after chemotherapy (pre-1st and pre-2nd bone marrow transplant, and pre-consolidation) for RNA extraction and hybridization on Affymetrix microarrays. We sought to define genes related to chemotheraputic resistance."
   citations:
     - "10.1016/j.ccr.2012.12.001"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

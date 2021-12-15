@@ -9,21 +9,56 @@
 ###############################################################################
 library(tidyverse)
 library(iodag)
+library(jsonlite)
 
 # directory to store raw and processed data
 data_dir <- dirname(snakemake@output[[1]])
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]])
+dat_orig <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 
-row_mdata <- read_csv(snakemake@input[[2]])
-col_mdata <- read_csv(snakemake@input[[3]])
+row_mdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
+col_mdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+
+# load previous data package (used to retrieve styles metadata)
+prev_pkg <- suppressMessages(read_package(snakemake@input[[4]]))
 
 # create a version of gene expression data with a single entry per gene, including
 # only entries which could be mapped to a known gene symbol
-dat_nr <- dat %>%
+dat <- dat_orig %>%
   group_by(symbol) %>%
   summarize_all(median)
+
+# perform sample pca projection
+pca <- prcomp(t(as.matrix(dat[, -1])), scale = snakemake@params[["scale_pca"]])
+
+# convert pca-projected data to a dataframe
+pca_dat <- pca$x %>%
+  as.data.frame() %>%
+  rownames_to_column('geo_accession')
+
+# store summary table in data package
+pca_summary <- summary(pca)$importance %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column('PC')
+
+# add plot styles to pca dataframe
+style_fields <- c(color = prev_pkg$io$styles$columns$color)
+
+if ("shape" %in% names(prev_pkg$io$styles$columns)) {
+  style_fields <- c(style_fields, shape = prev_pkg$io$styles$columns$shape)
+}
+
+style_dat <- col_mdata %>% 
+  select(geo_accession, style_fields)
+
+pca_dat <- pca_dat %>%
+  inner_join(style_dat, by='geo_accession')
+
+# load pca view
+# TODO: extend with shape, if present?..
+pca_view <- jsonlite::read_json("views/sample-pca.json")
 
 # create a new data package, based off the old one
 pkg_dir <- dirname(snakemake@output[[1]])
@@ -31,15 +66,24 @@ setwd(pkg_dir)
 
 pkgr <- Packager$new()
 
+# metadata updates
 updates <- list(
   data=list(
     processing="non-redundant"
   )
 )
 
+resources <- list(
+  "data" = dat,
+  "row-metadata" = row_mdata,
+  "column-metadata" = col_mdata,
+  "pca-data" = pca_dat,
+  "pca-summary" = pca_summary
+)
+
 pkg <- pkgr$update_package(snakemake@input[[4]], 
-                           updates, "collapse mutli-entries",
-                           dat, row_mdata, col_mdata)
+                           updates, "Collapse multi-entry genes",
+                           resources, views=list("pca" = pca_view))
 
 pkg %>%
   write_package(pkg_dir)

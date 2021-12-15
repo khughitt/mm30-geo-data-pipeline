@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-07-18"
   contact: "Leming Shi <lemingshi@fudan.edu.cn>"
@@ -34,3 +34,7 @@ provenance:
     - "10.1186/bcr2468"
     - "10.1038/nbt.1665"
     - "10.1038/ncomms12050"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

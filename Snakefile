@@ -18,13 +18,7 @@ rule all:
         expand("/data/proj/mm25/4.1/geo/non-redundant/{acc}/row-metadata.csv", acc=accessions),
         expand("/data/proj/mm25/4.1/geo/non-redundant/{acc}/column-metadata.csv", acc=accessions),
         expand("/data/proj/mm25/4.1/geo/non-redundant/{acc}/datapackage.json", acc=accessions),
-
-# rule all:
 #     input: "/data/metadata.csv"
-
-# rule all:
-#     input:
-#         "/data/proj/mm25/4.1/geo/reprocessed/GSE117847/datapackage.json"
 
 rule download_general:
     output:
@@ -48,7 +42,7 @@ rule reprocess_GSE117847:
         "/data/proj/mm25/4.1/geo/reprocessed/GSE117847/row-metadata.csv",
         "/data/proj/mm25/4.1/geo/reprocessed/GSE117847/column-metadata.csv",
         "/data/proj/mm25/4.1/geo/reprocessed/GSE117847/datapackage.json"
-    script: "R/process/GSE117847.R"
+    script: "R/prepare-data/GSE117847.R"
 
 # generates a non-redundant version of the datasets by averaging expression for
 # genes that appear multple times.
@@ -64,7 +58,7 @@ rule create_non_redundant:
         "/data/proj/mm25/4.1/geo/non-redundant/{acc}/column-metadata.csv",
         "/data/proj/mm25/4.1/geo/non-redundant/{acc}/datapackage.json"
     params:
-        accession="{acc}"
+        scale_pca=True
     script: "R/create_nonredundant.R"
 
     # output:

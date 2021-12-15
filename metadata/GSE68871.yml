@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-03-25"
   contact: "Carolina Terragna <carolina.terragna@unibo.it>"
@@ -32,3 +32,7 @@ provenance:
   design: "118 samples have been analyzed; the homogeneity of samples has been ensured by the immunomagnetic enrichment procedure: only >90% pure CD138+ cells have been employed.\nResponse to vtd therapy (provided in each sample record);\nCR: complete response\nnCR: near complete response\nVGPR: Very good partial response\nPR: partial response\nSD: Stable disease"
   citations:
     - "10.18632/oncotarget.5718"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

@@ -22,7 +22,7 @@ biodat:
 rows: "symbol"
 columns: "sample_id"
 provenance:
-  action: "download data"
+  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-03-04"
   contact: "Andrzej Jakubowiak"
@@ -32,3 +32,7 @@ provenance:
   design: "H929 cells treated for 24h with DMSO control or OTS514 (15 nM) and/or carfilzomib(CFZ, 5nM) and/or lenalidomide (LEN, 15µM)"
   citations:
     - "10.1002/cam4.2695"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

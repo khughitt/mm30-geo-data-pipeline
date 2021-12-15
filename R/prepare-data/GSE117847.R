@@ -20,11 +20,11 @@ accession <- 'GSE117847'
 data_dir <- dirname(snakemake@output[[1]])
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]]) %>%
+dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
   column_to_rownames("feature")
 
-fdata <- read_csv(snakemake@input[[2]])
-pdata <- read_csv(snakemake@input[[3]])
+fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
+pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 # size factor normalization
 dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
@@ -51,21 +51,30 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-pkg_dir <- dirname(snakemake@output[[1]])
-setwd(pkg_dir)
-
 # create a new data package, based off the old one
 pkgr <- Packager$new()
 
-updates <- list(
+# resource list (consider converting values to lists and including "data_type" field for
+# each resource? i.e. "data"/"row metadata"/"column metadata")
+resources <- list(
+  "data" = expr_dat,
+  "row-metadata" = fdata,
+  "column-metadata" = sample_metadata
+)
+
+# changes to make to metadata
+mdata <- list(
   data=list(
     processing="reprocessed"
   ),
   rows="symbol"
 )
 
-pkg <- pkgr$update_package(snakemake@input[[4]], updates, "reprocess data",
-                           expr_dat, fdata, sample_metadata)
+# annotations
+annot <- list("data-prep" = read_file("annot/prepare-data/GSE117847.md"))
+
+pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data", 
+                           resources, annotations=annot)
 
 pkg %>%
-  write_package(pkg_dir)
+  write_package(dirname(snakemake@output[[1]]))
