@@ -21,6 +21,9 @@ biodat:
     - 9606
 rows: "symbol"
 columns: "sample_id"
+styles:
+  columns:
+    color: "patient_subgroup"
 provenance:
   action: "Download data"
   source: "Gene Expression Omnibus (GEO)"

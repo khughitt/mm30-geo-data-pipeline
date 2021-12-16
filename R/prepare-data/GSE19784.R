@@ -7,61 +7,26 @@
 #
 # Clinical trial: http://www.hovon.nl/studies/studies-per-ziektebeeld/mm.html?action=showstudie&studie_id=5&categorie_id=3
 #
-library(GEOquery)
+library(annotables)
 library(tidyverse)
-library(arrow)
-source("R/util/eset.R")
-
-# GEO accession
-accession <- 'GSE19784'
+library(iodag)
+source("R/util/biomart.R")
 
 # directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw', accession)
-processed_data_dir <- sub('raw', 'clean', raw_data_dir)
+data_dir <- dirname(snakemake@output[[1]])
 
-# create output directories if they don't already exist
-for (dir_ in c(raw_data_dir, processed_data_dir)) {
-  if (!dir.exists(dir_)) {
-      dir.create(dir_, recursive = TRUE)
-  }
-}
+# load data & metadata
+dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
+  column_to_rownames("feature")
 
-# download GEO data;
-# result is a list with a single entry containing an ExpressionSet instance
-eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
+fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
+pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size-factor normalization
-exprs(eset) <- sweep(exprs(eset), 2, colSums(exprs(eset)), '/') * 1E6
-
-# list the columns that are neither all different or all unique
-# covariates <- c()
-#
-# for (cname in colnames(pData(eset))) {
-#   num_vals <- length(table(pData(eset)[, cname]))
-#
-#   if (num_vals != 1 && num_vals != ncol(eset)) {
-#     covariates <- c(covariates, cname)
-#
-#     message(cname)
-#     print(table(pData(eset)[, cname]))
-#   }
-# }
-
-#
-# fields of interest:
-#
-# cluster:ch1
-# CD-1       CD-2        CTA         HY         MF         MS    Myeloid       NFκB       None
-# 13         34         22         80         32         33         40         39          9
-# PR       PRL3 SOCS3/PRL3
-# 15          2          9
-#iss:ch1
-#  I  II III  nd
-#122  88  83  27
-#
+# size factor normalization
+dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
 
 # get relevant sample metadata
-sample_metadata <- pData(eset) %>%
+sample_metadata <- pdata %>%
   select(geo_accession, platform_id, iss_stage = `iss:ch1`,
          patient_subgroup = `cluster:ch1`)
 
@@ -79,17 +44,23 @@ survival_mdata <- read_csv('supp/clean/kuiper2012_supp_patient_survival.csv', co
 
 survival_mdata <- survival_mdata %>%
   rename(geo_accession = Patient) %>%
-  filter(geo_accession %in% colnames(eset))
+  filter(geo_accession %in% colnames(dat))
 
 colnames(survival_mdata) <- c('geo_accession', 'os_time', 'os_event', 'pfs_time', 'pfs_event')
 
 # exclude samples without metadata
 mask <- sample_metadata$geo_accession %in% survival_mdata$geo_accession
 
-#all(colnames(eset) == sample_metadata$geo_accession)
+# ANNOT (Dec 15, 2021)
+# table(mask)
+# mask
+# FALSE  TRUE 
+#    46   282 
+
+#all(colnames(dat) == sample_metadata$geo_accession)
 # [1] TRUE
 
-eset <- eset[, mask]
+dat <- dat[, mask]
 sample_metadata <- sample_metadata[mask, ]
 
 # combine metadata
@@ -97,27 +68,78 @@ sample_metadata <- sample_metadata %>%
   inner_join(survival_mdata, by = 'geo_accession')
 
 # extract gene expression data
-expr_dat <- process_eset(eset)
+#expr_dat <- process_eset(eset)
+
+# map probes using biomart
+# TODO: pre-download & store mappings for all platforms before-hand..
+# ensure reproducibility / avoid internet issues
+platform <- pdata$platform_id[1]
+
+# KH: using the simple probe mapping from biomart instead of the fData;
+# fdata version includes many out-of-date GO term assignments, etc.
+probe_mapping <- get_biomart_mapping(rownames(dat), platform, ensembl_version=104)
+
+probe_mapping$symbol <- grch38$symbol[match(probe_mapping$ensgene, grch38$ensgene)]
+
+# drop entries with missing gene symbols
+# sum(is.na(probe_mapping$symbol))
+# [1] 1086
+probe_mapping <- probe_mapping[!is.na(probe_mapping$symbol), ]
+
+# TODO: add annotations describing what is being lost here / discussing alternative approaches...
+probe_mask <- rownames(dat) %in% probe_mapping$probe_id 
+
+# some probes are lost at this step of the mapping..
+table(probe_mask)
+# probe_mask
+# FALSE  TRUE 
+# 12009 42666 
+
+dat <- dat[probe_mask, ]
+
+# KH: biomart seems to exclude multi-mapped probes?.. maybe for the best.. (~> confidence..)
+# num unique = num total
+
+# make sure orders match
+probe_mapping <- probe_mapping[match(rownames(dat), probe_mapping$probe_id), ]
+
+if (!all(probe_mapping$probe_id == rownames(dat))) {
+  stop("Unexpected probe mapping mismatch!")
+}
+
+# get expression data and swap ensgenes for gene symbols
+expr_dat <- dat %>%
+  add_column(symbol = probe_mapping$symbol, .before = 1) %>%
+  as_tibble()
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-# only entries which could be mapped to a known gene symbol
-expr_dat_nr <- expr_dat %>%
-  group_by(symbol) %>%
-  summarize_all(median)
+# create a new data package, based off the old one
+pkgr <- Packager$new()
 
-# determine filenames to use for outputs and save to disk
-expr_outfile <- sprintf('%s_gene_expr.feather', accession)
-expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
-mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
+# resource list (consider converting values to lists and including "data_type" field for
+# each resource? i.e. "data"/"row metadata"/"column metadata")
+resources <- list(
+  "data" = expr_dat,
+  "row-metadata" = probe_mapping,
+  "column-metadata" = sample_metadata
+)
 
-print("Final dimensions:")
-print(paste0("- Num rows: ", nrow(expr_dat_nr)))
-print(paste0("- Num cols: ", ncol(expr_dat_nr)))
+# changes to make to metadata
+mdata <- list(
+  data=list(
+    processing="reprocessed"
+  ),
+  rows="symbol"
+)
 
-# store cleaned expression data and metadata
-write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
-write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
-write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
+# annotations
+annot <- list("data-prep" = read_file("annot/prepare-data/GSE19784.md"))
+
+pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data", 
+                           resources, annotations=annot)
+
+pkg %>%
+  write_package(dirname(snakemake@output[[1]]))
