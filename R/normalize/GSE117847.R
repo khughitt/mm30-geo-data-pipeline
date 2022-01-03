@@ -38,7 +38,8 @@ sample_metadata <- pdata %>%
 sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'Microarray'
 
-# map from ensgenes to gene symbols
+# map from ensgenes to gene symbols ("SPOT_ID" column for this dataset contains ensembl
+# gene identifiers..)
 fdata$symbol <- grch38$symbol[match(fdata$SPOT_ID, grch38$ensgene)]
 
 # get expression data and swap ensgenes for gene symbols

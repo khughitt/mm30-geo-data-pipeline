@@ -18,6 +18,12 @@ library(tidyverse)
 library(iodag)
 library(yaml)
 
+# work-around for loading large gzip-compressed csv files
+# https://github.com/r-lib/vroom/issues/361
+if (snakemake@params[["accession"]] == "GSE31161") {
+  Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 100)
+}
+
 # GEO directory to store raw and processed data
 cache_dir <- dirname(snakemake@output[[1]])
 

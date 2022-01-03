@@ -11,8 +11,7 @@ data:
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform:
-    - "GPL570"
+  platform: "GPL570"
   sample_type:
     - "patient"
   disease:
@@ -26,7 +25,8 @@ provenance:
   action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-07-18"
-  contact: "Joshua Epstein <epsteinjoshua@uams.edu>"
+  contact:
+    - "Joshua Epstein <epsteinjoshua@uams.edu>"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31161"
   description: "Global gene expression profile of primary multiple myeloma plasma cells from patients treated in Myeloma Institute for Research and Therapy was done using Affymetrix microarrays."

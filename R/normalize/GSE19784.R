@@ -7,7 +7,6 @@
 #
 # Clinical trial: http://www.hovon.nl/studies/studies-per-ziektebeeld/mm.html?action=showstudie&studie_id=5&categorie_id=3
 #
-library(annotables)
 library(tidyverse)
 library(iodag)
 source("R/util/biomart.R")
@@ -37,7 +36,7 @@ sample_metadata$platform_type <- 'Microarray'
 
 # Note; there is not sufficient information provided to link patients in table S11 to
 # GSM sample identifiers; skipping.
-#table_s11 <- read_csv(file.path(base_dir, 'metadata', 'broyl2010_supp_table_s11.csv'))
+# table_s11 <- read_csv(file.path(base_dir, 'metadata', 'broyl2010_supp_table_s11.csv'))
 
 # load survival metadata from Kuiper et al. (2012)
 survival_mdata <- read_csv('supp/clean/kuiper2012_supp_patient_survival.csv', col_types = cols())
@@ -54,51 +53,36 @@ mask <- sample_metadata$geo_accession %in% survival_mdata$geo_accession
 # ANNOT (Dec 15, 2021)
 # table(mask)
 # mask
-# FALSE  TRUE 
-#    46   282 
-
-#all(colnames(dat) == sample_metadata$geo_accession)
-# [1] TRUE
+# FALSE  TRUE
+#    46   282
 
 dat <- dat[, mask]
 sample_metadata <- sample_metadata[mask, ]
+
+#all(colnames(dat) == sample_metadata$geo_accession)
+# [1] TRUE
 
 # combine metadata
 sample_metadata <- sample_metadata %>%
   inner_join(survival_mdata, by = 'geo_accession')
 
-# extract gene expression data
-#expr_dat <- process_eset(eset)
-
 # map probes using biomart
-# TODO: pre-download & store mappings for all platforms before-hand..
-# ensure reproducibility / avoid internet issues
 platform <- pdata$platform_id[1]
 
-# KH: using the simple probe mapping from biomart instead of the fData;
-# fdata version includes many out-of-date GO term assignments, etc.
-probe_mapping <- get_biomart_mapping(rownames(dat), platform, ensembl_version=104)
-
-probe_mapping$symbol <- grch38$symbol[match(probe_mapping$ensgene, grch38$ensgene)]
-
-# drop entries with missing gene symbols
-# sum(is.na(probe_mapping$symbol))
-# [1] 1086
-probe_mapping <- probe_mapping[!is.na(probe_mapping$symbol), ]
+# retrieve up-to-date probe to gene mappings
+probe_mapping <- get_biomart_mapping(rownames(dat), platform, ensembl_version = 105)
 
 # TODO: add annotations describing what is being lost here / discussing alternative approaches...
-probe_mask <- rownames(dat) %in% probe_mapping$probe_id 
+probe_mask <- rownames(dat) %in% probe_mapping$probe_id
 
 # some probes are lost at this step of the mapping..
 table(probe_mask)
+
 # probe_mask
-# FALSE  TRUE 
-# 12009 42666 
+# FALSE  TRUE
+# 12009 42666
 
 dat <- dat[probe_mask, ]
-
-# KH: biomart seems to exclude multi-mapped probes?.. maybe for the best.. (~> confidence..)
-# num unique = num total
 
 # make sure orders match
 probe_mapping <- probe_mapping[match(rownames(dat), probe_mapping$probe_id), ]
@@ -129,17 +113,17 @@ resources <- list(
 
 # changes to make to metadata
 mdata <- list(
-  data=list(
-    processing="reprocessed"
+  data = list(
+    processing = "reprocessed"
   ),
-  rows="symbol"
+  rows = "symbol"
 )
 
 # annotations
 annot <- list("data-prep" = read_file("annot/prepare-data/GSE19784.md"))
 
-pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data", 
-                           resources, annotations=annot)
+pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data",
+                           resources, annotations = annot)
 
 pkg %>%
   write_package(dirname(snakemake@output[[1]]))
