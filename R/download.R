@@ -2,7 +2,7 @@
 ###############################################################################
 #
 # GEO Dataset downloader - general version
-# KH (Dec 9, 2021)
+# Keith Hughitt
 #
 # Uses GEOquery to download expression data, sample metadata, and gene annotations for a
 # single dataset, and stores each as a tabular data package.
@@ -15,7 +15,7 @@
 ###############################################################################
 library(GEOquery)
 library(tidyverse)
-library(iodag)
+library(iodat)
 library(yaml)
 
 # work-around for loading large gzip-compressed csv files
@@ -37,13 +37,16 @@ expr_dat <- exprs(eset) %>%
 pdata <- pData(eset)
 fdata <- fData(eset)
 
-# load dataset metadata
+# load workflow-/DAG-level metadata
 fname <- sprintf("%s.yml", snakemake@params[["accession"]])
-recipe <- normalizePath(file.path("metadata", fname))
+dag_mdata <- normalizePath(file.path("metadata", fname))
+
+# node-level metadata
+node_mdata <- list(name = "Unprocessed Data")
 
 # generate data package and write to disk
 pkg_dir <- dirname(snakemake@output[[2]])
-setwd(pkg_dir)
+#setwd(pkg_dir)
 
 resources <- list(
   "data" = expr_dat,
@@ -52,7 +55,6 @@ resources <- list(
 )
 
 pkgr <- Packager$new()
-pkg <- pkgr$build_package(recipe, resources)
 
-pkg %>%
-  write_package(pkg_dir)
+pkgr$build_package(resources, node_metadata = node_mdata, dag_metadata = dag_mdata,
+                   pkg_dir = pkg_dir)

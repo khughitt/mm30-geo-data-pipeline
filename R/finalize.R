@@ -1,4 +1,3 @@
-#!/bin/env/Rscript
 ###############################################################################
 #
 # Generate non-redundant gene expression matrices
@@ -8,7 +7,7 @@
 #
 ###############################################################################
 library(tidyverse)
-library(iodag)
+library(iodat)
 library(jsonlite)
 
 # directory to store raw and processed data
@@ -50,27 +49,25 @@ if ("shape" %in% names(prev_pkg$io$styles$columns)) {
   style_fields <- c(style_fields, shape = prev_pkg$io$styles$columns$shape)
 }
 
-style_dat <- col_mdata %>% 
+style_dat <- col_mdata %>%
   select(geo_accession, style_fields)
 
 pca_dat <- pca_dat %>%
-  inner_join(style_dat, by='geo_accession')
+  inner_join(style_dat, by = 'geo_accession')
 
 # load pca view
 # TODO: extend with shape, if present?..
-pca_view <- jsonlite::read_json("views/sample-pca.json")
+#pca_view <- jsonlite::read_json("views/sample-pca.json")
 
 # create a new data package, based off the old one
 pkg_dir <- dirname(snakemake@output[[1]])
-setwd(pkg_dir)
+#setwd(pkg_dir)
 
 pkgr <- Packager$new()
 
-# metadata updates
-updates <- list(
-  data=list(
-    processing="non-redundant"
-  )
+# node-level metadata
+node_mdata <- list(
+  processing = "non-redundant"
 )
 
 resources <- list(
@@ -81,9 +78,7 @@ resources <- list(
   "pca-summary" = pca_summary
 )
 
-pkg <- pkgr$update_package(snakemake@input[[4]], 
-                           updates, "Collapse multi-entry genes",
-                           resources, views=list("pca" = pca_view))
-
-pkg %>%
-  write_package(pkg_dir)
+pkgr$update_package(snakemake@input[[4]], resources,
+                    node_metadata = node_mdata,
+                    views = list("pca" = "views/sample-pca.json"),
+                    pkg_dir = pkg_dir)

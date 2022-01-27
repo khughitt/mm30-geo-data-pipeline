@@ -6,26 +6,26 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "expression_beadchip"
   datatype: "experimental_dataset"
-  platform:
+  platforms:
     - "GPL10558"
-  sample_type:
+  sample_types:
     - "cell_line"
-  disease:
+  diseases:
     - D009101
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-03-04"
-  contact: "Andrzej Jakubowiak"
+  contacts:
+    - "Andrzej Jakubowiak"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE128251"
   description: "Evaluation of gene expression upon treatment with OTS514 in combination with existing thereapeutics in H929 cells"

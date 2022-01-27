@@ -6,26 +6,26 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform:
+  platforms:
     - "GPL5175"
-  sample_type:
+  sample_types:
     - "patient"
-  disease:
+  diseases:
     - D009101
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-08-01"
-  contact: "Nikhil C Munshi <nikhil_munshi@dfci.harvard.edu>"
+  contacts: 
+    - "Nikhil C Munshi <nikhil_munshi@dfci.harvard.edu>"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE39754"
   description: "Gene Expression profiling of 170 newly diagnosed Multiple Myeloma patients"

@@ -6,29 +6,29 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform:
+  platforms:
     - "GPL96"
-  sample_type: 
+  sample_types: 
     - "patient"
-  disease:
+  diseases:
     - D009101
     - D000075122
     - T752316
     - C4551538 
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2020-02-13"
-  contact: "Rafael Fonseca <fonseca.rafael@mayo.edu>"
+  contacts: 
+    - "Rafael Fonseca <fonseca.rafael@mayo.edu>"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE6477"
   description: "Multiple myeloma is a relatively common B-cell malignancy that is currently incurable. Certain recurrent genetic abnormalities characteristics of different genetic subtypes have been described. Hyperdiploid myeloma characterized by recurrent trisomies is the most common genetic subtypes. However little is know about it's biology. Another common genetic abnormality is chromosome 13 deletion which is also associated with inferior prognosis. This abnormality is already present at the pre-malignant MGUS stage and is clonally selected with disease progression. Although it is biologically and clinically important the molecular consequence of chromosome 13 deletion is unknown."

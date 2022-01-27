@@ -6,27 +6,27 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform:
+  platforms:
     - "GPL96"
-  sample_type:
+  sample_types:
     - "patient"
-  disease:
+  diseases:
     - D009101
     - T752316
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2018-08-10"
-  contact: "Luca Agnelli <luca.agnelli@unimi.it>"
+  contacts: 
+    - "Luca Agnelli <luca.agnelli@unimi.it>"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE13591"
   description: "Multiple myeloma (MM) is characterized by marked genomic instability. Beyond structural rearrangements, a relevant role in its biology is represented by allelic imbalances leading to significant variations in ploidy status. To better elucidate the genomic complexity of MM, we analyzed a panel of 45 patients using combined FISH and microarray approaches. Using a self-developed procedure to infer exact local copy numbers for each sample, we identified a significant fraction of patients showing marked aneuploidy. A conventional clustering analysis showed that aneuploidy, chromosome 1 alterations, hyperdiploidy and recursive deletions at 1p and chromosomes 13, 14 and 22 were the main aberrations driving samples grouping. Then, we integrated mapping information with gene and microRNAs expression profiles: a multiclass analysis of the identified clusters showed a marked gene-dosage effect, particularly concerning 1q transcripts, also confirmed by correlating gene expression levels and local copy number alterations. A wide dosage effect affected also microRNAs, indicating that structural abnormalities in MM closely reflect in their expression imbalances. Finally, we identified several loci in which genes and microRNAs expression correlated with loss-of-heterozygosity occurrence. Our results provide insights into the composite network linking genome structure and gene/microRNA transcriptional features in MM."

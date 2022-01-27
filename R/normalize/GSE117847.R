@@ -11,7 +11,7 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
-library(iodag)
+library(iodat)
 
 # GEO accession
 accession <- 'GSE117847'
@@ -63,19 +63,25 @@ resources <- list(
   "column-metadata" = sample_metadata
 )
 
-# changes to make to metadata
-mdata <- list(
-  data=list(
-    processing="reprocessed"
-  ),
-  rows="symbol"
+# update row names and specify style mapping to use for visualizations
+dag_mdata <- list(
+  rows = "symbol",
+  styles = list(
+    columns = list(
+      color = "disease_stage"
+    )
+  )
 )
+
+# node-level metadata
+node_mdata <- list(processing = "reprocessed")
 
 # annotations
 annot <- list("data-prep" = read_file("annot/prepare-data/GSE117847.md"))
 
-pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data", 
-                           resources, annotations=annot)
+pkg_dir <- dirname(snakemake@output[[1]])
 
-pkg %>%
-  write_package(dirname(snakemake@output[[1]]))
+pkgr$update_package(snakemake@input[[4]], 
+                    resources, annotations = annot,
+                    node_metadata = node_mdata, dag_metadata = dag_mdata, 
+                    pkg_dir = pkg_dir)

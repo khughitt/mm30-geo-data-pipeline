@@ -6,26 +6,26 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform: 
+  platforms: 
     - "GPL570"
-  sample_type:
+  sample_types:
     - "cell_line"
-  disease:
+  diseases:
     - D009101
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-05-25"
-  contact: "Larry Boise"
+  contacts: 
+    - "Larry Boise"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE14519"
   description: "We used microarrays to examine changes in gene expression in multiple myeloma cell lines following treatment with arsenic trioxide and darinaparsin"

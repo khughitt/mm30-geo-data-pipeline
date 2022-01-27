@@ -8,7 +8,7 @@
 # Clinical trial: http://www.hovon.nl/studies/studies-per-ziektebeeld/mm.html?action=showstudie&studie_id=5&categorie_id=3
 #
 library(tidyverse)
-library(iodag)
+library(iodat)
 source("R/util/biomart.R")
 
 # directory to store raw and processed data
@@ -111,19 +111,26 @@ resources <- list(
   "column-metadata" = sample_metadata
 )
 
-# changes to make to metadata
-mdata <- list(
-  data = list(
-    processing = "reprocessed"
-  ),
-  rows = "symbol"
+# update row names and specify style mapping to use for visualizations
+dag_mdata <- list(
+  rows = "symbol",
+  styles = list(
+    columns = list(
+      color = "patient_subgroup"
+    )
+  )
 )
+
+# node-level metadata
+node_mdata <- list(processing = "reprocessed")
 
 # annotations
 annot <- list("data-prep" = read_file("annot/prepare-data/GSE19784.md"))
 
-pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data",
-                           resources, annotations = annot)
+pkg_dir <- dirname(snakemake@output[[1]])
 
-pkg %>%
-  write_package(dirname(snakemake@output[[1]]))
+pkgr$update_package(snakemake@input[[4]], 
+                    resources, annotations = annot,
+                    node_metadata = node_mdata, 
+                    dag_metadata = dag_mdata, 
+                    pkg_dir = pkg_dir)

@@ -6,26 +6,25 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform: "GPL570"
-  sample_type:
+  platforms: "GPL570"
+  sample_types:
     - "patient"
-  disease:
+  diseases:
     - D009101
     - C4551538 
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-07-18"
-  contact:
+  contacts:
     - "Joshua Epstein <epsteinjoshua@uams.edu>"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31161"

@@ -7,7 +7,7 @@
 #
 library(GEOquery)
 library(tidyverse)
-library(iodag)
+library(iodat)
 source("R/util/biomart.R")
 
 # directory to store raw and processed data
@@ -39,14 +39,12 @@ exclude_samples <- c("GSM771497", "GSM772341", "GSM772335")
 
 dat <- dat[, !colnames(dat) %in% exclude_samples]
 
-sample_metadata <- sample_metadata %>%
-  filter(geo_accession %in% colnames(dat))
-
 # size factor normalization
 dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
 
 # columns to include
 sample_metadata <- pdata %>%
+  filter(geo_accession %in% colnames(dat)) %>%
   select(geo_accession, platform_id,
          treatment = `treatment:ch1`, time_of_testing = `time of testing:ch1`) %>%
   mutate(relapsed = time_of_testing == 'relapse')
@@ -68,6 +66,7 @@ probe_mask <- rownames(dat) %in% probe_mapping$probe_id
 
 # some probes are lost at this step of the mapping..
 table(probe_mask)
+
 # probe_mask
 # FALSE  TRUE 
 # 11675 43000 
@@ -101,20 +100,23 @@ resources <- list(
   "column-metadata" = sample_metadata
 )
 
-# changes to make to metadata
-mdata <- list(
-  data = list(
-    processing = "reprocessed"
-  ),
-  rows = "symbol"
+# update row names and specify style mapping to use for visualizations
+dag_mdata <- list(
+  rows = "symbol",
+  styles = list(
+    columns = list(
+      color = "disease_stage",
+      shape = "treatment"
+    )
+  )
 )
 
-# annotations
-#annot <- list("data-prep" = read_file("annot/prepare-data/GSE31161.md"))
+# node-level metadata
+node_mdata <- list(processing = "reprocessed")
 
-pkg <- pkgr$update_package(snakemake@input[[4]], mdata, "Reprocess data",
-                           resources)
-                           # resources, annotations = annot)
+pkg_dir <- dirname(snakemake@output[[1]])
 
-pkg %>%
-  write_package(dirname(snakemake@output[[1]]))
+pkgr$update_package(snakemake@input[[4]], resources, 
+                    node_metadata = node_mdata,
+                    dag_metadata = dag_mdata, 
+                    pkg_dir = pkg_dir)

@@ -6,27 +6,27 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  processing: "orig"
   version: "v0.5.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platform:
+  platforms:
     - "GPL5175"
-  sample_type:
+  sample_types:
     - "patient"
-  disease:
+  diseases:
     - D009101
     - C4551538 
   species:
     - 9606
-rows: "symbol"
+rows: "probe_id"
 columns: "sample_id"
+profile: "biodat"
 provenance:
-  action: "Download data"
   source: "Gene Expression Omnibus (GEO)"
   date: "2019-02-18"
-  contact: "Wilfried Gouraud"
+  contacts: 
+    - "Wilfried Gouraud"
   urls:
     - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE83503"
   description: "Innovative approaches combining regulatory networks and genomic data are needed to extract pertinent biological informations to a better understanding of complex disease such as cancer and improve identi cation of entities leading to potential new therapeutic avenues. In this study, we confronted an automatic generated regulatory network with gene expression pro les (GEP) from a large cohort of patients with multiple myeloma (MM) and normal individuals with a causality reasonning method based of graph coloring to identify keynodes. Due to this causality reasoning, it is possible to infer proteins state from these GEP. Also, our method is able to simulate the impact of the perturbation of a node in this regulatory network to identify therapeutic targets. This method allowed us to nd that JUN/FOS and FOXM1, known in MM, and their inhibition as speci c to large group of patients with MM. Moreover, we associated the inhibition of FOXM1 activity with good prognosis, suggesting the inhibition of FOXM1 activity could be a survival marker. Finally, if JUN/FOS activation seems to be a way to strongly perturb the regulatory network in view of GEP, our result suggests the activation of FOXM1 could be interesting way to perturb some sub-group of profiles."
