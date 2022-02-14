@@ -10,7 +10,8 @@ data:
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
-  platforms: "GPL570"
+  platforms: 
+    - "GPL570"
   sample_types:
     - "patient"
   diseases:

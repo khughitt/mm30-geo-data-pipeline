@@ -8,11 +8,11 @@
 # Clinical trial: http://www.hovon.nl/studies/studies-per-ziektebeeld/mm.html?action=showstudie&studie_id=5&categorie_id=3
 #
 library(tidyverse)
-library(iodat)
+library(eco)
 source("R/util/biomart.R")
 
-# directory to store raw and processed data
-data_dir <- dirname(snakemake@output[[1]])
+# output directory to store data packages to
+out_dir <- dirname(snakemake@output[[1]])
 
 # load data & metadata
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
@@ -70,7 +70,8 @@ sample_metadata <- sample_metadata %>%
 platform <- pdata$platform_id[1]
 
 # retrieve up-to-date probe to gene mappings
-probe_mapping <- get_biomart_mapping(rownames(dat), platform, ensembl_version = 105)
+probe_mapping <- get_biomart_mapping(rownames(dat), platform, 
+                                     ensembl_version = snakemake@config$biomart$ensembl_version)
 
 # TODO: add annotations describing what is being lost here / discussing alternative approaches...
 probe_mask <- rownames(dat) %in% probe_mapping$probe_id
@@ -90,6 +91,9 @@ probe_mapping <- probe_mapping[match(rownames(dat), probe_mapping$probe_id), ]
 if (!all(probe_mapping$probe_id == rownames(dat))) {
   stop("Unexpected probe mapping mismatch!")
 }
+
+# store biomart probe mappings, for reference
+write_csv(probe_mapping, file.path(out_dir, "biomart-ids.csv"))
 
 # get expression data and swap ensgenes for gene symbols
 expr_dat <- dat %>%
@@ -127,10 +131,8 @@ node_mdata <- list(processing = "reprocessed")
 # annotations
 annot <- list("data-prep" = read_file("annot/prepare-data/GSE19784.md"))
 
-pkg_dir <- dirname(snakemake@output[[1]])
-
 pkgr$update_package(snakemake@input[[4]], 
                     resources, annotations = annot,
                     node_metadata = node_mdata, 
                     dag_metadata = dag_mdata, 
-                    pkg_dir = pkg_dir)
+                    pkg_dir = out_dir)

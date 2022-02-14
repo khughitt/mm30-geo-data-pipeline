@@ -92,7 +92,7 @@ process_eset <- function(eset, ensembl_version=104) {
 #
 # queries biomart for a mapping from probe to gene symbols
 #
-get_biomart_mapping <- function(eset, ensembl_version=104) {
+get_biomart_mapping <- function(eset, ensembl_version=105) {
   # load biomaRt
   mart <- biomaRt::useEnsembl(biomart = 'genes', 
                               dataset = 'hsapiens_gene_ensembl',

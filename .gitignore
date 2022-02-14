@@ -1,2 +1,4 @@
-archive
 .snakemake
+archive
+run.sh
+config/config.yml

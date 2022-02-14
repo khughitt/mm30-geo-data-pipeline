@@ -1,4 +1,5 @@
 #!/bin/env/Rscript
+###############################################################################
 #
 # GSE106218
 #
@@ -6,10 +7,10 @@
 #
 # Ryu et al. (2019)
 #
+###############################################################################
 library(annotables)
-library(GEOquery)
 library(tidyverse)
-library(arrow)
+library(eco)
 
 # GEO accession
 accession <- 'GSE106218'

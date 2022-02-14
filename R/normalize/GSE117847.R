@@ -1,7 +1,7 @@
 #!/bin/env/Rscript
 ###############################################################################
 #
-# GEO Dataset processing - GSE117847
+# GSE117847
 #
 # A retained transcriptomic profile characterizes the CD138+ cells in the progression
 # from smoldering to active multiple myeloma
@@ -11,13 +11,7 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
-library(iodat)
-
-# GEO accession
-accession <- 'GSE117847'
-
-# directory to store raw and processed data
-data_dir <- dirname(snakemake@output[[1]])
+library(eco)
 
 # load data & metadata
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%

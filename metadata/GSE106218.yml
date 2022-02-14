@@ -10,7 +10,8 @@ data:
 biodat:
   assay: "single_cell_rnaseq"
   datatype: "experimental_dataset"
-  platforms: "GPL16791"
+  platforms:
+    - "GPL16791"
   sample_types:
     - "patient"
   diseases:

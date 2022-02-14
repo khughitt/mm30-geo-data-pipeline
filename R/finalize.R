@@ -7,7 +7,7 @@
 #
 ###############################################################################
 library(tidyverse)
-library(iodat)
+library(eco)
 library(jsonlite)
 
 # directory to store raw and processed data
@@ -29,7 +29,7 @@ dat <- dat_orig %>%
   summarize_all(median)
 
 # perform sample pca projection
-pca <- prcomp(t(as.matrix(dat[, -1])), scale = snakemake@params[["scale_pca"]])
+pca <- prcomp(t(as.matrix(dat[, -1])), scale = snakemake@config[["pca"]][["scale"]])
 
 # convert pca-projected data to a dataframe
 pca_dat <- pca$x %>%
@@ -41,6 +41,12 @@ pca_summary <- summary(pca)$importance %>%
   t() %>%
   as.data.frame() %>%
   rownames_to_column('PC')
+
+# limit to specified number of pc's
+num_pcs <- snakemake@config[["pca"]][["num_pcs"]]
+
+pca_dat <- pca_dat[, 1:(num_pcs + 1)]
+pca_summary <- head(pca_summary, num_pcs)
 
 # add plot styles to pca dataframe
 style_fields <- c(color = prev_pkg$io$styles$columns$color)
