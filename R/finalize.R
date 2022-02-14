@@ -49,25 +49,38 @@ pca_dat <- pca_dat[, 1:(num_pcs + 1)]
 pca_summary <- head(pca_summary, num_pcs)
 
 # add plot styles to pca dataframe
-style_fields <- c(color = prev_pkg$io$styles$columns$color)
+styles <- prev_pkg$eco$metadata$styles$columns
 
-if ("shape" %in% names(prev_pkg$io$styles$columns)) {
-  style_fields <- c(style_fields, shape = prev_pkg$io$styles$columns$shape)
+style_fields <- as.character(styles)
+
+if (length(style_fields) > 0) {
+  style_dat <- col_mdata %>%
+    select(geo_accession, all_of(style_fields))
+
+  pca_dat <- pca_dat %>%
+    inner_join(style_dat, by = 'geo_accession')
 }
 
-style_dat <- col_mdata %>%
-  select(geo_accession, style_fields)
+# load pca vegalite view
+pca_view <- jsonlite::read_json("views/sample-pca.json")
 
-pca_dat <- pca_dat %>%
-  inner_join(style_dat, by = 'geo_accession')
+# add color/shape, if specified
+if ("color" %in% names(styles)) {
+  pca_view$encoding$color <- list(
+    "field" = styles$color,
+    "type" = "nominal"
+  )
+}
 
-# load pca view
-# TODO: extend with shape, if present?..
-#pca_view <- jsonlite::read_json("views/sample-pca.json")
+if ("shape" %in% names(styles)) {
+  pca_view$encoding$shape <- list(
+    "field" = styles$shape,
+    "type" = "nominal"
+  )
+}
 
 # create a new data package, based off the old one
 pkg_dir <- dirname(snakemake@output[[1]])
-#setwd(pkg_dir)
 
 pkgr <- Packager$new()
 
@@ -86,5 +99,5 @@ resources <- list(
 
 pkgr$update_package(snakemake@input[[4]], resources,
                     node_metadata = node_mdata,
-                    views = list("pca" = "views/sample-pca.json"),
+                    views = list("pca" = pca_view),
                     pkg_dir = pkg_dir)
