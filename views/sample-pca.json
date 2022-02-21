@@ -1,0 +1,24 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Sample PCA plot",
+  "data": "pca-data",
+  "name": "sample-pca",
+  "mark": {
+    "type": "point",
+    "filled": true
+  },
+  "encoding": {
+    "x": {
+      "field": "PC1",
+      "type": "quantitative",
+      "scale": { "padding": 5 }
+    },
+    "y": {
+      "field": "PC2",
+      "type": "quantitative",
+      "scale": { "padding": 5 }
+    },
+    "size": {"value": 50},
+    "tooltip": {"field": "geo_accession", "type": "nominal"}
+  }
+}
