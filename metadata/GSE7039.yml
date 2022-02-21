@@ -11,8 +11,8 @@ biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
   platforms:
-      - "GPL4819"
-      - "GPL4820"
+    - "GPL4819"
+    - "GPL4820"
   sample_types: 
     - "patient"
   diseases:
