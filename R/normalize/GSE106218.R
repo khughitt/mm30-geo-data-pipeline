@@ -8,40 +8,27 @@
 # Ryu et al. (2019)
 #
 ###############################################################################
+library(GEOquery)
 library(annotables)
 library(tidyverse)
 library(eco)
 
-# GEO accession
-accession <- 'GSE106218'
+# load data & metadata
+dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
+  column_to_rownames("feature")
 
-# directory to store raw and processed data
-raw_data_dir <- file.path('/data/raw', accession)
-processed_data_dir <- sub('raw', 'clean', raw_data_dir)
+fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
+pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# create output directories if they don't already exist
-for (dir_ in c(raw_data_dir, processed_data_dir)) {
-  if (!dir.exists(dir_)) {
-      dir.create(dir_, recursive = TRUE)
-  }
+acc <- snakemake@wildcards[["acc"]]
+
+# download separate "clinical information" supplemental file
+cache_dir <- file.path("/data/raw/geo", acc)
+supp_file2 <- file.path(cache_dir, acc, 'GSE106218_GEO_clinical_information_MM.txt.gz')
+
+if (!file.exists(supp_file2)) {
+  getGEOSuppFiles(acc, baseDir = cache_dir)
 }
-
-# expression data is missing from getGEO() query result and must be downloaded
-# separately; further, some useful clinical metadata is available as a separate file
-# which we will also download using the getGEOSuppFiles() function
-
-# download GEO data
-eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
-
-supp_file1 <- file.path(raw_data_dir, accession, 'GSE106218_GEO_processed_MM_raw_TPM_matrix.txt.gz')
-supp_file2 <- file.path(raw_data_dir, accession, 'GSE106218_GEO_clinical_information_MM.txt.gz')
-
-if (!file.exists(supp_file1)) {
-  getGEOSuppFiles(accession, baseDir = raw_data_dir)
-}
-
-# load TPM counts
-tpm_counts <- read.delim(gzfile(supp_file1), row.names = 1)
 
 # load sample metadata
 clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 1))) %>%
@@ -57,7 +44,7 @@ clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 
 # drop the month component of survival time
 clinical_metadata$os_time <- as.numeric(str_extract(clinical_metadata$os_time, '[0-9]+'))
 
-sample_metadata <- pData(eset) %>%
+sample_metadata <- pdata %>%
   select(geo_accession, platform_id,
          patient_id = `patient id:ch1`,
          gender = `gender:ch1`,
@@ -66,31 +53,25 @@ sample_metadata <- pData(eset) %>%
 sample_metadata <- sample_metadata %>%
   inner_join(clinical_metadata, by = 'patient_id')
 
-# tpm_counts
-#         MM02_38 MM02_48 MM02_50
-# 5S_rRNA       0       0       0
-# 7SK           0       0       0
-# A1BG          0       0       0
-
 # clinical_metadata
 #                         MM02 MM16 MM17
 # Sex                        M    F    F
 # ISS stage                 II    I    I
 # Death(alive=0; death=1)    1    1    1
 
-#table(rowSums(tpm_counts) == 0)
+#table(rowSums(dat) == 0)
 #
 # FALSE  TRUE
 # 35582 20278
 
 # remove empty rows
-tpm_counts <- tpm_counts[rowSums(tpm_counts) > 0, ]
+dat <- dat[rowSums(dat) > 0, ]
 
 sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
 
 # collapse patient samples
-expr_patient_ids <- str_extract(colnames(tpm_counts), 'MM[0-9]+')
+expr_patient_ids <- str_extract(colnames(dat), 'MM[0-9]+')
 
 # sort(table(expr_patient_ids))
 # expr_patient_ids
@@ -100,16 +81,16 @@ expr_patient_ids <- str_extract(colnames(tpm_counts), 'MM[0-9]+')
 expr_dat <- NULL
 
 for (patient_id in unique(expr_patient_ids)) {
-  dat <- rowMeans(tpm_counts[, expr_patient_ids == patient_id])
-  expr_dat <- cbind(expr_dat, dat)
+  combined_dat <- rowMeans(dat[, expr_patient_ids == patient_id])
+  expr_dat <- cbind(expr_dat, combined_dat)
 }
 colnames(expr_dat) <- unique(expr_patient_ids)
 
 # collapse sample metadata to match dimensions of expression data;
 # for each patient, we will keep one representative geo accession to use for the
 # aggregated sample id
-sample_metadata <- sample_metadata %>% 
-  group_by(patient_id) %>% 
+sample_metadata <- sample_metadata %>%
+  group_by(patient_id) %>%
   arrange(geo_accession) %>%
   slice(1)
 
@@ -144,20 +125,50 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-expr_dat_nr <- expr_dat %>%
-  group_by(symbol) %>%
-  summarize_all(median)
+# create a new data package, based off the old one
+pkgr <- Packager$new()
+
+# resource list (consider converting values to lists and including "data_type" field for
+# each resource? i.e. "data"/"row metadata"/"column metadata")
+resources <- list(
+  "data" = expr_dat,
+  "row-metadata" = fdata,
+  "column-metadata" = sample_metadata
+)
+
+# update row names and specify style mapping to use for visualizations
+dag_mdata <- list(
+  rows = "symbol",
+  styles = list(
+    columns = list(
+      color = "disease_stage"
+    )
+  )
+)
+
+# node-level metadata
+node_mdata <- list(processing = "reprocessed")
+
+# annotations
+annot <- list("data-prep" = read_file("annot/prepare-data/GSE106218.md"))
+
+pkg_dir <- dirname(snakemake@output[[1]])
+
+pkgr$update_package(snakemake@input[[4]], 
+                    resources, annotations = annot,
+                    node_metadata = node_mdata, dag_metadata = dag_mdata, 
+                    pkg_dir = pkg_dir)
 
 # determine filenames to use for outputs and save to disk
-expr_outfile <- sprintf('%s_gene_expr.feather', accession)
-expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
-mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
-
-print("Final dimensions:")
-print(paste0("- Num rows: ", nrow(expr_dat_nr)))
-print(paste0("- Num cols: ", ncol(expr_dat_nr)))
-
-# store cleaned expression data and metadata
-write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
-write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
-write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
+# expr_outfile <- sprintf('%s_gene_expr.feather', accession)
+# expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
+# mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
+#
+# print("Final dimensions:")
+# print(paste0("- Num rows: ", nrow(expr_dat_nr)))
+# print(paste0("- Num cols: ", ncol(expr_dat_nr)))
+#
+# # store cleaned expression data and metadata
+# write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
+# write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
+# write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))

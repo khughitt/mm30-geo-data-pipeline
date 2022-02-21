@@ -28,8 +28,7 @@ configfile: "config/config.yml"
 # - GSE2912 (metadata retrieved from manuscript)
 # - GSE26760 (metadata retrieved from broad/external website)
 
-# accessions = ["GSE106218", "GSE117847", "GSE19784", "GSE31161"]
-accessions = ["GSE117847", "GSE19784", "GSE31161"]
+accessions = ["GSE106218", "GSE117847", "GSE19784", "GSE31161"]
 
 rule all:
     input:

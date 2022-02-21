@@ -17,14 +17,12 @@ library(GEOquery)
 library(tidyverse)
 library(eco)
 
-download_geo <- function(acc, cache_dir, pkg_dir, increase) {
+download_geo <- function(acc, cache_dir, pkg_dir) {
   # work-around for loading large gzip-compressed csv files (e.g. GSE31161)
   # https://github.com/r-lib/vroom/issues/361
   Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 100)
 
  # download & GEO data
-  message("ACCESSION")
-  message(acc)
   eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
   expr_dat <- exprs(eset) %>%
