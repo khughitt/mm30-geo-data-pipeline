@@ -15,9 +15,8 @@
 ###############################################################################
 library(GEOquery)
 library(tidyverse)
-library(eco)
 
-download_geo <- function(acc, cache_dir, pkg_dir) {
+download_geo <- function(acc, cache_dir, dat_outfile, row_mdata_outfile, col_mdata_outfile) {
   # work-around for loading large gzip-compressed csv files (e.g. GSE31161)
   # https://github.com/r-lib/vroom/issues/361
   Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 100)
@@ -32,22 +31,8 @@ download_geo <- function(acc, cache_dir, pkg_dir) {
   pdata <- pData(eset)
   fdata <- fData(eset)
 
-  # load workflow-/DAG-level metadata
-  fname <- sprintf("%s.yml", acc)
-  dag_mdata <- normalizePath(file.path("metadata", fname))
-
-  # node-level metadata
-  node_mdata <- list(processing = "Unprocessed Data")
-
-  # generate data package and write to disk
-  resources <- list(
-    "data" = expr_dat,
-    "row-metadata" = fdata,
-    "column-metadata" = pdata
-  )
-
-  pkgr <- Packager$new()
-
-  pkgr$build_package(resources, node_metadata = node_mdata, dag_metadata = dag_mdata,
-                     pkg_dir = pkg_dir)
+  # store results
+  write_csv(expr_dat, dat_outfile)
+  write_csv(fdata, row_mdata_outfile)
+  write_csv(pdata, col_mdata_outfile)
 }

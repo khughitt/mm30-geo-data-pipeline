@@ -10,11 +10,9 @@
 ###############################################################################
 library(GEOquery)
 library(tidyverse)
-library(eco)
 
 acc <- snakemake@wildcards[["acc"]]
 cache_dir <- dirname(snakemake@output[[1]])
-pkg_dir <- dirname(snakemake@output[[2]])
 
 eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
@@ -40,21 +38,6 @@ pdata <- pData(eset)
 # metadata is available via fData)
 fdata <- data.frame("feature"=expr_dat$feature)
 
-# load workflow-/DAG-level metadata
-fname <- sprintf("%s.yml", acc)
-dag_mdata <- normalizePath(file.path("metadata", fname))
-
-# node-level metadata
-node_mdata <- list(processing = "Unprocessed Data")
-
-# generate data package and write to disk
-resources <- list(
-  "data" = expr_dat,
-  "row-metadata" = fdata,
-  "column-metadata" = pdata
-)
-
-pkgr <- Packager$new()
-
-pkgr$build_package(resources, node_metadata = node_mdata, dag_metadata = dag_mdata,
-                   pkg_dir = pkg_dir)
+write_csv(expr_dat, snakemake@output[[2]])
+write_csv(fdata, snakemake@output[[3]])
+write_csv(pdata, snakemake@output[[4]])

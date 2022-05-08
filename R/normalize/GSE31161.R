@@ -7,7 +7,6 @@
 #
 library(GEOquery)
 library(tidyverse)
-library(eco)
 source("R/util/biomart.R")
 
 # output directory to store data packages to
@@ -93,32 +92,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-# create a new data package, based off the old one
-pkgr <- Packager$new()
-
-# resource list (consider converting values to lists and including "data_type" field for
-# each resource? i.e. "data"/"row metadata"/"column metadata")
-resources <- list(
-  "data" = expr_dat,
-  "row-metadata" = probe_mapping,
-  "column-metadata" = sample_metadata
-)
-
-# update row names and specify style mapping to use for visualizations
-dag_mdata <- list(
-  rows = "symbol",
-  styles = list(
-    columns = list(
-      color = "disease_stage",
-      shape = "treatment"
-    )
-  )
-)
-
-# node-level metadata
-node_mdata <- list(processing = "reprocessed")
-
-pkgr$update_package(snakemake@input[[4]], resources, 
-                    node_metadata = node_mdata,
-                    dag_metadata = dag_mdata, 
-                    pkg_dir = out_dir)
+# store results
+write_csv(expr_dat, snakemake@output[[1]])
+write_csv(probe_mapping, snakemake@output[[2]])
+write_csv(sample_metadata, snakemake@output[[3]])

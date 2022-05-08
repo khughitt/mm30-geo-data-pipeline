@@ -11,7 +11,6 @@
 library(GEOquery)
 library(annotables)
 library(tidyverse)
-library(eco)
 
 # load data & metadata
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
@@ -125,50 +124,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-# create a new data package, based off the old one
-pkgr <- Packager$new()
-
-# resource list (consider converting values to lists and including "data_type" field for
-# each resource? i.e. "data"/"row metadata"/"column metadata")
-resources <- list(
-  "data" = expr_dat,
-  "row-metadata" = fdata,
-  "column-metadata" = sample_metadata
-)
-
-# update row names and specify style mapping to use for visualizations
-dag_mdata <- list(
-  rows = "symbol",
-  styles = list(
-    columns = list(
-      color = "disease_stage"
-    )
-  )
-)
-
-# node-level metadata
-node_mdata <- list(processing = "reprocessed")
-
-# annotations
-annot <- list("data-prep" = read_file("annot/prepare-data/GSE106218.md"))
-
-pkg_dir <- dirname(snakemake@output[[1]])
-
-pkgr$update_package(snakemake@input[[4]], 
-                    resources, annotations = annot,
-                    node_metadata = node_mdata, dag_metadata = dag_mdata, 
-                    pkg_dir = pkg_dir)
-
-# determine filenames to use for outputs and save to disk
-# expr_outfile <- sprintf('%s_gene_expr.feather', accession)
-# expr_nr_outfile <- sprintf('%s_gene_expr_nr.feather', accession)
-# mdat_outfile <- sprintf('%s_sample_metadata.tsv', accession)
-#
-# print("Final dimensions:")
-# print(paste0("- Num rows: ", nrow(expr_dat_nr)))
-# print(paste0("- Num cols: ", ncol(expr_dat_nr)))
-#
-# # store cleaned expression data and metadata
-# write_feather(expr_dat, file.path(processed_data_dir, expr_outfile))
-# write_feather(expr_dat_nr, file.path(processed_data_dir, expr_nr_outfile))
-# write_tsv(sample_metadata, file.path(processed_data_dir, mdat_outfile))
+# store results
+write_csv(expr_dat, snakemake@output[[1]])
+write_csv(fdata, snakemake@output[[2]])
+write_csv(sample_metadata, snakemake@output[[3]])

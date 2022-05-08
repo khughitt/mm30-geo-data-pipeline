@@ -5,7 +5,8 @@ import os
 import yaml
 
 # temp/dev (jan 26, 2022)
-out_dir = "/data/packages/bio/mm25/4.1/geo"
+#out_dir = "/data/packages/bio/mm25/4.1/geo"
+out_dir = "/data/proj/mm25/4.1/geo"
 
 configfile: "config/config.yml"
 
@@ -28,14 +29,13 @@ configfile: "config/config.yml"
 # - GSE2912 (metadata retrieved from manuscript)
 # - GSE26760 (metadata retrieved from broad/external website)
 
-accessions = ["GSE106218", "GSE117847", "GSE19784", "GSE31161"]
+accessions = ["GSE178340", "GSE106218", "GSE117847", "GSE19784", "GSE31161"]
 
 rule all:
     input:
         expand(os.path.join(out_dir, "final/{acc}/data.csv"), acc=accessions),
         expand(os.path.join(out_dir, "final/{acc}/row-metadata.csv"), acc=accessions),
         expand(os.path.join(out_dir, "final/{acc}/column-metadata.csv"), acc=accessions),
-        expand(os.path.join(out_dir, "final/{acc}/datapackage.json"), acc=accessions)
 
 # generates a "final" version of the datasets by averaging expression for genes that
 # appear multple times.
@@ -44,12 +44,10 @@ rule finalize:
         os.path.join(out_dir, "normalized/{acc}/data.csv"),
         os.path.join(out_dir, "normalized/{acc}/row-metadata.csv"),
         os.path.join(out_dir, "normalized/{acc}/column-metadata.csv"),
-        os.path.join(out_dir, "normalized/{acc}/datapackage.json")
     output:
         os.path.join(out_dir, "final/{acc}/data.csv"),
         os.path.join(out_dir, "final/{acc}/row-metadata.csv"),
         os.path.join(out_dir, "final/{acc}/column-metadata.csv"),
-        os.path.join(out_dir, "final/{acc}/datapackage.json")
     script: "R/finalize.R"
 
 rule normalize:
@@ -57,12 +55,10 @@ rule normalize:
         os.path.join(out_dir, "original/{acc}/data.csv"),
         os.path.join(out_dir, "original/{acc}/row-metadata.csv"),
         os.path.join(out_dir, "original/{acc}/column-metadata.csv"),
-        os.path.join(out_dir, "original/{acc}/datapackage.json"),
     output:
         os.path.join(out_dir, "normalized/{acc}/data.csv"),
         os.path.join(out_dir, "normalized/{acc}/row-metadata.csv"),
         os.path.join(out_dir, "normalized/{acc}/column-metadata.csv"),
-        os.path.join(out_dir, "normalized/{acc}/datapackage.json")
     script: "R/normalize/{wildcards.acc}.R"
 
 rule download:
@@ -71,6 +67,5 @@ rule download:
         os.path.join(out_dir, "original/{acc}/data.csv"),
         os.path.join(out_dir, "original/{acc}/row-metadata.csv"),
         os.path.join(out_dir, "original/{acc}/column-metadata.csv"),
-        os.path.join(out_dir, "original/{acc}/datapackage.json")
     script: "R/download/{wildcards.acc}.R"
 

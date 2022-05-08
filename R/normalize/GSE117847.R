@@ -11,7 +11,6 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
-library(eco)
 
 # load data & metadata
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
@@ -46,36 +45,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-# create a new data package, based off the old one
-pkgr <- Packager$new()
-
-# resource list (consider converting values to lists and including "data_type" field for
-# each resource? i.e. "data"/"row metadata"/"column metadata")
-resources <- list(
-  "data" = expr_dat,
-  "row-metadata" = fdata,
-  "column-metadata" = sample_metadata
-)
-
-# update row names and specify style mapping to use for visualizations
-dag_mdata <- list(
-  rows = "symbol",
-  styles = list(
-    columns = list(
-      color = "disease_stage"
-    )
-  )
-)
-
-# node-level metadata
-node_mdata <- list(processing = "reprocessed")
-
-# annotations
-annot <- list("data-prep" = read_file("annot/prepare-data/GSE117847.md"))
-
-pkg_dir <- dirname(snakemake@output[[1]])
-
-pkgr$update_package(snakemake@input[[4]], 
-                    resources, annotations = annot,
-                    node_metadata = node_mdata, dag_metadata = dag_mdata, 
-                    pkg_dir = pkg_dir)
+# store results
+write_csv(expr_dat, snakemake@output[[1]])
+write_csv(fdata, snakemake@output[[2]])
+write_csv(sample_metadata, snakemake@output[[3]])

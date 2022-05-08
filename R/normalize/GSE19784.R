@@ -8,7 +8,6 @@
 # Clinical trial: http://www.hovon.nl/studies/studies-per-ziektebeeld/mm.html?action=showstudie&studie_id=5&categorie_id=3
 #
 library(tidyverse)
-library(eco)
 source("R/util/biomart.R")
 
 # output directory to store data packages to
@@ -92,9 +91,6 @@ if (!all(probe_mapping$probe_id == rownames(dat))) {
   stop("Unexpected probe mapping mismatch!")
 }
 
-# store biomart probe mappings, for reference
-write_csv(probe_mapping, file.path(out_dir, "biomart-ids.csv"))
-
 # get expression data and swap ensgenes for gene symbols
 expr_dat <- dat %>%
   add_column(symbol = probe_mapping$symbol, .before = 1) %>%
@@ -104,35 +100,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
-# create a new data package, based off the old one
-pkgr <- Packager$new()
-
-# resource list (consider converting values to lists and including "data_type" field for
-# each resource? i.e. "data"/"row metadata"/"column metadata")
-resources <- list(
-  "data" = expr_dat,
-  "row-metadata" = probe_mapping,
-  "column-metadata" = sample_metadata
-)
-
-# update row names and specify style mapping to use for visualizations
-dag_mdata <- list(
-  rows = "symbol",
-  styles = list(
-    columns = list(
-      color = "patient_subgroup"
-    )
-  )
-)
-
-# node-level metadata
-node_mdata <- list(processing = "reprocessed")
-
-# annotations
-annot <- list("data-prep" = read_file("annot/prepare-data/GSE19784.md"))
-
-pkgr$update_package(snakemake@input[[4]], 
-                    resources, annotations = annot,
-                    node_metadata = node_mdata, 
-                    dag_metadata = dag_mdata, 
-                    pkg_dir = out_dir)
+# store results
+write_csv(expr_dat, snakemake@output[[1]])
+write_csv(probe_mapping, snakemake@output[[2]])
+write_csv(sample_metadata, snakemake@output[[3]])
