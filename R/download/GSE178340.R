@@ -3,8 +3,6 @@
 #
 # Download GSE178340 
 #
-# Wang et al. (2022)
-#
 ###############################################################################
 library(GEOquery)
 library(tidyverse)

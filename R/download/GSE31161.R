@@ -3,11 +3,6 @@
 #
 # Download GSE31161
 #
-# Identification of multiple risk loci and regulatory mechanisms influencing
-# susceptibility to multiple myeloma
-#
-# Went et al. (2018)
-#
 ###############################################################################
 source("R/download/common.R")
 
