@@ -8,7 +8,7 @@ library(GEOquery)
 library(tidyverse)
 
 acc <- snakemake@wildcards[["acc"]]
-cache_dir <- dirname(snakemake@output[[1]])
+cache_dir <- file.path("/data/raw/geo", acc)
 
 eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
@@ -41,6 +41,6 @@ expr_dat <- expr_dat[, -1]
 colnames(expr_dat)[-1] <- pdata$geo_accession
 
 
-write_csv(expr_dat, snakemake@output[[2]])
-write_csv(fdata, snakemake@output[[3]])
-write_csv(pdata, snakemake@output[[4]])
+write_csv(expr_dat, snakemake@output[[1]])
+write_csv(fdata, snakemake@output[[2]])
+write_csv(pdata, snakemake@output[[3]])

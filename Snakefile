@@ -17,7 +17,7 @@ configfile: "config/config.yml"
               # "GSE9782"]
 
 # microarray datasets for which no biomart mappings are needed or available:
-# "GSE7039"   "GSE83503"
+# "GSE7039"  
 
 # datasets for which expression data/metadata must be downloaded separately:
 # - GSE19784 (metadata retrieved from manuscript)
@@ -30,7 +30,7 @@ configfile: "config/config.yml"
 # - GSE26760 (metadata retrieved from broad/external website)
 
 accessions = ["GSE39754", "GSE178340", "GSE106218", "GSE117847", "GSE19784", "GSE31161",
-              "GSE158387", "GSE162205", "GSE83503"]
+              "GSE158387", "GSE162205", "GSE83503", "GSE7039"]
 
 rule all:
     input:
@@ -64,7 +64,6 @@ rule normalize:
 
 rule download:
     output:
-        "/data/raw/geo/{acc}/{acc}_series_matrix.txt.gz",
         os.path.join(out_dir, "original/{acc}/data.csv"),
         os.path.join(out_dir, "original/{acc}/row-metadata.csv"),
         os.path.join(out_dir, "original/{acc}/column-metadata.csv"),

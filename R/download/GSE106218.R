@@ -8,7 +8,7 @@ library(GEOquery)
 library(tidyverse)
 
 acc <- snakemake@wildcards[["acc"]]
-cache_dir <- dirname(snakemake@output[[1]])
+cache_dir <- file.path("/data/raw/geo", acc)
 
 eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
@@ -32,8 +32,8 @@ pdata <- pData(eset)
 
 # save a placeholder "row metadata" dataframe with just the gene identifiers (no
 # metadata is available via fData)
-fdata <- data.frame("feature"=expr_dat$feature)
+fdata <- data.frame("feature" = expr_dat$feature)
 
-write_csv(expr_dat, snakemake@output[[2]])
-write_csv(fdata, snakemake@output[[3]])
-write_csv(pdata, snakemake@output[[4]])
+write_csv(expr_dat, snakemake@output[[1]])
+write_csv(fdata, snakemake@output[[2]])
+write_csv(pdata, snakemake@output[[3]])
