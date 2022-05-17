@@ -5,7 +5,6 @@ import os
 import yaml
 
 # temp/dev (jan 26, 2022)
-#out_dir = "/data/packages/bio/mm25/4.1/geo"
 out_dir = "/data/proj/mm25/4.1/geo"
 
 configfile: "config/config.yml"
@@ -16,11 +15,7 @@ configfile: "config/config.yml"
               # "GSE5900", "GSE6477", "GSE6691", "GSE68871", "GSE7039", "GSE83503",
               # "GSE9782"]
 
-# microarray datasets for which no biomart mappings are needed or available:
-# "GSE7039"  
-
 # datasets for which expression data/metadata must be downloaded separately:
-# - GSE19784 (metadata retrieved from manuscript)
 # - GSE118900 (expr data stored in supplemental file)
 # - GSE106218 (expr data and metadata stored in supplemental files)
 # - GSE7039 (metadata provided by author)
@@ -30,7 +25,7 @@ configfile: "config/config.yml"
 # - GSE26760 (metadata retrieved from broad/external website)
 
 accessions = ["GSE39754", "GSE178340", "GSE106218", "GSE117847", "GSE19784", "GSE31161",
-              "GSE158387", "GSE162205", "GSE83503", "GSE7039"]
+              "GSE158387", "GSE162205", "GSE83503", "GSE7039", "GSE118900"]
 
 rule all:
     input:
@@ -38,8 +33,6 @@ rule all:
         expand(os.path.join(out_dir, "final/{acc}/row-metadata.csv"), acc=accessions),
         expand(os.path.join(out_dir, "final/{acc}/column-metadata.csv"), acc=accessions),
 
-# generates a "final" version of the datasets by averaging expression for genes that
-# appear multple times.
 rule finalize:
     input: 
         os.path.join(out_dir, "normalized/{acc}/data.csv"),
