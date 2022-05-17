@@ -1,7 +1,7 @@
 #!/bin/env/Rscript
 ###############################################################################
 #
-# GSE178340 (Wang et al., 2022)
+# GSE162205
 #
 ###############################################################################
 library(annotables)
@@ -16,21 +16,21 @@ pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 # size factor normalization (ignore gene symbol column)
 dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
 
+# replace combined ensgene/symbol id column with symbols alone
+dat$symbol <- fdata$symbol
+
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, description, 
-         cell_line = `cell line:ch1`, tissue = `tissue:ch1`, treatment = `treatment:ch1`)
+  select(geo_accession, platform_id, title, 
+         cell_line = `cell type:ch1`, 
+         time_hours =`time point:ch1`,
+         treatment = `treatment:ch1`)
 
-sample_metadata$replicate <- as.numeric(str_split(pdata$description, " ", simplify = TRUE)[, 2])
+sample_metadata$time_hours <- as.numeric(sub("h", "", sample_metadata$time_hours))
+sample_metadata$replicate <- as.numeric(endsWith(sample_metadata$title, "B")) + 1
 
-  # mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
-  # mutate(disease_stage = recode(mm_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
-
-sample_metadata$cell_type <- 'CD138+'
+#sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
-
-# drop rows with missing gene symbols
-dat <- dat[!is.na(dat$symbol), ]
 
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

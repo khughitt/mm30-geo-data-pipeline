@@ -1,0 +1,9 @@
+python>=3.9
+snakemake-minimal
+r-annotables
+r-devtools
+r-jsonlite
+r-r.utils
+r-tidyverse
+bioconductor-biomart
+bioconductor-geoquery

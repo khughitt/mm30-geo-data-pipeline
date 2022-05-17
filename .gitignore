@@ -1,5 +1,8 @@
 .snakemake
+.RData
 archive
 run.sh
 config/config.yml
 supp
+config
+extra

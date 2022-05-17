@@ -21,7 +21,7 @@ download_geo <- function(acc, cache_dir, dat_outfile, row_mdata_outfile, col_mda
   # https://github.com/r-lib/vroom/issues/361
   Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 100)
 
- # download & GEO data
+  # download & GEO data
   eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
   expr_dat <- exprs(eset) %>%

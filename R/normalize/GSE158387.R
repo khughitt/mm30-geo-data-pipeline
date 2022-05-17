@@ -1,7 +1,7 @@
 #!/bin/env/Rscript
 ###############################################################################
 #
-# GSE178340 (Wang et al., 2022)
+# GSE158387 (Saavedra-García et al., 2021)
 #
 ###############################################################################
 library(annotables)
@@ -18,19 +18,20 @@ dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, description, 
-         cell_line = `cell line:ch1`, tissue = `tissue:ch1`, treatment = `treatment:ch1`)
+  select(geo_accession, title, description, platform_id, 
+         cell_line = `cell line:ch1`, replicate = `replicate:ch1`,
+         time_days = `time point:ch1`,
+         treatment = `treatment:ch1`)
 
-sample_metadata$replicate <- as.numeric(str_split(pdata$description, " ", simplify = TRUE)[, 2])
+sample_metadata$replicate <- as.numeric(substr(sample_metadata$replicate, 10, 11))
+
+sample_metadata$time_days <- as.numeric(str_split(sample_metadata$time_days, " ", simplify = TRUE)[, 2])
 
   # mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
   # mutate(disease_stage = recode(mm_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
 
 sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
-
-# drop rows with missing gene symbols
-dat <- dat[!is.na(dat$symbol), ]
 
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

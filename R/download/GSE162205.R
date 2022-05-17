@@ -1,9 +1,7 @@
 #!/bin/env/Rscript
 ###############################################################################
 #
-# Download GSE178340 
-#
-# Wang et al. (2022)
+# Download GSE162205 
 #
 ###############################################################################
 library(GEOquery)
@@ -16,32 +14,26 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file1 <- file.path(cache_dir, acc, 'GSE178340_fpm.tsv.gz')
+supp_file1 <- file.path(cache_dir, acc, 'GSE162205_gene_raw_counts_matrix.txt.gz')
 
 if (!file.exists(supp_file1)) {
   getGEOSuppFiles(acc, baseDir = cache_dir)
 }
 
-# load FPM counts
-#           gene_id SYMBOL ATRA.Cfz_S8_L001
-# 1 ENSG00000000003 TSPAN6        0.2802507
-# 2 ENSG00000000419   DPM1       89.3999665
-# 3 ENSG00000000457  SCYL3       29.7065719
-expr_dat <- read.delim(gzfile(supp_file1))
-colnames(expr_dat)[1:2] <- c("ensgene", "symbol")
-
 pdata <- pData(eset)
-fdata <- expr_dat[, 1:2]
 
-expr_dat <- expr_dat[, -1]
+# load raw counts
+# ENSG.HGNC_symbol X20160208.Exp.13D.100nM.dBET6.18h.A X20160208.Exp.13D.100nM.dBET6.18h.B
+#  ENSG00000223972|DDX11L1      1  0
+#  ENSG00000227232|WASH7P       0  0
+#  ENSG00000278267|MIR6859-1    0  0
+expr_dat <- read.delim(gzfile(supp_file1))
 
-# sanity check
-# all(make.names(pdata$title) == colnames(expr_dat)[-1])
-# TRUE
+# save gene metadata (just symbol & biotype in this case)
+fdata <- as.data.frame(str_split(expr_dat[, 1], "\\|", simplify = TRUE))
+colnames(fdata) <- c("ensgene", "symbol")
 
-# switch to geo accessions for column names
-colnames(expr_dat)[-1] <- pdata$geo_accession
-
+colnames(expr_dat) <- c("symbol", pdata$geo_accession)
 
 write_csv(expr_dat, snakemake@output[[2]])
 write_csv(fdata, snakemake@output[[3]])
