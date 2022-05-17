@@ -17,7 +17,7 @@ configfile: "config/config.yml"
               # "GSE9782"]
 
 # microarray datasets for which no biomart mappings are needed or available:
-# "GSE117847" "GSE39754"  "GSE7039"   "GSE83503"
+# "GSE7039"   "GSE83503"
 
 # datasets for which expression data/metadata must be downloaded separately:
 # - GSE19784 (metadata retrieved from manuscript)
@@ -30,7 +30,7 @@ configfile: "config/config.yml"
 # - GSE26760 (metadata retrieved from broad/external website)
 
 accessions = ["GSE39754", "GSE178340", "GSE106218", "GSE117847", "GSE19784", "GSE31161",
-              "GSE158387", "GSE162205"]
+              "GSE158387", "GSE162205", "GSE83503"]
 
 rule all:
     input:
