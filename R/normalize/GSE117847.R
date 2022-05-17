@@ -3,11 +3,6 @@
 #
 # GSE117847
 #
-# A retained transcriptomic profile characterizes the CD138+ cells in the progression
-# from smoldering to active multiple myeloma
-#
-# Storti et al. (2019)
-#
 ###############################################################################
 library(annotables)
 library(tidyverse)

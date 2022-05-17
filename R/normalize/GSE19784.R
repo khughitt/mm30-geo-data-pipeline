@@ -1,12 +1,9 @@
 #!/bin/env/Rscript
+###############################################################################
 #
-# Gene expression profiling for molecular classification of multiple myeloma in newly
-# diagnosed patients
+# GSE19784
 #
-# Broyl et al. (2010)
-#
-# Clinical trial: http://www.hovon.nl/studies/studies-per-ziektebeeld/mm.html?action=showstudie&studie_id=5&categorie_id=3
-#
+###############################################################################
 library(tidyverse)
 source("R/util/biomart.R")
 

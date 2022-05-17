@@ -5,9 +5,9 @@
 # 
 # Note: GSE83503 was performed on an Affymetrix Human Exon 1.0 ST Array, with multiple
 # probes for each exon.
+#
 # The result of this is that >95% of the probes map to multiple genes, and thus simply
-# discarding multi-mapped probes will not be helpful. get gene symbols associated with
-# each probe; gene symbols are stored at every
+# discarding multi-mapped probes will not be helpful. 
 #
 ###############################################################################
 library(annotables)

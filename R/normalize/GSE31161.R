@@ -1,10 +1,9 @@
 #!/bin/env/Rscript
+###############################################################################
 #
-# Identification of multiple risk loci and regulatory mechanisms influencing
-# susceptibility to multiple myeloma
+# GSE31161
 #
-# Went et al. (2018)
-#
+###############################################################################
 library(GEOquery)
 library(tidyverse)
 source("R/util/biomart.R")
