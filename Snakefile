@@ -9,7 +9,7 @@ out_dir = "/data/proj/mm25/4.1/geo"
 
 configfile: "config/config.yml"
 
-# accessions = ["GSE117847", "GSE118900", "GSE128251", "GSE134598",
+# accessions = [, "GSE134598",
               # "GSE13591", "GSE14519", "GSE16791", "GSE19554", "GSE24080",
               # "GSE26760", "GSE2912", "GSE31161", "GSE39754", "GSE47552", "GSE57317",
               # "GSE5900", "GSE6477", "GSE6691", "GSE68871", "GSE7039", "GSE83503",
@@ -25,7 +25,8 @@ configfile: "config/config.yml"
 # - GSE26760 (metadata retrieved from broad/external website)
 
 accessions = ["GSE39754", "GSE178340", "GSE106218", "GSE117847", "GSE19784", "GSE31161",
-              "GSE158387", "GSE162205", "GSE83503", "GSE7039", "GSE118900"]
+              "GSE158387", "GSE162205", "GSE83503", "GSE7039", "GSE118900",
+              "GSE128251"]
 
 rule all:
     input:

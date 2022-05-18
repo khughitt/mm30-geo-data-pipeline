@@ -5,9 +5,10 @@
 # Collapses gene symbols with multiple entries into a single row by taking the
 # median expression value within each sample.
 #
+# - [ ] TODO: adjust row metadata to reflect changes from aggregation..
+#
 ###############################################################################
 library(tidyverse)
-library(jsonlite)
 
 # directory to store raw and processed data
 data_dir <- dirname(snakemake@output[[1]])
@@ -23,8 +24,6 @@ col_mdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 dat <- dat_orig %>%
   group_by(symbol) %>%
   summarize_all(median)
-
-# - [ ] TODO: adjust row metadata to reflect changes from aggregation..
 
 write_csv(dat, snakemake@output[[1]])
 write_csv(row_mdata, snakemake@output[[2]])
