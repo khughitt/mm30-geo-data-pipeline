@@ -31,8 +31,8 @@ eset <- getGEO(accession, destdir = raw_data_dir)[[1]]
 # [1] "5.82592"  "6.799907" "5.388776" "6.630125" "7.093243" "6.426071"
 
 # NOTE: GEOquery currently incorrectly parses the data for this experiment, skipping
-# >500 lines and usign the wrong colnames; reported the issue upstream. For now, just
-# fixing colnames..
+# >500 lines and using the wrong colnames; reported the issue upstream. 
+# For now, just fixing colnames..
 colnames(eset) <- pData(eset)$geo_accession
 
 # columns to include (GSE6699)
