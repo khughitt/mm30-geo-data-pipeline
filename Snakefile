@@ -25,7 +25,8 @@ configfile: "config/config.yml"
 
 accessions = ["GSE39754", "GSE178340", "GSE106218", "GSE117847", "GSE19784", "GSE31161",
               "GSE158387", "GSE162205", "GSE83503", "GSE7039", "GSE118900",
-              "GSE128251", "GSE13591", "GSE14519", "GSE16791", "GSE19554", "GSE47552"]
+              "GSE128251", "GSE13591", "GSE14519", "GSE16791", "GSE19554", "GSE47552",
+              "GSE57317"]
 
 rule all:
     input:
