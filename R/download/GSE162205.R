@@ -10,6 +10,11 @@ library(tidyverse)
 acc <- snakemake@wildcards[["acc"]]
 cache_dir <- file.path("/data/raw/geo", acc)
 
+# create cache dir
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE, mode = "0755")
+}
+
 eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded

@@ -18,6 +18,11 @@ library(tidyverse)
 acc <- snakemake@wildcards[["acc"]]
 cache_dir <- file.path("/data/raw/geo", acc)
 
+# create cache dir
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE, mode = "0755")
+}
+
 # load survival metadata provided by author
 survival_dat <- read_csv('supp/clean/GSE7039_MM_Survival_time.csv', col_types = cols())
 

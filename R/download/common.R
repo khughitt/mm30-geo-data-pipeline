@@ -21,6 +21,11 @@ download_geo <- function(acc, cache_dir, dat_outfile, row_mdata_outfile, col_mda
   # https://github.com/r-lib/vroom/issues/361
   Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 100)
 
+  # create cache dir
+  if (!dir.exists(cache_dir)) {
+    dir.create(cache_dir, recursive = TRUE, mode = "0755")
+  }
+
   # download & GEO data
   eset <- getGEO(acc, destdir = cache_dir, AnnotGPL = annot_gpl)[[1]]
 
