@@ -9,8 +9,7 @@ out_dir = "/data/proj/mm25/4.1/geo"
 
 configfile: "config/config.yml"
 
-# accessions = [, "GSE24080",
-              # "GSE26760", "GSE2912", "GSE7039"]
+# accessions = ["GSE24080", "GSE26760", "GSE2912"]
 
 # datasets for which expression data/metadata must be downloaded separately:
 # - GSE118900 (expr data stored in supplemental file)
@@ -25,7 +24,7 @@ accessions = ["GSE39754", "GSE178340", "GSE106218", "GSE117847", "GSE19784", "GS
               "GSE158387", "GSE162205", "GSE83503", "GSE7039", "GSE118900",
               "GSE128251", "GSE13591", "GSE14519", "GSE16791", "GSE19554", "GSE47552",
               "GSE57317", "GSE5900", "GSE6477", "GSE6691", "GSE68871", "GSE9782",
-              "GSE134598"]
+              "GSE134598", "GSE24080"]
 
 rule all:
     input:
