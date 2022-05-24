@@ -1,7 +1,7 @@
 #!/bin/env/Rscript
 ###############################################################################
 #
-# GSE13591
+# GSE26760
 #
 ###############################################################################
 library(tidyverse)
@@ -21,39 +21,33 @@ expr_dat <- dat %>%
   add_column(symbol = fdata$`Gene Symbol`, .before = 1) %>%
   as_tibble()
 
+mask <- expr_dat$symbol != ""
+expr_dat <- expr_dat[mask, ]
+fdata <- fdata[mask, ]
+
 # split multi-mapped symbols
 expr_dat <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title,
-         sample_type = `sample type:ch1`)
+  select(geo_accession, platform_id, title, patient_id,
+         age = `Age at Diagnosis`, gender = Gender,
+         race = Race, mm_stage = Diagnosis)
 
-sample_metadata$mm_stage <- sample_metadata$sample_type
-sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'TC')] <- 'MM'
-sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'N')] <- 'Healthy'
-
-sample_metadata$disease_stage <- sample_metadata$mm_stage
-
-#table(sample_metadata$sample_type)
-#
-# MGUS    N  PCL  TC1  TC2  TC3  TC4  TC5
-#   11    5    9   29   25   49   24    6
-
-#table(sample_metadata$disease_stage)
-#
-# Healthy    MGUS      MM     PCL
-#       5      11     133       9
-
-# drop PCL samples
-mask <- sample_metadata$mm_stage  != 'PCL'
-
-sample_metadata <- sample_metadata[mask, ]
-expr_dat <- expr_dat[, c(TRUE, mask)]
-
-# add platform
+# add platform & disease stage
 sample_metadata$platform_type <- 'Microarray'
+
+# drop samples with unknown stage and normalize stage names
+sample_metadata <- sample_metadata %>%
+  filter(mm_stage != 'Unknown') %>%
+  mutate(mm_stage = recode(mm_stage, 
+                           `Multiple Myeloma` = 'MM', 
+                           `Primary Plasma Cell Leukemia` = 'PCL',
+                           `Smoldering Myeloma` = 'SMM'))
+
+# update expression data to match samples & order in metadata
+expr_dat <- expr_dat[, c("symbol", sample_metadata$geo_accession)] 
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

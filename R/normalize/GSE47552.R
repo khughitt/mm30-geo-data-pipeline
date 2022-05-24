@@ -4,7 +4,6 @@
 # GSE47552
 #
 ###############################################################################
-library(annotables)
 library(tidyverse)
 
 # load data & metadata

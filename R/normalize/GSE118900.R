@@ -4,7 +4,6 @@
 # GSE118900
 #
 ###############################################################################
-library(annotables)
 library(tidyverse)
 
 # load data & metadata
