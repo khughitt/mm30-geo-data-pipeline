@@ -36,7 +36,7 @@ mdat <- read.csv('supp/clean/agnelli2005.csv')
 
 patient_ids <- str_extract(pData(eset)$title, 'MM-[0-9]+')
 
-# reoder patient metadata
+# reorder patient metadata
 mdat <- mdat[match(mdat$Patient, patient_ids), ]
 
 # get relevant sample metadata
