@@ -43,11 +43,11 @@ mdat <- mdat[match(mdat$Patient, patient_ids), ]
 sample_metadata <- pData(eset) %>%
   select(geo_accession, platform_id)
 
-GENDER_IND <- 3
+SEX_IND <- 3
 AGE_IND <- 5
 STAGE_IND <- 6
 
-sample_metadata$gender <- mdat[, GENDER_IND]
+sample_metadata$sex <- mdat[, SEX_IND]
 sample_metadata$age <- mdat[, AGE_IND]
 sample_metadata$mm_stage <- mdat[, STAGE_IND]
 

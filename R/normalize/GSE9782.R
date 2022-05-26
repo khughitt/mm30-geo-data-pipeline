@@ -52,12 +52,12 @@ sample_metadata <- pdata %>%
     patient_id         = title,
     study_code         = as.numeric(str_extract(characteristics_ch1, '\\d+$')),
     treatment          = str_extract(characteristics_ch1.1, '\\w+$'),
-    gender             = str_extract(characteristics_ch1.2, '\\w+$'),
+    sex                = str_extract(characteristics_ch1.2, '\\w+$'),
     ethnicity          = str_extract(characteristics_ch1.3, '\\w+$'),
     age                = as.numeric(str_extract(characteristics_ch1.4, '\\d+$')),
     treatment_response = str_extract(characteristics_ch1.7, '\\w+$'),
     patient_subgroup   = str_extract(characteristics_ch1.8, '\\w+$')) %>%
-  select(geo_accession, patient_id, platform_id, study_code, title, treatment, gender,
+  select(geo_accession, patient_id, platform_id, study_code, title, treatment, sex,
           ethnicity, age, treatment_response, patient_subgroup)
 
 pfs_event <- c()

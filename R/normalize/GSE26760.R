@@ -32,7 +32,7 @@ expr_dat <- expr_dat %>%
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, patient_id,
-         age = `Age at Diagnosis`, gender = Gender,
+         age = `Age at Diagnosis`, sex = Gender,
          race = Race, mm_stage = Diagnosis)
 
 # add platform & disease stage

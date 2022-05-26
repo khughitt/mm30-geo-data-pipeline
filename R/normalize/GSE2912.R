@@ -32,7 +32,7 @@ expr_dat <- expr_dat %>%
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, patient_id,
-         age = `Age (years)`, gender = Sex, mm_stage = Stage)
+         age = `Age (years)`, sex = Sex, mm_stage = Stage)
 
 # add platform & disease stage
 sample_metadata$platform_type <- 'Microarray'

@@ -42,7 +42,7 @@ clinical_metadata$os_time <- as.numeric(str_extract(clinical_metadata$os_time, '
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id,
          patient_id = `patient id:ch1`,
-         gender = `gender:ch1`,
+         sex = `gender:ch1`,
          prep_site = `prep-site:ch1`)
 
 sample_metadata <- sample_metadata %>%

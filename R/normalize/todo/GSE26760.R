@@ -45,7 +45,7 @@ sample_metadata$platform_type <- 'Microarray'
 # add additional metadata from
 # http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
 mdat <- read_csv('supp/clean/mmrc.sample.information.csv', col_types = cols()) %>%
-  select(patient_id = Array, age = `Age at Diagnosis`, gender = Gender,
+  select(patient_id = Array, age = `Age at Diagnosis`, sex = Gender,
          race = Race, mm_stage = Diagnosis)
 
 sample_metadata <- sample_metadata %>%
