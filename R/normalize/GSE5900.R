@@ -35,14 +35,15 @@ sample_metadata <- pdata %>%
 
 group <- pdata$source_name_ch1
 
-sample_metadata$mm_stage <- rep('Healthy', nrow(sample_metadata))
-sample_metadata$mm_stage[grepl('MGUS', group)] <- 'MGUS'
-sample_metadata$mm_stage[grepl('smoldering', group)] <- 'SMM'
+sample_metadata$disease_stage <- rep('Healthy', nrow(sample_metadata))
+sample_metadata$disease_stage[grepl('MGUS', group)] <- 'MGUS'
+sample_metadata$disease_stage[grepl('smoldering', group)] <- 'SMM'
 
-sample_metadata$disease_stage <- sample_metadata$mm_stage
+sample_metadata$disease_stage <- sample_metadata$disease_stage
 
 # add platform
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

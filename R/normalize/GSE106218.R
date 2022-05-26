@@ -62,8 +62,8 @@ sample_metadata <- sample_metadata %>%
 # remove empty rows
 dat <- dat[rowSums(dat) > 0, ]
 
-sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$sample_type <- "Patient"
 
 # collapse patient samples
 expr_patient_ids <- str_extract(colnames(dat), 'MM[0-9]+')

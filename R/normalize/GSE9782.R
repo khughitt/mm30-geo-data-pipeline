@@ -121,6 +121,7 @@ sample_metadata$patient_died <- patient_died
 
 sample_metadata$disease_stage <- 'RRMM'
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

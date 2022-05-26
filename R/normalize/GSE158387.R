@@ -23,14 +23,10 @@ sample_metadata <- pdata %>%
          treatment = `treatment:ch1`)
 
 sample_metadata$replicate <- as.numeric(substr(sample_metadata$replicate, 10, 11))
-
 sample_metadata$time_days <- as.numeric(str_split(sample_metadata$time_days, " ", simplify = TRUE)[, 2])
 
-  # mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
-  # mutate(disease_stage = recode(mm_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
-
-sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$sample_type <- "Cell Line"
 
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

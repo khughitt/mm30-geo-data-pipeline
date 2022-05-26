@@ -30,11 +30,11 @@ sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title,
          sample_type = `sample type:ch1`)
 
-sample_metadata$mm_stage <- sample_metadata$sample_type
-sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'TC')] <- 'MM'
-sample_metadata$mm_stage[startsWith(sample_metadata$mm_stage, 'N')] <- 'Healthy'
+sample_metadata$disease_stage <- sample_metadata$sample_type
+sample_metadata$disease_stage[startsWith(sample_metadata$disease_stage, 'TC')] <- 'MM'
+sample_metadata$disease_stage[startsWith(sample_metadata$disease_stage, 'N')] <- 'Healthy'
 
-sample_metadata$disease_stage <- sample_metadata$mm_stage
+sample_metadata$disease_stage <- sample_metadata$disease_stage
 
 #table(sample_metadata$sample_type)
 #
@@ -47,13 +47,14 @@ sample_metadata$disease_stage <- sample_metadata$mm_stage
 #       5      11     133       9
 
 # drop PCL samples
-mask <- sample_metadata$mm_stage  != 'PCL'
+mask <- sample_metadata$disease_stage  != 'PCL'
 
 sample_metadata <- sample_metadata[mask, ]
 expr_dat <- expr_dat[, c(TRUE, mask)]
 
 # add platform
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

@@ -33,15 +33,16 @@ expr_dat <- expr_dat %>%
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, patient_id,
          age = `Age at Diagnosis`, sex = Gender,
-         race = Race, mm_stage = Diagnosis)
+         race = Race, disease_stage = Diagnosis)
 
 # add platform & disease stage
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 # drop samples with unknown stage and normalize stage names
 sample_metadata <- sample_metadata %>%
-  filter(mm_stage != 'Unknown') %>%
-  mutate(mm_stage = recode(mm_stage, 
+  filter(disease_stage != 'Unknown') %>%
+  mutate(disease_stage = recode(disease_stage, 
                            `Multiple Myeloma` = 'MM', 
                            `Primary Plasma Cell Leukemia` = 'PCL',
                            `Smoldering Myeloma` = 'SMM'))

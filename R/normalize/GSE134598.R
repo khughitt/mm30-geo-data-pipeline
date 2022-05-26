@@ -40,12 +40,13 @@ expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 # get relevant sample metadata
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title,
-         cell_type = `cell line:ch1`,
+         cell_line = `cell line:ch1`,
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
 
 sample_metadata$disease_stage <- "MM"
 sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$sample_type <- "Mixed"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$title)) {
   stop("Sample ID mismatch!")

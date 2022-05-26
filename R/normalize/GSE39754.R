@@ -32,6 +32,7 @@ sample_metadata <- pdata %>%
          diagnosis = `diagnosis:ch1`, treatment_response = `treatment_response:ch1`)
 
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 sample_metadata$disease_stage <- 'MM'
 sample_metadata$disease_stage[grepl('Healthy', sample_metadata$diagnosis)] <- 'Healthy'

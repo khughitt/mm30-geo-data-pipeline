@@ -40,6 +40,7 @@ sample_metadata <- pdata %>%
 
 sample_metadata$disease_stage <- ifelse(sample_metadata$pfs_event == 1, 'RRMM', 'MM')
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 # [(N-1) + 2]th position (i.e. 2, 7, 12, 17..)
 gene_parts <- str_split(fdata$gene_assignment, '//', simplify = TRUE)

@@ -37,6 +37,7 @@ sample_metadata <- pdata %>%
 # add platform & disease stage
 sample_metadata$platform_type <- 'Microarray'
 sample_metadata$disease_stage <- 'MM'
+sample_metadata$sample_type <- "Patient"
 
 # remove five samples with MAQC_Remove flag
 # MAQC_Remove    Training  Validation

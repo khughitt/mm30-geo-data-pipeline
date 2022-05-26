@@ -34,7 +34,7 @@ sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, 
          ploidy = characteristics_ch1,
          ch13_status = characteristics_ch1.1) %>%
-  mutate(mm_stage = ifelse(grepl('Normal', title), 'Normal',
+  mutate(disease_stage = ifelse(grepl('Normal', title), 'Normal',
                     ifelse(grepl('New', title), 'New',
                     ifelse(grepl('MGUS', title), 'MGUS',
                     ifelse(grepl('Relapsed', title), 'Relapsed',
@@ -43,13 +43,14 @@ sample_metadata <- pdata %>%
 
 # add disease stage
 sample_metadata <- sample_metadata %>%
-  mutate(disease_stage = recode(mm_stage, 
+  mutate(disease_stage = recode(disease_stage, 
                                 Normal = 'Healthy', New = 'MM',
                                 Relapsed = 'RRMM', Smoldering = 'SMM'))
 
 
 # add platform
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

@@ -30,15 +30,16 @@ expr_dat <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
 
 # columns to include
+# skipping "stage:ch1"; unclear what it represents..
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, 
-         mm_stage = `stage:ch1`, age = `age:ch1`)
+  select(geo_accession, platform_id, title, age = `age:ch1`)
 
 # add disease stage
 sample_metadata$disease_stage <- 'MM'
 
 # add platform
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

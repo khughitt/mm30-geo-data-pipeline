@@ -37,6 +37,7 @@ sample_metadata <- pdata %>%
 # add platform & disease stage
 sample_metadata$platform_type <- 'Microarray'
 sample_metadata$disease_stage <- 'MM'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

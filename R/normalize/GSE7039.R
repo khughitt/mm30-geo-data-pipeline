@@ -34,6 +34,10 @@ expr_dat <- expr_dat %>%
   add_column(symbol = gene_symbols, .before = 1) %>%
   filter(symbol != '')
 
+# add platform
+pdata$platform_type <- "Microarray"
+sample_metadata$sample_type <- "Patient"
+
 if (!all(colnames(expr_dat)[-1] == pdata$geo_accession)) {
   stop("Sample ID mismatch!")
 }

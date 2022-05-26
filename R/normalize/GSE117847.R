@@ -19,12 +19,12 @@ dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, mm_stage = `patient diagnosis:ch1`) %>%
-  mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
-  mutate(disease_stage = recode(mm_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
+  select(geo_accession, platform_id, disease_stage = `patient diagnosis:ch1`) %>%
+  mutate(disease_stage = recode(disease_stage, `active MM` = 'MM')) %>%
+  mutate(disease_stage = recode(disease_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
 
-sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 # map from ensgenes to gene symbols ("SPOT_ID" column for this dataset contains ensembl
 # gene identifiers..)

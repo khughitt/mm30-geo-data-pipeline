@@ -38,16 +38,17 @@ sample_metadata$treatment[grepl('ATO 24', sample_metadata$title)] <- 'ATO (24 hr
 sample_metadata$treatment[grepl('ATO 48', sample_metadata$title)] <- 'ATO (48 hrs)'
 
 # cell line
-sample_metadata$cell_type <- 'U266'
-sample_metadata$cell_type[grepl('MM.1s', sample_metadata$title)] <- 'MM.1s'
-sample_metadata$cell_type[grepl('KMS11', sample_metadata$title)] <- 'KMS11'
-sample_metadata$cell_type[grepl('8226', sample_metadata$title)] <- '8226'
+sample_metadata$cell_line <- 'U266'
+sample_metadata$cell_line[grepl('MM.1s', sample_metadata$title)] <- 'MM.1s'
+sample_metadata$cell_line[grepl('KMS11', sample_metadata$title)] <- 'KMS11'
+sample_metadata$cell_line[grepl('8226', sample_metadata$title)] <- '8226'
 
 # disease stage
 sample_metadata$disease_stage <- 'MM'
 
 # add platform
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Cell Line"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

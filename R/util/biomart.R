@@ -1,6 +1,9 @@
 #
 # queries biomart for a mapping from probe to gene symbols
 #
+# NOTE: in cases where multiple genes are associated with a probe, the approach
+# arbitrarily selects the first gene as the "true" mapping...
+#
 get_biomart_mapping <- function(probe_ids, platform, ensembl_version=105) {
   # load biomaRt
   mart <- biomaRt::useEnsembl(biomart = 'genes', 

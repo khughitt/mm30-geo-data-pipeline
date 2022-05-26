@@ -32,23 +32,24 @@ expr_dat <- expr_dat %>%
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, 
-         mm_stage_raw = `cell type:ch1`)
+         disease_stage_raw = `cell type:ch1`)
 
 # add disease stage
-sample_metadata$mm_stage <- rep('MM', length(sample_metadata$mm_stage_raw))
+sample_metadata$disease_stage <- rep('MM', length(sample_metadata$disease_stage_raw))
 
-sample_metadata$mm_stage[grepl('Normal', sample_metadata$mm_stage_raw)] <- 'Healthy'
-sample_metadata$mm_stage[grepl('MGUS', sample_metadata$mm_stage_raw)] <- 'MGUS'
-sample_metadata$mm_stage[grepl('SMM', sample_metadata$mm_stage_raw)] <- 'SMM'
+sample_metadata$disease_stage[grepl('Normal', sample_metadata$disease_stage_raw)] <- 'Healthy'
+sample_metadata$disease_stage[grepl('MGUS', sample_metadata$disease_stage_raw)] <- 'MGUS'
+sample_metadata$disease_stage[grepl('SMM', sample_metadata$disease_stage_raw)] <- 'SMM'
 
 sample_metadata <- sample_metadata %>%
-  select(-mm_stage_raw)
+  select(-disease_stage_raw)
 
 # add disease stage
-sample_metadata$disease_stage <- sample_metadata$mm_stage
+sample_metadata$disease_stage <- sample_metadata$disease_stage
 
 # add platform
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

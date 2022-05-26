@@ -22,11 +22,8 @@ sample_metadata <- pdata %>%
 
 sample_metadata$replicate <- as.numeric(str_split(pdata$description, " ", simplify = TRUE)[, 2])
 
-  # mutate(mm_stage = recode(mm_stage, `active MM` = 'MM')) %>%
-  # mutate(disease_stage = recode(mm_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
-
-sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$sample_type <- "Cell Line"
 
 # drop rows with missing gene symbols
 dat <- dat[!is.na(dat$symbol), ]

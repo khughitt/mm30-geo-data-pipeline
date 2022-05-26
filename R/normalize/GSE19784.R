@@ -5,7 +5,6 @@
 #
 ###############################################################################
 library(tidyverse)
-source("R/util/biomart.R")
 
 # output directory to store data packages to
 out_dir <- dirname(snakemake@output[[1]])
@@ -20,6 +19,20 @@ pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 # size factor normalization
 dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
 
+# add gene symbol column
+expr_dat <- dat %>%
+  select(-feature) %>%
+  add_column(symbol = fdata$`Gene Symbol`, .before = 1) %>%
+  as_tibble()
+
+mask <- expr_dat$symbol != ""
+expr_dat <- expr_dat[mask, ]
+fdata <- fdata[mask, ]
+
+# split multi-mapped symbols
+expr_dat <- expr_dat %>%
+  separate_rows(symbol, sep = " ?//+ ?")
+
 # get relevant sample metadata
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, iss_stage = `iss:ch1`,
@@ -27,8 +40,8 @@ sample_metadata <- pdata %>%
 
 # add platform, cell type and disease (same for all samples)
 sample_metadata$disease_stage <- 'MM'
-sample_metadata$cell_type <- 'CD138+'
 sample_metadata$platform_type <- 'Microarray'
+sample_metadata$sample_type <- "Patient"
 
 # Note; there is not sufficient information provided to link patients in table S11 to
 # GSM sample identifiers; skipping.
@@ -62,42 +75,11 @@ sample_metadata <- sample_metadata[mask, ]
 sample_metadata <- sample_metadata %>%
   inner_join(survival_mdata, by = 'geo_accession')
 
-# map probes using biomart
-platform <- pdata$platform_id[1]
-
-# retrieve up-to-date probe to gene mappings
-probe_mapping <- get_biomart_mapping(rownames(dat), platform, 
-                                     ensembl_version = snakemake@config$biomart$ensembl_version)
-
-# TODO: add annotations describing what is being lost here / discussing alternative approaches...
-probe_mask <- rownames(dat) %in% probe_mapping$probe_id
-
-# some probes are lost at this step of the mapping..
-table(probe_mask)
-
-# probe_mask
-# FALSE  TRUE
-# 12009 42666
-
-dat <- dat[probe_mask, ]
-
-# make sure orders match
-probe_mapping <- probe_mapping[match(rownames(dat), probe_mapping$probe_id), ]
-
-if (!all(probe_mapping$probe_id == rownames(dat))) {
-  stop("Unexpected probe mapping mismatch!")
-}
-
-# get expression data and swap ensgenes for gene symbols
-expr_dat <- dat %>%
-  add_column(symbol = probe_mapping$symbol, .before = 1) %>%
-  as_tibble()
-
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
 # store results
 write_csv(expr_dat, snakemake@output[[1]])
-write_csv(probe_mapping, snakemake@output[[2]])
+write_csv(fdata, snakemake@output[[2]])
 write_csv(sample_metadata, snakemake@output[[3]])

@@ -21,11 +21,12 @@ sample_metadata <- pdata %>%
          sample_name = description,
          disease_stage = `tumor stage:ch1`,
          patient = `patient:ch1`,
-         mm_stage = `tumor stage:ch1`) %>%
+         disease_stage = `tumor stage:ch1`) %>%
   mutate(disease_stage = recode(disease_stage, `IgM-MGUS` = 'MGUS', `NDMM` = 'MM'))
 
 # add cell and platform type
 sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$sample_type <- "Patient"
 
 # normalize sample ids, ex: "IgM-MGUS1_C37" -> "IgM.MGUS1_C37"
 sample_metadata$sample_name <- gsub('-', '.', sample_metadata$sample_name)
