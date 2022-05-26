@@ -36,7 +36,7 @@ expr_dat <- expr_dat %>%
 
 # add platform
 pdata$platform_type <- "Microarray"
-sample_metadata$sample_type <- "Patient"
+pdata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == pdata$geo_accession)) {
   stop("Sample ID mismatch!")

@@ -21,7 +21,6 @@ dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
 
 # add gene symbol column
 expr_dat <- dat %>%
-  select(-feature) %>%
   add_column(symbol = fdata$`Gene Symbol`, .before = 1) %>%
   as_tibble()
 
@@ -59,13 +58,12 @@ colnames(survival_mdata) <- c('geo_accession', 'os_time', 'os_event', 'pfs_time'
 # exclude samples without metadata
 mask <- sample_metadata$geo_accession %in% survival_mdata$geo_accession
 
-# ANNOT (Dec 15, 2021)
 # table(mask)
 # mask
 # FALSE  TRUE
 #    46   282
 
-dat <- dat[, mask]
+expr_dat <- expr_dat[, c(TRUE, mask)]
 sample_metadata <- sample_metadata[mask, ]
 
 #all(colnames(dat) == sample_metadata$geo_accession)

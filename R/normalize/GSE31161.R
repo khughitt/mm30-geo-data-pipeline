@@ -22,7 +22,7 @@ num_missing <- apply(expr_dat, 2, function(x) {
   sum(is.na(x))
 })
 
-table(num_missing)
+# table(num_missing)
 # num_missing
 #     0 54675
 #  1035     3
@@ -36,9 +36,12 @@ exclude_samples <- c("GSM771497", "GSM772341", "GSM772335")
 
 expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 
+# size factor normalization
+expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
+
+
 # add gene symbol column
 expr_dat <- expr_dat %>%
-  select(-feature) %>%
   add_column(symbol = fdata$`Gene Symbol`, .before = 1) %>%
   as_tibble()
 
@@ -49,9 +52,6 @@ fdata <- fdata[mask, ]
 # split multi-mapped symbols
 expr_dat <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
-
-# size factor normalization
-expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
 
 # columns to include
 sample_metadata <- pdata %>%
