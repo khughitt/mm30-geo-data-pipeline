@@ -1,0 +1,38 @@
+data:
+  dataset:
+    id: "GSE158387"
+    title: "Global profiling of cancer cell recovery from therapy-induced stress reveals druggable vulnerabilities"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  version: "v0.5.0"
+biodat:
+  assay: "rnaseq"
+  datatype: "experimental_dataset"
+  platforms:
+    - "GPL20301"
+  sample_types:
+    - "cell_line"
+  diseases:
+    - D009101
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+profile: "biodat"
+provenance:
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2021-04-15"
+  contacts:
+    - "Holger Auner <holger.auner04@imperial.ac.uk>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE158387"
+  description: "Cancer cells survive therapy-induced stress, but how they resolve it is not clear. Using an integrated systems level approach we delineate the global mechanisms of cellular recovery from proteotoxic stress. Our findings in proteasome inhibitor-treated myeloma cells provide a layered chart of the protracted processes of stress resolution that encompass extensive metabolic changes. Tumour cells that have survived proteasome inhibition and are recovering from proteotoxic injuries are more vulnerable to certain insults than acutely stressed or unstressed cells. We identify mitochondria and the GCN2-driven cellular response to amino acid depletion as examples of recovery-associated vulnerabilities, and demonstrate that GCN2 is a bona fide target in transcriptional signature-defined subsets of solid cancers irrespective of prior proteasome inhibition. Thus, targeting multi-system vulnerabilities tied to cellular recovery from drug-induced stress has the potential to optimise cancer therapies."
+  design: "Examination of the resolution of proteasome inhibition-induced proteotoxic stress in multiple myeloma cells"
+  citations:
+    - "10.1073/pnas.2018229118"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"

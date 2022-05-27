@@ -1,0 +1,38 @@
+data:
+  dataset:
+    id: "GSE162205"
+    title: "Functional genomics identify distinct and overlapping genes mediating resistance to different classes of heterobifunctional degraders of oncoproteins"
+  source:
+    name: "geo"
+    title: "Gene Expression Omnibus"
+    url: "https://www.ncbi.nlm.nih.gov/geo/"
+  version: "v0.5.0"
+biodat:
+  assay: "rnaseq"
+  datatype: "experimental_dataset"
+  platforms:
+    - "GPL18573"
+  sample_types:
+    - "cell_line"
+  diseases:
+    - D009101
+  species:
+    - 9606
+rows: "symbol"
+columns: "sample_id"
+profile: "biodat"
+provenance:
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2021-02-12"
+  contacts:
+    - "Ricardo de Matos Simoes <ricardo_dematossimoes@dfci.harvard.edu>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE162205"
+  description: "Heterobifunctional proteolysis-targeting chimeric compounds leverage the activity of E3 ligases to induce degradation of target oncoproteins and exhibit potent preclinical antitumor activity. To dissect the mechanisms regulating tumor cell sensitivity to different classes of pharmacological \"degraders\" of oncoproteins, we performed genome-scale CRISPR/Cas9-based gene-editing studies. We observed that myeloma cell resistance to \"degraders\" of different targets (BET bromodomain proteins, CDK9) and operating through CRBN (degronimids) or VHL is primarily mediated by prevention of, rather than adaptation to, breakdown of the target oncoprotein; involves loss-of-function for the cognate E3 ligase or interactors/regulators of the respective cullin-RING ligase (CRL) complex. The substantial gene-level differences for CRBN- vs. VHL-based degraders explains mechanistically the lack of cross-resistance for degraders targeting the same protein via different E3 ligase/CRLs."
+  design: "dBET6 (100nM or 500nM) or JQ1 (500nM) treatment to MM1S cells"
+  citations:
+    - "10.1016/j.celrep.2020.108532"
+contributors:
+  - title: "V. Keith Hughitt"
+    email: "keith.hughitt@nih.gov"
+    role: "maintainer"
