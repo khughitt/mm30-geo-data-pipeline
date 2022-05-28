@@ -39,15 +39,15 @@ expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 # size factor normalization
 expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
 
+# drop genes with missing symbols
+mask <- !is.na(fdata$`Gene Symbol`) 
+expr_dat <- expr_dat[mask, ]
+fdata <- fdata[mask, ]
 
 # add gene symbol column
 expr_dat <- expr_dat %>%
   add_column(symbol = fdata$`Gene Symbol`, .before = 1) %>%
   as_tibble()
-
-mask <- expr_dat$symbol != ""
-expr_dat <- expr_dat[mask, ]
-fdata <- fdata[mask, ]
 
 # split multi-mapped symbols
 expr_dat <- expr_dat %>%
