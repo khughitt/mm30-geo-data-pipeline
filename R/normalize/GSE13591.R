@@ -4,6 +4,7 @@
 # GSE13591
 #
 ###############################################################################
+library(annotables)
 library(tidyverse)
 
 # load data & metadata
@@ -52,6 +53,9 @@ mask <- sample_metadata$disease_stage  != 'PCL'
 sample_metadata <- sample_metadata[mask, ]
 expr_dat <- expr_dat[, c(TRUE, mask)]
 
+# drop rows with missing values
+expr_dat <- expr_dat[complete.cases(expr_dat), ]
+
 # add platform
 sample_metadata$platform_type <- 'Microarray'
 sample_metadata$sample_type <- "Patient"
@@ -59,6 +63,9 @@ sample_metadata$sample_type <- "Patient"
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(expr_dat, snakemake@output[[1]])

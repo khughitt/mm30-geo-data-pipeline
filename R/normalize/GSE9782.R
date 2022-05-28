@@ -4,6 +4,7 @@
 # GSE9782
 #
 ###############################################################################
+library(annotables)
 library(tidyverse)
 
 # load data & metadata
@@ -23,11 +24,13 @@ expr_dat <- dat %>%
 
 mask <- expr_dat$symbol != ""
 expr_dat <- expr_dat[mask, ]
-fdata <- fdata[mask, ]
 
 # split multi-mapped symbols
 expr_dat <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
+
+# drop rows with missing values
+expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 #
 # Note: some of the metadata fields appear to be incorrectly encoded, e.g.:
@@ -126,6 +129,9 @@ sample_metadata$sample_type <- "Patient"
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(expr_dat, snakemake@output[[1]])

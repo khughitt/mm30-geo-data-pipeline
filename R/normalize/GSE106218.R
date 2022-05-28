@@ -12,7 +12,6 @@ library(tidyverse)
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
   column_to_rownames("feature")
 
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 acc <- snakemake@wildcards[["acc"]]
@@ -119,6 +118,9 @@ expr_dat$symbol[grch37_mask] <- gene_symbols
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(expr_dat, snakemake@output[[1]])

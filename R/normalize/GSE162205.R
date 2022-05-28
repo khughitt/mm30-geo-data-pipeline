@@ -4,6 +4,7 @@
 # GSE162205
 #
 ###############################################################################
+library(annotables)
 library(tidyverse)
 
 # load data & metadata
@@ -34,6 +35,9 @@ sample_metadata$sample_type <- "Cell Line"
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(dat, snakemake@output[[1]])

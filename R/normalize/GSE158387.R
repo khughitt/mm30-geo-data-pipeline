@@ -4,12 +4,11 @@
 # GSE158387
 #
 ###############################################################################
+library(annotables)
 library(tidyverse)
 
 # load data & metadata
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
-
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 # size factor normalization (ignore gene symbol column)
@@ -31,6 +30,9 @@ sample_metadata$sample_type <- "Cell Line"
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(dat, snakemake@output[[1]])

@@ -4,6 +4,7 @@
 # GSE6477
 #
 ###############################################################################
+library(annotables)
 library(tidyverse)
 
 # load data & metadata
@@ -23,11 +24,13 @@ expr_dat <- dat %>%
 
 mask <- expr_dat$symbol != ""
 expr_dat <- expr_dat[mask, ]
-fdata <- fdata[mask, ]
 
 # split multi-mapped symbols
 expr_dat <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
+
+# drop rows with missing values
+expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 # columns to include
 sample_metadata <- pdata %>%
@@ -64,6 +67,9 @@ expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 
 sample_metadata <- sample_metadata %>%
   filter(!geo_accession %in% exclude_samples)
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(expr_dat, snakemake@output[[1]])

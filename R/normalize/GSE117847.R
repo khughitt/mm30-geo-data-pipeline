@@ -40,6 +40,9 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
+
 # store results
 write_csv(expr_dat, snakemake@output[[1]])
 write_csv(fdata, snakemake@output[[2]])

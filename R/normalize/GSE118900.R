@@ -4,12 +4,11 @@
 # GSE118900
 #
 ###############################################################################
+library(annotables)
 library(tidyverse)
 
 # load data & metadata
 expr_dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
-
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 # size factor normalization (ignore gene symbol column)
@@ -55,6 +54,9 @@ expr_dat <- expr_dat[mask, ]
 
 # match sample order to metadata
 expr_dat <- expr_dat[, c('symbol', sample_metadata$geo_accession)]
+
+# update feature annotations
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(expr_dat, snakemake@output[[1]])
