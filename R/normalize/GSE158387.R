@@ -32,7 +32,7 @@ if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
 }
 
 # update feature annotations
-fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
+fdata <- grch38[match(dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(dat, snakemake@output[[1]])

@@ -27,7 +27,10 @@ sample_metadata <- pdata %>%
          treatment = `treatment:ch1`)
 
 sample_metadata$time_hours <- as.numeric(sub("h", "", sample_metadata$time_hours))
-sample_metadata$replicate <- as.numeric(endsWith(sample_metadata$title, "B")) + 1
+
+# GSE162205 includes three replicates and two technical replicates for each condition
+sample_metadata$replicate <- as.numeric(factor(substr(sample_metadata$title, 7, 7)))
+sample_metadata$technical_replicate <- as.numeric(endsWith(sample_metadata$title, "B")) + 1
 
 sample_metadata$platform_type <- 'RNA-Seq'
 sample_metadata$sample_type <- "Cell Line"
@@ -37,7 +40,7 @@ if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
 }
 
 # update feature annotations
-fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
+fdata <- grch38[match(dat$symbol, grch38$symbol), ]
 
 # store results
 write_csv(dat, snakemake@output[[1]])
