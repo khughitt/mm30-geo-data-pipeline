@@ -29,8 +29,17 @@ sample_metadata <- pdata %>%
 sample_metadata$time_hours <- as.numeric(sub("h", "", sample_metadata$time_hours))
 
 # GSE162205 includes three replicates and two technical replicates for each condition
-sample_metadata$replicate <- as.numeric(factor(substr(sample_metadata$title, 7, 7)))
-sample_metadata$technical_replicate <- as.numeric(endsWith(sample_metadata$title, "B")) + 1
+sample_metadata$replicate <- letters[as.numeric(factor(substr(sample_metadata$title, 7, 7)))]
+sample_metadata$technical_replicate <- factor(substr(sample_metadata$title, 
+                                                     nchar(sample_metadata$title), 
+                                                     nchar(sample_metadata$title))) 
+
+# replace NA values for control samples; for "time", the earlier time point of 4 hours
+# is arbitrarily used
+is_control <- is.na(sample_metadata$treatment)
+
+sample_metadata$treatment[is_control] <- "Control"
+sample_metadata$time_hours[is_control] <- 4
 
 sample_metadata$platform_type <- 'RNA-Seq'
 sample_metadata$sample_type <- "Cell Line"
