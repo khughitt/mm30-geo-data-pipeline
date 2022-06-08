@@ -35,6 +35,7 @@ expr_dat <- expr_dat[complete.cases(expr_dat), ]
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title,
+         age, race, sex, isotype, os_time, os_censor, efs_censor, efs_time,
          maqc_status = `maqc_distribution_status:ch1`) 
 
 # add platform & disease stage
