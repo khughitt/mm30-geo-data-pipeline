@@ -26,6 +26,7 @@ sample_metadata$time_days <- as.numeric(str_split(sample_metadata$time_days, " "
 
 sample_metadata$platform_type <- 'RNA-Seq'
 sample_metadata$sample_type <- "Cell Line"
+sample_metadata$disease_stage <- NA
 
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

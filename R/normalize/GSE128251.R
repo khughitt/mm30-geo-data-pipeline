@@ -39,9 +39,10 @@ sample_metadata <- pdata %>%
          treatment = `treatment:ch1`, replicate = `replicate:ch1`,
          cell_line = source_name_ch1)
 
-sample_metadata$disease_stage <- 'MM'
 sample_metadata$platform_type <- 'Microarray'
 sample_metadata$sample_type <- "Cell Line"
+
+sample_metadata$disease_stage <- NA
 
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

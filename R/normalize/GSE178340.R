@@ -23,6 +23,7 @@ sample_metadata$replicate <- as.numeric(str_split(pdata$description, " ", simpli
 
 sample_metadata$platform_type <- 'RNA-Seq'
 sample_metadata$sample_type <- "Cell Line"
+sample_metadata$disease_stage <- NA
 
 # drop rows with missing gene symbols
 dat <- dat[!is.na(dat$symbol), ]

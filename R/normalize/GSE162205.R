@@ -43,6 +43,7 @@ sample_metadata$time_hours[is_control] <- 4
 
 sample_metadata$platform_type <- 'RNA-Seq'
 sample_metadata$sample_type <- "Cell Line"
+sample_metadata$disease_stage <- NA
 
 if (!all(colnames(dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

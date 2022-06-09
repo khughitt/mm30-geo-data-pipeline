@@ -38,6 +38,9 @@ expr_dat <- expr_dat %>%
 pdata$platform_type <- "Microarray"
 pdata$sample_type <- "Patient"
 
+# all patients for GSE7039 are indicated as "Newly Diagnosed MM"
+sample_metadata$disease_stage <- "MM"
+
 if (!all(colnames(expr_dat)[-1] == pdata$geo_accession)) {
   stop("Sample ID mismatch!")
 }

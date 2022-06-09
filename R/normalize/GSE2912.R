@@ -41,6 +41,9 @@ sample_metadata <- pdata %>%
 sample_metadata$platform_type <- 'Microarray'
 sample_metadata$sample_type <- "Patient"
 
+# all patients in GSE2912 are newly diagnosed MM patients
+sample_metadata$disease_stage <- "MM"
+
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }

@@ -39,9 +39,10 @@ sample_metadata <- pdata %>%
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
 
-sample_metadata$disease_stage <- "MM"
 sample_metadata$platform_type <- 'RNA-Seq'
 sample_metadata$sample_type <- "Mixed"
+
+sample_metadata$disease_stage <- NA
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$title)) {
   stop("Sample ID mismatch!")
