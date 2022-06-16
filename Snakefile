@@ -9,20 +9,11 @@ out_dir = "/data/proj/mm25/4.1/geo"
 
 configfile: "config/config.yml"
 
-# datasets for which expression data/metadata must be downloaded separately:
-# - GSE118900 (expr data stored in supplemental file)
-# - GSE106218 (expr data and metadata stored in supplemental files)
-# - GSE7039 (metadata provided by author)
-# - GSE24080 (metadata retrieved from GEO ftp)
-# - GSE134598 (expr data stored in supplemental file)
-# - GSE2912 (metadata retrieved from manuscript)
-# - GSE26760 (metadata retrieved from broad/external website)
-
 accessions = ['GSE106218', 'GSE117847', 'GSE118900', 'GSE128251', 'GSE134598',
-             'GSE13591', 'GSE14519', 'GSE158387', 'GSE162205', 'GSE16791', 'GSE178340',
-             'GSE19554', 'GSE19784', 'GSE24080', 'GSE26760', 'GSE2912', 'GSE31161',
-             'GSE39754', 'GSE47552', 'GSE57317', 'GSE5900', 'GSE6477', 'GSE6691', 
-             'GSE68871', 'GSE7039', 'GSE83503', 'GSE9782']
+             'GSE13591', 'GSE144249', 'GSE14519', 'GSE158387', 'GSE162205', 'GSE16791', 
+             'GSE178340', 'GSE19554', 'GSE19784', 'GSE24080', 'GSE26760', 'GSE2912', 
+             'GSE31161','GSE39754', 'GSE47552', 'GSE57317', 'GSE5900', 'GSE6477', 
+             'GSE6691', 'GSE68871', 'GSE7039', 'GSE83503', 'GSE9782']
 
 rule all:
     input:

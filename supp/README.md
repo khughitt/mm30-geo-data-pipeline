@@ -20,3 +20,7 @@ Sources
 ### GSE117847
 
 - [The transcriptomic profile of CD138+ cells from patients with early progression from smoldering to active multiple myeloma remains substantially unchanged | Haematologica](https://haematologica.org/article/view/9101)
+
+### GSE144249
+
+- [GSE144249 (GEO)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144249)
