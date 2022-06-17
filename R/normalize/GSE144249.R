@@ -31,6 +31,7 @@ sample_metadata$replicate <- as.numeric(substr(sample_metadata$description, 12, 
 sample_metadata$platform_type <- 'Microarray'
 sample_metadata$sample_type <- "Cell Line"
 sample_metadata$cell_line <- "RPMI-8226"
+sample_metadata$disease_stage <- NA
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
