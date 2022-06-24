@@ -17,7 +17,14 @@ accessions = ['GSE106218', 'GSE117847', 'GSE118900', 'GSE128251', 'GSE134598',
 
 rule all:
     input:
-        expand(os.path.join(out_dir, "final/{acc}/datapackage.yml"), acc=accessions)
+        expand(os.path.join(out_dir, "final/{acc}/datapackage.yml"), acc=accessions),
+        os.path.join(out_dir, "metadata.tsv")
+
+rule dataset_metadata:
+    output:
+        os.path.join(out_dir, "metadata.tsv")
+    script:
+        "R/build_metadata.R"
 
 rule build_pkg:
     input:

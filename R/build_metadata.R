@@ -6,12 +6,13 @@ library(GEOquery)
 library(readr)
 options(stringAsFactors = FALSE)
 
-ids <- list.files("/data/raw")
+ids <- list.files("/data/raw/geo")
+ids <- ids[startsWith(ids, "GSE")]
 
 geo_metadata <- NULL
 
 for (accession in ids) {
-  dir_ <- file.path('/data/raw', accession)
+  dir_ <- file.path("/data/raw/geo", accession)
 
   eset <- getGEO(accession, destdir = dir_)[[1]]
 
