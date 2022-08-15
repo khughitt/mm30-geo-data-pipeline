@@ -31,15 +31,24 @@ if (!file.exists(supp_file)) {
 # 2 AADACL4|chr1|12704566             0             0
 # 3   ABCA4|chr1|94458394             0             0
 expr_dat <- read.delim(gzfile(supp_file))
-colnames(expr_dat)[1:2] <- c("ensgene", "symbol")
 
 # separate out gene metadata
 fdata <- as.data.frame(str_split(expr_dat[, 1], "\\|", simplify = TRUE))
 colnames(fdata) <- c("symbol", "chr", "pos")
 
+# drop combined gene id/position column and add symbol column
+expr_dat <- expr_dat[, -1]
+
 pdata <- pData(eset)
 
-expr_dat <- expr_dat[, -1]
+# normalize sample order
+ind <- match(colnames(expr_dat), make.names(pdata$title))
+pdata <- pdata[ind, ]
+
+# sanity check
+if (!all(colnames(expr_dat) == make.names(pdata$title))) {
+  stop("Sample ID mismatch!")
+}
 
 # switch to geo accessions for column names
 colnames(expr_dat) <- pdata$geo_accession
