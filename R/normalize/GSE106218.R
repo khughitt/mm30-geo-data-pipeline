@@ -75,7 +75,7 @@ expr_patient_ids <- str_extract(colnames(dat), 'MM[0-9]+')
 expr_dat <- NULL
 
 for (patient_id in unique(expr_patient_ids)) {
-  combined_dat <- rowMeans(dat[, expr_patient_ids == patient_id])
+  combined_dat <- rowSums(dat[, expr_patient_ids == patient_id])
   expr_dat <- cbind(expr_dat, combined_dat)
 }
 colnames(expr_dat) <- unique(expr_patient_ids)
@@ -91,6 +91,9 @@ sample_metadata <- sample_metadata %>%
 if (!all(sample_metadata$patient_id == colnames(expr_dat))) {
   stop("Column mismatch!")
 }
+
+# size factor normalization (ignore gene symbol column)
+expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
 
 # use geo accession ids for column names
 colnames(expr_dat) <- sample_metadata$geo_accession

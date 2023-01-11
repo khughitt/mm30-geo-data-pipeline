@@ -19,7 +19,7 @@ if (!dir.exists(cache_dir)) {
   dir.create(cache_dir, recursive = TRUE, mode = "0755")
 }
 
-eset <- getGEO(acc, destdir = cache_dir)[[1]]
+eset <- getGEO("GSE24080", destdir = cache_dir)[[1]]
 
 expr_dat <- exprs(eset) %>%
     as.data.frame() %>%

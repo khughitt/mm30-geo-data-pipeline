@@ -4,8 +4,8 @@ MM25 GEO Data Preparation Pipeline
 import os
 import yaml
 
-# temp/dev (jan 26, 2022)
-out_dir = "/data/proj/mm25/4.1/geo"
+# hard-coding for now
+out_dir = "/data/proj/mm25/4.2/geo"
 
 configfile: "config/config.yml"
 
