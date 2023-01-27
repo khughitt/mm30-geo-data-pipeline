@@ -8,7 +8,7 @@ library(GEOquery)
 library(tidyverse)
 
 acc <- snakemake@wildcards[["acc"]]
-cache_dir <- file.path("/data/raw/geo", acc)
+cache_dir <- file.path("/data/raw", acc)
 
 # create cache dir
 if (!dir.exists(cache_dir)) {
@@ -19,9 +19,9 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file1 <- file.path(cache_dir, acc, 'GSE162205_gene_raw_counts_matrix.txt.gz')
+supp_file <- file.path(cache_dir, 'GSE162205_gene_raw_counts_matrix.txt.gz')
 
-if (!file.exists(supp_file1)) {
+if (!file.exists(supp_file)) {
   getGEOSuppFiles(acc, baseDir = cache_dir)
 }
 

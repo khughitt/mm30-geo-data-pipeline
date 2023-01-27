@@ -16,7 +16,7 @@ library(GEOquery)
 library(tidyverse)
 
 acc <- snakemake@wildcards[["acc"]]
-cache_dir <- file.path("/data/raw/geo", acc)
+cache_dir <- file.path("/data/raw", acc)
 
 # create cache dir
 if (!dir.exists(cache_dir)) {
@@ -84,11 +84,11 @@ expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 pdata <- pdata %>%
   filter(!geo_accession %in% exclude_samples)
 
-# generate combined gene annotable table
+# generate combined gene annotation table
 fdata1 <- fData(esets[[1]])[mask1, ] %>%
   select(ID, `Gene symbol`)
 fdata2 <- fData(esets[[2]])[mask2, ] %>%
-  select(ID, `Gene symbol`=`Gene Symbol`)
+  select(ID, `Gene symbol` = `Gene Symbol`)
 
 fdata <- rbind(fdata1, fdata2)
 

@@ -1,8 +1,8 @@
 #
-# MM25 GEO Data Docker Image Construction
+# MM30 GEO Data Docker Image Construction
 # V. Keith Hughitt
 #
-FROM rocker/r-ver:4.1.0
+FROM rocker/r-ver:4.2.0
 MAINTAINER keith.hughitt@nih.gov
 
 # conda/snakemake setup
@@ -22,17 +22,21 @@ RUN /bin/bash -c "conda install -y -c conda-forge mamba && \
     mamba create -q -y -c conda-forge -c bioconda -n snakemake && \
     source activate snakemake && \
     mamba install -q -y -c conda-forge -c bioconda \
-    snakemake-minimal singularity r-annotables r-arrow r-r.utils r-tidyverse bioconductor-geoquery bioconductor-biomart"
+    snakemake-minimal frictionless r-annotables r-arrow r-r.utils r-tidyverse bioconductor-geoquery bioconductor-biomart"
 
 RUN echo "source activate snakemake" > ~/.bashrc
 ENV PATH /opt/conda/envs/snakemake/bin:${PATH}
 
 # copy code over
 WORKDIR /geo
+
 COPY identifiers/ identifiers/
 COPY R/ R/
+COPY python/ python/
 COPY Snakefile Snakefile
+COPY metadata/ metadata/
 COPY supp/ supp/
+COPY config/ config/
 
 # launch bash when container is started
 ENTRYPOINT ["bash"]

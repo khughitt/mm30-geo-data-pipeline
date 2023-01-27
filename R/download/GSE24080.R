@@ -12,7 +12,7 @@
 library(GEOquery)
 library(tidyverse)
 
-cache_dir <- "/data/raw/geo/GSE24080"
+cache_dir <- "/data/raw/GSE24080"
 
 # create cache dir
 if (!dir.exists(cache_dir)) {

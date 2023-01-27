@@ -16,16 +16,11 @@ pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 acc <- snakemake@wildcards[["acc"]]
 
-# download separate "clinical information" supplemental file
-cache_dir <- file.path("/data/raw/geo", acc)
-supp_file2 <- file.path(cache_dir, acc, 'GSE106218_GEO_clinical_information_MM.txt.gz')
-
-if (!file.exists(supp_file2)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir)
-}
+# load "clinical information" supplemental file downloaded in previous step
+supp_file <- "/data/raw/GSE106218/GSE106218_GEO_clinical_information_MM.txt.gz"
 
 # load sample metadata
-clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file2), row.names = 1))) %>%
+clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file), row.names = 1))) %>%
   rownames_to_column('patient_id') %>%
   select(patient_id,
          iss_stage = `ISS stage`, os_event = `Death(alive=0; death=1)`,

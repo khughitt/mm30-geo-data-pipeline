@@ -1,4 +1,4 @@
-MM25 GEO Data Preparation Pipeline
+MM30 GEO Data Preparation Pipeline
 ==================================
 
 Overview
@@ -104,7 +104,7 @@ supp/clean/
 Next, build the included Dockerfile by running:
 
 ```
-docker build . -t mm25-geo
+docker build . -t mm30-geo
 ```
 
 Decide on a location on your _host_ system where you wish to store the processed
@@ -116,7 +116,7 @@ where you wish to have the raw and processed GEO data saved to.
 For example, if you would like to have the data saved to "/data/geo" on the host system, run:
 
 ```
-docker run -v /data/geo:/data -it mm25-geo
+docker run -v /data/geo:/data -it mm30-geo
 ```
 
 This will start a container and open a bash shell.

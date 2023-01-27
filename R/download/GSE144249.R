@@ -8,7 +8,7 @@ library(GEOquery)
 library(tidyverse)
 
 acc <- snakemake@wildcards[["acc"]]
-cache_dir <- file.path("/data/raw/geo", acc)
+cache_dir <- file.path("/data/raw", acc)
 
 # create cache dir
 if (!dir.exists(cache_dir)) {

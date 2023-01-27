@@ -22,7 +22,7 @@ for key in mdata.keys():
     if key == 'profile':
         continue
 
-    pkg[key] = mdata[key]
+    pkg.custom[key] = mdata[key]
 
 # write datapackage out
 pkg.to_yaml("datapackage.yml")
