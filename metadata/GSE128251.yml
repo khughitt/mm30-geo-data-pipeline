@@ -1,3 +1,5 @@
+id: "mm30-gse128251"
+title: "MM30: GSE128251 CPM-normalized gene expression"
 data:
   dataset:
     id: "GSE128251"

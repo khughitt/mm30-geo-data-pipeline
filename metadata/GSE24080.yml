@@ -1,3 +1,5 @@
+id: "mm30-gse24080"
+title: "MM30: GSE24080 CPM-normalized gene expression"
 data:
   dataset:
     id: "GSE24080"

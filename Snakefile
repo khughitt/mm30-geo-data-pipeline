@@ -25,7 +25,7 @@ rule dataset_metadata:
     script:
         "R/build_metadata.R"
 
-rule build_pkg:
+rule build_data_package:
     input:
         os.path.join(out_dir, "final/{acc}/data.csv"),
         os.path.join(out_dir, "final/{acc}/row-metadata.csv"),
@@ -33,7 +33,7 @@ rule build_pkg:
         os.path.join("metadata", "{acc}.yml")
     output:
         os.path.join(out_dir, "final/{acc}/datapackage.yml"),
-    script: "python/build_pkg.py"
+    script: "python/build_data_package.py"
 
 rule finalize:
     input: 
