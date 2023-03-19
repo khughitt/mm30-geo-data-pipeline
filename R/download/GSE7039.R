@@ -3,13 +3,7 @@
 #
 # Download GSE7039
 #
-# Notes: 
-#
-# 1. Survival data provided by corresponding author (Stéphane Minvielle) via email on
-#    June 6, 2019.
-# 2. In order to apply size factor normalization at the individual array level,
-#    normalization is applied at this stage in the pipline for GSE7039 instead of at the
-#    usual "normalize" pipeline step.
+# Note: Survival data provided by corresponding author (Stéphane Minvielle)
 #
 ###############################################################################
 library(GEOquery)
@@ -24,7 +18,7 @@ if (!dir.exists(cache_dir)) {
 }
 
 # load survival metadata provided by author
-survival_dat <- read_csv('supp/clean/GSE7039_MM_Survival_time.csv', col_types = cols())
+survival_dat <- read_csv("supp/clean/GSE7039_MM_Survival_time.csv", col_types = cols())
 
 # download GEO data;
 # for GSE7039, data includes two separate esets with a small number of overlapping
@@ -37,36 +31,32 @@ esets <- getGEO(acc, destdir = cache_dir, AnnotGPL = TRUE)
 # combine samples from separate ExpressionSets
 # survival units: days
 pdata <- pData(esets[[1]]) %>%
-  mutate(patient_id = sub('_A', '', title)) %>%
+  mutate(patient_id = sub("_A", "", title)) %>%
   select(geo_accession, platform_id, patient_id) %>%
-  inner_join(survival_dat, by = 'patient_id') %>%
+  inner_join(survival_dat, by = "patient_id") %>%
   add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 1) %>%
-  mutate(patient_died = ifelse(deceased == 'yes', 1, 0)) %>%
+  mutate(patient_died = ifelse(deceased == "yes", 1, 0)) %>%
   rename(os_time = follow_up_days) %>%
   select(-deceased)
 
-if (!all(pdata$patient_id == sub('_B', '', pData(esets[[2]])$title))) {
+if (!all(pdata$patient_id == sub("_B", "", pData(esets[[2]])$title))) {
   stop("sample metadata mismatch!")
 }
 
 # add cell type and disease stage (same for all samples)
-pdata$disease_stage <- 'MM'
-pdata$platform_type <- 'Microarray'
+pdata$disease_stage <- "MM"
+pdata$platform_type <- "Microarray"
 
 # combine expression data from two esets
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])
 
 # remove AFFX- probes seprately and then combine
-mask1 <- !startsWith(rownames(e1), 'AFFX-')
-mask2 <- !startsWith(rownames(e2), 'AFFX-')
+mask1 <- !startsWith(rownames(e1), "AFFX-")
+mask2 <- !startsWith(rownames(e2), "AFFX-")
 
 e1 <- e1[mask1, ]
 e2 <- e2[mask2, ]
-
-# perform size factor normalization separately on each microarray
-e1 <- sweep(e1, 2, colSums(e1), '/') * 1E6
-e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
 
 # there are no shared probe ids across the two arrays
 # length(intersect(rownames(e1), rownames(e2)))

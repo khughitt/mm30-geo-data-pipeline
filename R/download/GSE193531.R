@@ -19,7 +19,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file1 <- file.path(cache_dir, 'GSE193531_umi-count-matrix.csv.gz')
+supp_file1 <- file.path(cache_dir, "GSE193531_umi-count-matrix.csv.gz")
 
 if (!file.exists(supp_file1)) {
   getGEOSuppFiles(acc, baseDir = cache_dir)

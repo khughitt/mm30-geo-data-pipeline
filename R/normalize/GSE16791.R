@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -38,10 +35,10 @@ sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, age = `age:ch1`)
 
 # add disease stage
-sample_metadata$disease_stage <- 'MM'
+sample_metadata$disease_stage <- "MM"
 
 # add platform
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {

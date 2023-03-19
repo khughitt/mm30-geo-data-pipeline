@@ -19,7 +19,7 @@ gene_symbols <- fdata$`Gene symbol`
 # drop ambiguous / non-gene fields
 # *Multi Hs   *Genomic sequence *Repeats containing   *Seq not verified                ESTs
 #             644                 577                 567                 246                 162
-mask <- !startsWith(gene_symbols, '*')
+mask <- !startsWith(gene_symbols, "*")
 
 #table(mask)
 # mask
@@ -32,7 +32,7 @@ gene_symbols <- gene_symbols[mask]
 # get expression data and add gene symbol column
 expr_dat <- expr_dat %>%
   add_column(symbol = gene_symbols, .before = 1) %>%
-  filter(symbol != '')
+  filter(symbol != "")
 
 # add platform
 pdata$platform_type <- "Microarray"

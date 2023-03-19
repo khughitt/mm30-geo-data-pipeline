@@ -8,14 +8,9 @@ library(annotables)
 library(tidyverse)
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
+expr_dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
-
-# size factor normalization (ignore feature column)
-expr_dat <- dat
-
-expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
 
 # map from ensgenes -> gene symbols
 ind <- match(expr_dat$feature, grch38$ensgene)
@@ -39,7 +34,7 @@ sample_metadata <- pdata %>%
          sample_type = `sample type:ch1`,
          treatment = `treatment:ch1`, dose = `dose:ch1`)
 
-sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$platform_type <- "RNA-Seq"
 sample_metadata$sample_type <- "Mixed"
 
 sample_metadata$disease_stage <- NA
@@ -49,7 +44,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$title)) {
 }
 
 # for consistency, use GEO sample accessions as ids
-colnames(expr_dat) <- c('symbol', sample_metadata$geo_accession)
+colnames(expr_dat) <- c("symbol", sample_metadata$geo_accession)
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

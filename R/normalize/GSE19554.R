@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -38,10 +35,10 @@ sample_metadata <- pdata %>%
          tumor_stage = `tumor stage:ch1`)
 
 # add disease stage
-sample_metadata$disease_stage <- 'MM'
+sample_metadata$disease_stage <- "MM"
 
 # add platform
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
@@ -50,7 +47,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 
 # exclude outlier samples (median pairwise correlation 0.26, 0.41 vs. >0.9 for most
 # others)
-exclude_samples <- c('GSM487486', 'GSM487507')
+exclude_samples <- c("GSM487486", "GSM487507")
 
 expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 

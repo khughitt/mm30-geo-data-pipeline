@@ -1,5 +1,5 @@
 #
-# Helper function to map from microarray probe ID's to updated gene symbol assignments.
+# Helper function to map from microarray probe ID"s to updated gene symbol assignments.
 # Probes mapping to multiple gene ids are dropped from the dataset.
 #
 # V. Keith Hughitt
@@ -55,7 +55,7 @@ process_eset <- function(eset, ensembl_version=104) {
     ind <- which(probe_mapping$probe_id == probe_id)
     ensgenes <- probe_mapping$ensgene[ind]
 
-    # in some cases, multiple ensembl id's map to the same symbol and can be safely
+    # in some cases, multiple ensembl id"s map to the same symbol and can be safely
     # excluded
     gene_symbols <- annotables::grch38$symbol[match(ensgenes, annotables::grch38$ensgene)]
     gene_symbols <- unique(gene_symbols)
@@ -94,8 +94,8 @@ process_eset <- function(eset, ensembl_version=104) {
 #
 get_biomart_mapping <- function(eset, ensembl_version=105) {
   # load biomaRt
-  mart <- biomaRt::useEnsembl(biomart = 'genes', 
-                              dataset = 'hsapiens_gene_ensembl',
+  mart <- biomaRt::useEnsembl(biomart = "genes", 
+                              dataset = "hsapiens_gene_ensembl",
                               version = ensembl_version)
 
   # determine biomart platform attribute
@@ -121,7 +121,7 @@ get_biomart_mapping <- function(eset, ensembl_version=105) {
     mart = mart,
     uniqueRows = TRUE
   )
-  colnames(res) <- c('probe_id', 'ensgene')
+  colnames(res) <- c("probe_id", "ensgene")
 
   res
 }
@@ -131,10 +131,10 @@ get_biomart_mapping <- function(eset, ensembl_version=105) {
 #
 get_manual_mapping <- function(eset) {
   # mapping from old/alt gene symbols to versions used in GRCh38
-  grch38_mapping <- read_tsv('identifiers/GRCh38_alt_symbol_mapping.tsv', col_types = cols())
+  grch38_mapping <- read_tsv("identifiers/GRCh38_alt_symbol_mapping.tsv", col_types = cols())
 
   # determine name of gene symbol field in fData
-  fdata_fields <- c('Gene Symbol', 'Gene symbol', 'Symbol')
+  fdata_fields <- c("Gene Symbol", "Gene symbol", "Symbol")
   fdata_field <- fdata_fields[which(fdata_fields %in% colnames(fData(eset)))]
 
   if (is.null(fdata_field)) {
@@ -144,7 +144,7 @@ get_manual_mapping <- function(eset) {
   # split multi-mapped gene symbols
   alt_mapping <- exprs(eset) %>%
     as.data.frame() %>%
-    rownames_to_column('probe_id') %>%
+    rownames_to_column("probe_id") %>%
     add_column(symbol = fData(eset)[, fdata_field], .before = 1) %>%
     separate_rows(symbol, sep = " ?//+ ?") %>%
     select(probe_id, symbol)

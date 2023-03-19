@@ -1,5 +1,5 @@
 id: "mm30-gse128251"
-title: "MM30: GSE128251 CPM-normalized gene expression"
+title: "MM30: GSE128251  gene expression"
 data:
   dataset:
     id: "GSE128251"
@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v0.5.0"
+  version: "v6.0"
 biodat:
   assay: "expression_beadchip"
   datatype: "experimental_dataset"

@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -39,16 +36,16 @@ sample_metadata <- pdata %>%
          race = Race, disease_stage = Diagnosis)
 
 # add platform & disease stage
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 # drop samples with unknown stage and normalize stage names
 sample_metadata <- sample_metadata %>%
-  filter(disease_stage != 'Unknown') %>%
+  filter(disease_stage != "Unknown") %>%
   mutate(disease_stage = recode(disease_stage, 
-                           `Multiple Myeloma` = 'MM', 
-                           `Primary Plasma Cell Leukemia` = 'PCL',
-                           `Smoldering Myeloma` = 'SMM'))
+                           `Multiple Myeloma` = "MM", 
+                           `Primary Plasma Cell Leukemia` = "PCL",
+                           `Smoldering Myeloma` = "SMM"))
 
 # update expression data to match samples & order in metadata
 expr_dat <- expr_dat[, c("symbol", sample_metadata$geo_accession)] 

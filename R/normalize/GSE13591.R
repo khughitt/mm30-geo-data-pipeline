@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -32,8 +29,8 @@ sample_metadata <- pdata %>%
          sample_type = `sample type:ch1`)
 
 sample_metadata$disease_stage <- sample_metadata$sample_type
-sample_metadata$disease_stage[startsWith(sample_metadata$disease_stage, 'TC')] <- 'MM'
-sample_metadata$disease_stage[startsWith(sample_metadata$disease_stage, 'N')] <- 'Healthy'
+sample_metadata$disease_stage[startsWith(sample_metadata$disease_stage, "TC")] <- "MM"
+sample_metadata$disease_stage[startsWith(sample_metadata$disease_stage, "N")] <- "Healthy"
 
 sample_metadata$disease_stage <- sample_metadata$disease_stage
 
@@ -48,7 +45,7 @@ sample_metadata$disease_stage <- sample_metadata$disease_stage
 #       5      11     133       9
 
 # drop PCL samples
-mask <- sample_metadata$disease_stage  != 'PCL'
+mask <- sample_metadata$disease_stage  != "PCL"
 
 sample_metadata <- sample_metadata[mask, ]
 expr_dat <- expr_dat[, c(TRUE, mask)]
@@ -57,7 +54,7 @@ expr_dat <- expr_dat[, c(TRUE, mask)]
 expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 # add platform
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {

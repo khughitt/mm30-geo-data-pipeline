@@ -27,16 +27,16 @@ expr_dat <- exprs(eset) %>%
 
 # load supplemental clinical metadata;
 # ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE24nnn/GSE24080/suppl/GSE24080%5FMM%5FUAMS565%5FClinInfo%5F27Jun2008%5FLS%5Fclean%2Exls%2Egz
-clinical_metadata <- read_tsv('supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv', 
+clinical_metadata <- read_tsv("supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv", 
                               col_types = cols())
 
 clinical_metadata <- clinical_metadata %>%
-  mutate(title = sub('.CEL', '', cel_filename)) %>%
+  mutate(title = sub(".CEL", "", cel_filename)) %>%
   select(-cel_filename)
 
 # add to geo sample metadata
 pdata <- pData(eset) %>%
-  inner_join(clinical_metadata, by = 'title')
+  inner_join(clinical_metadata, by = "title")
 
 fdata <- fData(eset)
 

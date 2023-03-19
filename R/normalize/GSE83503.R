@@ -21,12 +21,9 @@ fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 # exclude control spots (4130 / 22011 probes)
-mask <- fdata$SPOT_ID != 'control'
+mask <- fdata$SPOT_ID != "control"
 dat <- dat[mask, ]
 fdata <- fdata[mask, ]
-
-# size factor normalization
-dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
 
 # exclude any probes with zero variance (uninformative)
 dat <- dat[apply(dat, 1, var) > 0, ]
@@ -38,24 +35,24 @@ sample_metadata <- pdata %>%
   select(geo_accession, platform_id, patient_died = `death:ch1`, pfs_event = `relapse:ch1`) %>%
   mutate(pfs_event = ifelse(pfs_event == 0, 0, 1))
 
-sample_metadata$disease_stage <- ifelse(sample_metadata$pfs_event == 1, 'RRMM', 'MM')
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$disease_stage <- ifelse(sample_metadata$pfs_event == 1, "RRMM", "MM")
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 # [(N-1) + 2]th position (i.e. 2, 7, 12, 17..)
-gene_parts <- str_split(fdata$gene_assignment, '//', simplify = TRUE)
+gene_parts <- str_split(fdata$gene_assignment, "//", simplify = TRUE)
 gene_symbols <- gene_parts[, seq(2, ncol(gene_parts), by = 5)]
 
 # collapse into the form "symbol 1 // symbol 2 // symbol 3 // ..."
 gene_symbols <- apply(gene_symbols, 1, function(x) {
-  str_trim(x)[x != '']
+  str_trim(x)[x != ""]
 })
-gene_symbols <- unlist(lapply(gene_symbols, paste, collapse = ' // '))
+gene_symbols <- unlist(lapply(gene_symbols, paste, collapse = " // "))
 
 # get expression data and add gene symbol column
 expr_dat <- dat %>%
   add_column(symbol = gene_symbols, .before = 1) %>%
-  filter(symbol != '')
+  filter(symbol != "")
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

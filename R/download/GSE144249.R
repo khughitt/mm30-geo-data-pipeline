@@ -23,7 +23,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 # https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE144249&format=file
 # for convenience, the per-sample counts have been assembled into a single table, using
 # the first column from each sample and dropping the first four QA-related rows.
-expr_dat <- read_tsv('supp/clean/GSE144249_raw_counts.tsv', col_types = cols()) %>%
+expr_dat <- read_tsv("supp/clean/GSE144249_raw_counts.tsv", col_types = cols()) %>%
   rename(feature = symbol)
 
 pdata <- pData(eset)

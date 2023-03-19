@@ -19,10 +19,10 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file <- file.path(cache_dir, 'GSE118900_MM.scrna-seq.tpm.pass.txt.gz')
+supp_file <- file.path(cache_dir, "GSE118900_MM.scrna-seq.tpm.pass.txt.gz")
 
 if (!file.exists(supp_file)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir, filter_regex = 'tpm.pass')
+  getGEOSuppFiles(acc, baseDir = cache_dir, filter_regex = "tpm.pass")
 }
 
 # load expr data

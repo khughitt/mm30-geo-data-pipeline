@@ -23,16 +23,16 @@ expr_dat <- exprs(eset) %>%
 
 # load additional metadata from
 # http://portals.broadinstitute.org/mmgp/data/browseData?conversationPropagation=begin
-mmrc_sample_info <- read_csv('supp/clean/mmrc.sample.information.csv', col_types = cols()) %>%
+mmrc_sample_info <- read_csv("supp/clean/mmrc.sample.information.csv", col_types = cols()) %>%
   rename(patient_id = Array)
 
 pdata <- pData(eset)
 
 # parse out patient ids
-pdata$patient_id <- str_split(pdata$source_name_ch1, ' ', simplify = TRUE)[, 4] 
+pdata$patient_id <- str_split(pdata$source_name_ch1, " ", simplify = TRUE)[, 4] 
 
 pdata <- pdata %>%
-  inner_join(mmrc_sample_info, by = 'patient_id')
+  inner_join(mmrc_sample_info, by = "patient_id")
 
 fdata <- fData(eset)
 

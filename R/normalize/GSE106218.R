@@ -21,17 +21,17 @@ supp_file <- "/data/raw/GSE106218/GSE106218_GEO_clinical_information_MM.txt.gz"
 
 # load sample metadata
 clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file), row.names = 1))) %>%
-  rownames_to_column('patient_id') %>%
+  rownames_to_column("patient_id") %>%
   select(patient_id,
          iss_stage = `ISS stage`, os_event = `Death(alive=0; death=1)`,
          os_time = `Survival time(EM;month)`,
          heavy_chain = `Heavy chain`,
          light_chain = `Light chain`) %>%
   mutate(os_event = os_event == "1",
-         disease_stage = 'MM')
+         disease_stage = "MM")
 
 # drop the month component of survival time
-clinical_metadata$os_time <- as.numeric(str_extract(clinical_metadata$os_time, '[0-9]+'))
+clinical_metadata$os_time <- as.numeric(str_extract(clinical_metadata$os_time, "[0-9]+"))
 
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id,
@@ -40,7 +40,7 @@ sample_metadata <- pdata %>%
          prep_site = `prep-site:ch1`)
 
 sample_metadata <- sample_metadata %>%
-  inner_join(clinical_metadata, by = 'patient_id')
+  inner_join(clinical_metadata, by = "patient_id")
 
 # clinical_metadata
 #                         MM02 MM16 MM17
@@ -56,11 +56,11 @@ sample_metadata <- sample_metadata %>%
 # remove empty rows
 dat <- dat[rowSums(dat) > 0, ]
 
-sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$platform_type <- "RNA-Seq"
 sample_metadata$sample_type <- "Patient"
 
 # collapse patient samples
-expr_patient_ids <- str_extract(colnames(dat), 'MM[0-9]+')
+expr_patient_ids <- str_extract(colnames(dat), "MM[0-9]+")
 
 # sort(table(expr_patient_ids))
 # expr_patient_ids
@@ -87,15 +87,12 @@ if (!all(sample_metadata$patient_id == colnames(expr_dat))) {
   stop("Column mismatch!")
 }
 
-# size factor normalization (ignore gene symbol column)
-expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
-
 # use geo accession ids for column names
 colnames(expr_dat) <- sample_metadata$geo_accession
 
 expr_dat <- expr_dat %>%
   as.data.frame() %>%
-  rownames_to_column('symbol')
+  rownames_to_column("symbol")
 
 # update GRCh37 symbols -> GRCh38
 grch37_mask <- expr_dat$symbol %in% grch37$symbol

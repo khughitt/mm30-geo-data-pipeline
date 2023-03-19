@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -37,22 +34,22 @@ sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, 
          ploidy = characteristics_ch1,
          ch13_status = characteristics_ch1.1) %>%
-  mutate(disease_stage = ifelse(grepl('Normal', title), 'Normal',
-                    ifelse(grepl('New', title), 'New',
-                    ifelse(grepl('MGUS', title), 'MGUS',
-                    ifelse(grepl('Relapsed', title), 'Relapsed',
-                    ifelse(grepl('Smoldering', title), 'Smoldering', 'Normal')))))) %>%
+  mutate(disease_stage = ifelse(grepl("Normal", title), "Normal",
+                    ifelse(grepl("New", title), "New",
+                    ifelse(grepl("MGUS", title), "MGUS",
+                    ifelse(grepl("Relapsed", title), "Relapsed",
+                    ifelse(grepl("Smoldering", title), "Smoldering", "Normal")))))) %>%
   select(-title)
 
 # add disease stage
 sample_metadata <- sample_metadata %>%
   mutate(disease_stage = recode(disease_stage, 
-                                Normal = 'Healthy', New = 'MM',
-                                Relapsed = 'RRMM', Smoldering = 'SMM'))
+                                Normal = "Healthy", New = "MM",
+                                Relapsed = "RRMM", Smoldering = "SMM"))
 
 
 # add platform
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {

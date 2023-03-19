@@ -24,10 +24,6 @@ esets <- getGEO(acc, destdir = cache_dir)
 e1 <- exprs(esets[[1]])
 e2 <- exprs(esets[[2]])
 
-# size factor normalization
-e1 <- sweep(e1, 2, colSums(e1), '/') * 1E6
-e2 <- sweep(e2, 2, colSums(e2), '/') * 1E6
-
 e1 <- e1 %>%
   as.data.frame() %>%
   rownames_to_column("feature")

@@ -14,16 +14,14 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization
-dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
-
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, disease_stage = `patient diagnosis:ch1`) %>%
-  mutate(disease_stage = recode(disease_stage, `active MM` = 'MM')) %>%
-  mutate(disease_stage = recode(disease_stage, `progressed SMM` = 'SMM', `non-progressed SMM` = 'SMM'))
+  mutate(disease_stage = recode(disease_stage, `active MM` = "MM")) %>%
+  mutate(disease_stage = recode(disease_stage, `progressed SMM` = "SMM",
+                                `non-progressed SMM` = "SMM"))
 
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 # map from ensgenes to gene symbols ("SPOT_ID" column for this dataset contains ensembl
@@ -33,7 +31,7 @@ fdata$symbol <- grch38$symbol[match(fdata$SPOT_ID, grch38$ensgene)]
 # get expression data and swap ensgenes for gene symbols
 expr_dat <- dat %>%
   add_column(symbol = fdata$symbol, .before = 1) %>%
-  filter(symbol != '') %>%
+  filter(symbol != "") %>%
   as_tibble()
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {

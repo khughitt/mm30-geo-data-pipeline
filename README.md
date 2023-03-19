@@ -155,9 +155,10 @@ The `clean/` folder contains gene expression data and sample metadata stored in 
 consistent manner.
 
 The `GSEXXXX_gene_expr.feather` contains a gene expression count matrix, stored in the
-[feather file format](https://github.com/wesm/feather), which has been size-factor (CPM)
-normalized and had QC-related entries removed. The original identifiers (most often
-microarray probe ids) are included, as well as mapped gene symbols, when possible.
+[feather file format](https://github.com/wesm/feather).
+
+The original identifiers (most often microarray probe ids) are included, as well as mapped gene
+symbols, when possible.
 
 The `_nr.feather` version ("non-redundant") has been further processed so that one entry
 is included per gene symbol (median expression of probes used in cases where multiple

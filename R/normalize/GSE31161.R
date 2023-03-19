@@ -36,9 +36,6 @@ exclude_samples <- c("GSM771497", "GSM772341", "GSM772335")
 
 expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 
-# size factor normalization
-expr_dat <- sweep(expr_dat, 2, colSums(expr_dat), '/') * 1E6
-
 # drop genes with missing symbols
 mask <- !is.na(fdata$`Gene Symbol`) 
 expr_dat <- expr_dat[mask, ]
@@ -58,13 +55,13 @@ sample_metadata <- pdata %>%
   filter(geo_accession %in% colnames(expr_dat)) %>%
   select(geo_accession, platform_id,
          treatment = `treatment:ch1`, time_of_testing = `time of testing:ch1`) %>%
-  mutate(relapsed = time_of_testing == 'relapse')
+  mutate(relapsed = time_of_testing == "relapse")
 
 # add disease stage
-sample_metadata$disease_stage <- ifelse(sample_metadata$relapsed, 'RRMM', 'MM')
+sample_metadata$disease_stage <- ifelse(sample_metadata$relapsed, "RRMM", "MM")
 
 # add platform and cell type (same for all samples)
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 platform <- pdata$platform_id[1]

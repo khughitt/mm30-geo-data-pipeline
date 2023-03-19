@@ -17,9 +17,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization
-dat <- sweep(dat, 2, colSums(dat), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   add_column(symbol = fdata$`Gene Symbol`, .before = 1) %>%
@@ -41,22 +38,22 @@ sample_metadata <- pdata %>%
          patient_subgroup = `cluster:ch1`)
 
 # add platform, cell type and disease (same for all samples)
-sample_metadata$disease_stage <- 'MM'
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$disease_stage <- "MM"
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 # Note; there is not sufficient information provided to link patients in table S11 to
 # GSM sample identifiers; skipping.
-# table_s11 <- read_csv(file.path(base_dir, 'metadata', 'broyl2010_supp_table_s11.csv'))
+# table_s11 <- read_csv(file.path(base_dir, "metadata", "broyl2010_supp_table_s11.csv"))
 
 # load survival metadata from Kuiper et al. (2012)
-survival_mdata <- read_csv('supp/clean/kuiper2012_supp_patient_survival.csv', col_types = cols())
+survival_mdata <- read_csv("supp/clean/kuiper2012_supp_patient_survival.csv", col_types = cols())
 
 survival_mdata <- survival_mdata %>%
   rename(geo_accession = Patient) %>%
   filter(geo_accession %in% colnames(dat))
 
-colnames(survival_mdata) <- c('geo_accession', 'os_time', 'os_event', 'pfs_time', 'pfs_event')
+colnames(survival_mdata) <- c("geo_accession", "os_time", "os_event", "pfs_time", "pfs_event")
 
 # exclude samples without metadata
 mask <- sample_metadata$geo_accession %in% survival_mdata$geo_accession
@@ -74,7 +71,7 @@ sample_metadata <- sample_metadata[mask, ]
 
 # combine metadata
 sample_metadata <- sample_metadata %>%
-  inner_join(survival_mdata, by = 'geo_accession')
+  inner_join(survival_mdata, by = "geo_accession")
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

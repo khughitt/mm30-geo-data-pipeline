@@ -1,5 +1,5 @@
 id: "mm30-gse193531"
-title: "MM30: GSE193531 CPM-normalized gene expression"
+title: "MM30: GSE193531  gene expression"
 data:
   dataset:
     id: "GSE193531"
@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v0.5.0"
+  version: "v6.0"
 biodat:
   assay: "single_cell_rnaseq"
   datatype: "experimental_dataset"

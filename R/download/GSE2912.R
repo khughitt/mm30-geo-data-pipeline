@@ -25,15 +25,15 @@ pdata <- pData(eset)
 
 # load additional metadata from Agnelli et al. (2005), Appendix A
 # https://pubmed.ncbi.nlm.nih.gov/16129847/
-supp_mdat <- read_csv('supp/clean/agnelli2005.csv', show_col_types = FALSE) %>%
+supp_mdat <- read_csv("supp/clean/agnelli2005.csv", show_col_types = FALSE) %>%
   rename(patient_id = Patient)
 
 # reoder patient metadata
-pdata$patient_id <- str_extract(pdata$title, 'MM-[0-9]+')
+pdata$patient_id <- str_extract(pdata$title, "MM-[0-9]+")
 supp_mdat <- supp_mdat[match(supp_mdat$patient_id, pdata$patient_id), ]
 
 pdata <- pdata %>%
-  inner_join(supp_mdat, by = 'patient_id')
+  inner_join(supp_mdat, by = "patient_id")
 
 fdata <- fData(eset)
 

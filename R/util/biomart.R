@@ -6,8 +6,8 @@
 #
 get_biomart_mapping <- function(probe_ids, platform, ensembl_version=105) {
   # load biomaRt
-  mart <- biomaRt::useEnsembl(biomart = 'genes', 
-                              dataset = 'hsapiens_gene_ensembl',
+  mart <- biomaRt::useEnsembl(biomart = "genes", 
+                              dataset = "hsapiens_gene_ensembl",
                               version = ensembl_version)
 
   platform_mapping <- data.frame(
@@ -30,7 +30,7 @@ get_biomart_mapping <- function(probe_ids, platform, ensembl_version=105) {
     mart = mart,
     uniqueRows = TRUE
   )
-  colnames(res) <- c('probe_id', 'ensgene')
+  colnames(res) <- c("probe_id", "ensgene")
 
   # add gene symbols from annotables
   res$symbol <- annotables::grch38$symbol[match(res$ensgene, annotables::grch38$ensgene)]

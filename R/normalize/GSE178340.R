@@ -11,9 +11,6 @@ library(tidyverse)
 dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, description, 
@@ -21,7 +18,7 @@ sample_metadata <- pdata %>%
 
 sample_metadata$replicate <- as.numeric(str_split(pdata$description, " ", simplify = TRUE)[, 2])
 
-sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$platform_type <- "RNA-Seq"
 sample_metadata$sample_type <- "Cell Line"
 sample_metadata$disease_stage <- NA
 

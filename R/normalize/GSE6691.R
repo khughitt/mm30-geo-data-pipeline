@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -38,10 +35,10 @@ sample_metadata <- pdata %>%
 
 patient_desc <- pdata$characteristics_ch1
 
-disease <- rep('MM', length(patient_desc))
-disease[grepl('healthy', patient_desc)] <- "Healthy"
-disease[grepl('WM', patient_desc)] <- "Waldenström's Macroglobulinemia"
-disease[grepl('CLL', patient_desc)] <- "Chronic Lymphocytic Leukemia"
+disease <- rep("MM", length(patient_desc))
+disease[grepl("healthy", patient_desc)] <- "Healthy"
+disease[grepl("WM", patient_desc)] <- "Waldenström's Macroglobulinemia"
+disease[grepl("CLL", patient_desc)] <- "Chronic Lymphocytic Leukemia"
 
 sample_metadata$disease_stage <- disease
 sample_metadata$disease_stage <- disease
@@ -50,7 +47,7 @@ sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 # keep only healthy / myeloma samples
-mask <- sample_metadata$disease_stage %in% c('Healthy', 'MM')
+mask <- sample_metadata$disease_stage %in% c("Healthy", "MM")
 
 #table(mask)
 # mask

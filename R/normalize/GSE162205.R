@@ -14,7 +14,7 @@ fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 # size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
+dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), "/") * 1E6
 
 # replace combined ensgene/symbol id column with symbols alone
 dat$symbol <- fdata$symbol
@@ -41,7 +41,7 @@ is_control <- is.na(sample_metadata$treatment)
 sample_metadata$treatment[is_control] <- "Control"
 sample_metadata$time_hours[is_control] <- 4
 
-sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$platform_type <- "RNA-Seq"
 sample_metadata$sample_type <- "Cell Line"
 sample_metadata$disease_stage <- NA
 

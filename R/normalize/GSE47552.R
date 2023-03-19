@@ -13,9 +13,6 @@ dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
 fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
-# size factor normalization (ignore gene symbol column)
-dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), '/') * 1E6
-
 # add gene symbol column
 expr_dat <- dat %>%
   select(-feature) %>%
@@ -38,11 +35,11 @@ sample_metadata <- pdata %>%
          disease_stage_raw = `cell type:ch1`)
 
 # add disease stage
-sample_metadata$disease_stage <- rep('MM', length(sample_metadata$disease_stage_raw))
+sample_metadata$disease_stage <- rep("MM", length(sample_metadata$disease_stage_raw))
 
-sample_metadata$disease_stage[grepl('Normal', sample_metadata$disease_stage_raw)] <- 'Healthy'
-sample_metadata$disease_stage[grepl('MGUS', sample_metadata$disease_stage_raw)] <- 'MGUS'
-sample_metadata$disease_stage[grepl('SMM', sample_metadata$disease_stage_raw)] <- 'SMM'
+sample_metadata$disease_stage[grepl("Normal", sample_metadata$disease_stage_raw)] <- "Healthy"
+sample_metadata$disease_stage[grepl("MGUS", sample_metadata$disease_stage_raw)] <- "MGUS"
+sample_metadata$disease_stage[grepl("SMM", sample_metadata$disease_stage_raw)] <- "SMM"
 
 sample_metadata <- sample_metadata %>%
   select(-disease_stage_raw)
@@ -51,7 +48,7 @@ sample_metadata <- sample_metadata %>%
 sample_metadata$disease_stage <- sample_metadata$disease_stage
 
 # add platform
-sample_metadata$platform_type <- 'Microarray'
+sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {

@@ -29,11 +29,11 @@ sample_metadata <- pdata %>%
   mutate(patient_id = make.names(title))
 
 # add cell and platform type
-sample_metadata$platform_type <- 'RNA-Seq'
+sample_metadata$platform_type <- "RNA-Seq"
 sample_metadata$sample_type <- "Patient"
 
 # convert sample ids to valid variable names
-# sample_metadata$title <- gsub('-', '.', sample_metadata$title)
+# sample_metadata$title <- gsub("-", ".", sample_metadata$title)
 
 # combine cell measurements for each patient
 patient_ids <- unique(sample_metadata$title)
@@ -58,14 +58,14 @@ for (patient_id in patient_ids) {
 expr_dat <- data.frame(expr_list)
 
 # size factor normalization (ignore gene symbol column)
-expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), '/') * 1E6
+expr_dat[, -1] <- sweep(expr_dat[, -1], 2, colSums(expr_dat[, -1]), "/") * 1E6
 
 # exclude any zero variance genes present
 mask <- apply(expr_dat[, -1], 1, var) > 0
 expr_dat <- expr_dat[mask, ]
 
 # normalize expr data / metadata order
-expr_dat <- expr_dat[, c('symbol', sample_metadata$patient_id)]
+expr_dat <- expr_dat[, c("symbol", sample_metadata$patient_id)]
 
 if (!all(sample_metadata$patient_id == colnames(expr_dat[, -1]))) {
   stop("patient id mismatch!")

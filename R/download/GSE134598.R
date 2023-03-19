@@ -19,7 +19,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file <- file.path(cache_dir, 'GSE134598_All_Processed_Data.txt.gz')
+supp_file <- file.path(cache_dir, "GSE134598_All_Processed_Data.txt.gz")
 
 if (!file.exists(supp_file)) {
   getGEOSuppFiles(acc, baseDir = cache_dir)
