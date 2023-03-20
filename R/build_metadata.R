@@ -6,13 +6,13 @@ library(GEOquery)
 library(readr)
 options(stringAsFactors = FALSE)
 
-ids <- list.files("/data/raw/geo")
+ids <- list.files("/data/raw")
 ids <- ids[startsWith(ids, "GSE")]
 
 geo_metadata <- NULL
 
 for (accession in ids) {
-  dir_ <- file.path("/data/raw/geo", accession)
+  dir_ <- file.path("/data/raw", accession)
 
   eset <- getGEO(accession, destdir = dir_)[[1]]
 
@@ -43,10 +43,10 @@ for (accession in ids) {
 
 geo_metadata <- as.data.frame(geo_metadata)
 
-colnames(geo_metadata) <- c('geo_id', 'title', 'name', 'abstract',
-                            'overall_design', 'submission_date', 'last_update_date',
-                            'platform_ids', 'type', 'urls', 'pubmed_ids',
-                            'supplementary_files')
+colnames(geo_metadata) <- c("geo_id", "title", "name", "abstract",
+                            "overall_design", "submission_date", "last_update_date",
+                            "platform_ids", "type", "urls", "pubmed_ids",
+                            "supplementary_files")
 
 # replace newlines to avoid issues in rendered tsv file
 geo_metadata$abstract <- gsub("\n", " ", geo_metadata$abstract)

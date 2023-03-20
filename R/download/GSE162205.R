@@ -22,7 +22,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 supp_file <- file.path(cache_dir, "GSE162205_gene_raw_counts_matrix.txt.gz")
 
 if (!file.exists(supp_file)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir)
+  getGEOSuppFiles(acc, baseDir = cache_dir, makeDirectory = FALSE)
 }
 
 pdata <- pData(eset)
@@ -32,7 +32,7 @@ pdata <- pData(eset)
 #  ENSG00000223972|DDX11L1      1  0
 #  ENSG00000227232|WASH7P       0  0
 #  ENSG00000278267|MIR6859-1    0  0
-expr_dat <- read.delim(gzfile(supp_file1))
+expr_dat <- read.delim(gzfile(supp_file))
 
 # save gene metadata (just symbol & biotype in this case)
 fdata <- as.data.frame(str_split(expr_dat[, 1], "\\|", simplify = TRUE))

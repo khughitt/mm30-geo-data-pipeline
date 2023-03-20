@@ -19,10 +19,10 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file1 <- file.path(cache_dir, "GSE178340_fpm.tsv.gz")
+supp_file <- file.path(cache_dir, "GSE178340_fpm.tsv.gz")
 
-if (!file.exists(supp_file1)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir)
+if (!file.exists(supp_file)) {
+  getGEOSuppFiles(acc, baseDir = cache_dir, makeDirectory = FALSE)
 }
 
 # load FPM counts
@@ -30,7 +30,7 @@ if (!file.exists(supp_file1)) {
 # 1 ENSG00000000003 TSPAN6        0.2802507
 # 2 ENSG00000000419   DPM1       89.3999665
 # 3 ENSG00000000457  SCYL3       29.7065719
-expr_dat <- read.delim(gzfile(supp_file1))
+expr_dat <- read.delim(gzfile(supp_file))
 colnames(expr_dat)[1:2] <- c("ensgene", "symbol")
 
 pdata <- pData(eset)

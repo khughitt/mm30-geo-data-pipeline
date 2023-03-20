@@ -22,7 +22,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 supp_file <- file.path(cache_dir, "GSE106218_GEO_processed_MM_raw_TPM_matrix.txt.gz")
 
 if (!file.exists(supp_file)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir)
+  getGEOSuppFiles(acc, baseDir = cache_dir, makeDirectory = FALSE)
 }
 
 # load TPM counts
@@ -30,7 +30,7 @@ if (!file.exists(supp_file)) {
 # 5S_rRNA       0       0       0
 # 7SK           0       0       0
 # A1BG          0       0       0
-expr_dat <- read.delim(gzfile(supp_file1), row.names = 1) %>%
+expr_dat <- read.delim(gzfile(supp_file), row.names = 1) %>%
   rownames_to_column("feature")
 
 pdata <- pData(eset)

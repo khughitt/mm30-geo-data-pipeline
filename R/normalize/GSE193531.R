@@ -14,7 +14,7 @@ expr_dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
 pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
 
 # load cell-level metadata from supplemental file downloaded in previous step
-cell_mdat <- read_csv("/data/raw/GSE193531/GSE193531/GSE193531_cell-level-metadata.csv.gz",
+cell_mdat <- read_csv("/data/raw/GSE193531/GSE193531_cell-level-metadata.csv.gz",
                       show_col_types = FALSE)
 
 # columns to include

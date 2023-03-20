@@ -26,7 +26,7 @@ download_geo <- function(acc, cache_dir, dat_outfile, row_mdata_outfile, col_mda
     dir.create(cache_dir, recursive = TRUE, mode = "0755")
   }
 
-  # download & GEO data
+  # download GEO data
   eset <- getGEO(acc, destdir = cache_dir, AnnotGPL = annot_gpl)[[1]]
 
   expr_dat <- exprs(eset) %>%

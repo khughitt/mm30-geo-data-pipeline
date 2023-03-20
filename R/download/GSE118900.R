@@ -22,7 +22,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 supp_file <- file.path(cache_dir, "GSE118900_MM.scrna-seq.tpm.pass.txt.gz")
 
 if (!file.exists(supp_file)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir, filter_regex = "tpm.pass")
+  getGEOSuppFiles(acc, baseDir = cache_dir, filter_regex = "tpm.pass", makeDirectory = FALSE)
 }
 
 # load expr data

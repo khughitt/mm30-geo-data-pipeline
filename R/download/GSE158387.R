@@ -19,10 +19,10 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 
 # expression data is missing from getGEO() query result and must be downloaded
 # separately
-supp_file1 <- file.path(cache_dir, "GSE158387_RawCounts.tsv.gz")
+supp_file <- file.path(cache_dir, "GSE158387_RawCounts.tsv.gz")
 
-if (!file.exists(supp_file1)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir)
+if (!file.exists(supp_file)) {
+  getGEOSuppFiles(acc, baseDir = cache_dir, makeDirectory = FALSE)
 }
 
 pdata <- pData(eset)
@@ -32,7 +32,7 @@ pdata <- pData(eset)
 # A1BG-AS1            antisense        53
 #     A1BG processed_transcript        13
 #     A1BG       protein_coding         0
-expr_dat <- read.delim(gzfile(supp_file1))
+expr_dat <- read.delim(gzfile(supp_file))
 
 # save gene metadata (just symbol & biotype in this case)
 fdata <- expr_dat[, 1:2]

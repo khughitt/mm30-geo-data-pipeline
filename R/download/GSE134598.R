@@ -22,7 +22,7 @@ eset <- getGEO(acc, destdir = cache_dir)[[1]]
 supp_file <- file.path(cache_dir, "GSE134598_All_Processed_Data.txt.gz")
 
 if (!file.exists(supp_file)) {
-  getGEOSuppFiles(acc, baseDir = cache_dir)
+  getGEOSuppFiles(acc, baseDir = cache_dir, makeDirectory = FALSE)
 }
 
 # get expression data;

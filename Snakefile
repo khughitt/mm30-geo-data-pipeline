@@ -19,7 +19,7 @@ rule all:
         expand(os.path.join(out_dir, "final/{acc}/datapackage.yml"), acc=accessions),
         os.path.join(out_dir, "metadata.tsv")
 
-rule dataset_metadata:
+rule build_metadata:
     output:
         os.path.join(out_dir, "metadata.tsv")
     script:
