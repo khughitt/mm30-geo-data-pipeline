@@ -15,6 +15,7 @@
 ###############################################################################
 library(GEOquery)
 library(tidyverse)
+library(arrow)
 
 download_geo <- function(acc, cache_dir, dat_outfile, row_mdata_outfile, col_mdata_outfile, annot_gpl = FALSE) {
   # work-around for loading large gzip-compressed csv files (e.g. GSE31161)
@@ -37,7 +38,7 @@ download_geo <- function(acc, cache_dir, dat_outfile, row_mdata_outfile, col_mda
   fdata <- fData(eset)
 
   # store results
-  write_csv(expr_dat, dat_outfile)
-  write_csv(fdata, row_mdata_outfile)
-  write_csv(pdata, col_mdata_outfile)
+  write_feather(expr_dat, dat_outfile)
+  write_feather(fdata, row_mdata_outfile)
+  write_feather(pdata, col_mdata_outfile)
 }

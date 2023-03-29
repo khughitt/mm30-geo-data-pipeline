@@ -6,12 +6,13 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
+library(arrow)
 
 # load data & metadata
-expr_dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
+expr_dat <- read_feather(snakemake@input[[1]])
 
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
-pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+fdata <- read_feather(snakemake@input[[2]])
+pdata <- read_feather(snakemake@input[[3]])
 
 # get gene symbols
 gene_symbols <- fdata$`Gene symbol`
@@ -63,6 +64,6 @@ expr_dat <- expr_dat[mask, ]
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(pdata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(pdata, snakemake@output[[3]])

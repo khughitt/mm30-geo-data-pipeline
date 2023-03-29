@@ -17,19 +17,19 @@ accessions = ['GSE106218', 'GSE117847', 'GSE118900', 'GSE128251', 'GSE134598',
 rule all:
     input:
         expand(os.path.join(out_dir, "final/{acc}/datapackage.yml"), acc=accessions),
-        os.path.join(out_dir, "metadata.tsv")
+        os.path.join(out_dir, "metadata.feather")
 
 rule build_metadata:
     output:
-        os.path.join(out_dir, "metadata.tsv")
+        os.path.join(out_dir, "metadata.feather")
     script:
         "R/build_metadata.R"
 
 rule build_data_package:
     input:
-        os.path.join(out_dir, "final/{acc}/data.csv"),
-        os.path.join(out_dir, "final/{acc}/row-metadata.csv"),
-        os.path.join(out_dir, "final/{acc}/column-metadata.csv"),
+        os.path.join(out_dir, "final/{acc}/data.feather"),
+        os.path.join(out_dir, "final/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "final/{acc}/column-metadata.feather"),
         os.path.join("metadata", "{acc}.yml")
     output:
         os.path.join(out_dir, "final/{acc}/datapackage.yml"),
@@ -37,29 +37,29 @@ rule build_data_package:
 
 rule finalize:
     input: 
-        os.path.join(out_dir, "normalized/{acc}/data.csv"),
-        os.path.join(out_dir, "normalized/{acc}/row-metadata.csv"),
-        os.path.join(out_dir, "normalized/{acc}/column-metadata.csv"),
+        os.path.join(out_dir, "normalized/{acc}/data.feather"),
+        os.path.join(out_dir, "normalized/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "normalized/{acc}/column-metadata.feather"),
     output:
-        os.path.join(out_dir, "final/{acc}/data.csv"),
-        os.path.join(out_dir, "final/{acc}/row-metadata.csv"),
-        os.path.join(out_dir, "final/{acc}/column-metadata.csv"),
+        os.path.join(out_dir, "final/{acc}/data.feather"),
+        os.path.join(out_dir, "final/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "final/{acc}/column-metadata.feather"),
     script: "R/finalize.R"
 
 rule normalize:
     input:
-        os.path.join(out_dir, "original/{acc}/data.csv"),
-        os.path.join(out_dir, "original/{acc}/row-metadata.csv"),
-        os.path.join(out_dir, "original/{acc}/column-metadata.csv"),
+        os.path.join(out_dir, "original/{acc}/data.feather"),
+        os.path.join(out_dir, "original/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "original/{acc}/column-metadata.feather"),
     output:
-        os.path.join(out_dir, "normalized/{acc}/data.csv"),
-        os.path.join(out_dir, "normalized/{acc}/row-metadata.csv"),
-        os.path.join(out_dir, "normalized/{acc}/column-metadata.csv"),
+        os.path.join(out_dir, "normalized/{acc}/data.feather"),
+        os.path.join(out_dir, "normalized/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "normalized/{acc}/column-metadata.feather"),
     script: "R/normalize/{wildcards.acc}.R"
 
 rule download:
     output:
-        os.path.join(out_dir, "original/{acc}/data.csv"),
-        os.path.join(out_dir, "original/{acc}/row-metadata.csv"),
-        os.path.join(out_dir, "original/{acc}/column-metadata.csv"),
+        os.path.join(out_dir, "original/{acc}/data.feather"),
+        os.path.join(out_dir, "original/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "original/{acc}/column-metadata.feather"),
     script: "R/download/{wildcards.acc}.R"

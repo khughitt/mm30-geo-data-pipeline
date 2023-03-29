@@ -3,7 +3,7 @@
 # Build a dataset summary table using metadata from GEO
 #
 library(GEOquery)
-library(readr)
+library(arrow)
 options(stringAsFactors = FALSE)
 
 ids <- list.files("/data/raw")
@@ -48,7 +48,7 @@ colnames(geo_metadata) <- c("geo_id", "title", "name", "abstract",
                             "platform_ids", "type", "urls", "pubmed_ids",
                             "supplementary_files")
 
-# replace newlines to avoid issues in rendered tsv file
+# replace newlines to avoid issues if csv/tsv is used for output
 geo_metadata$abstract <- gsub("\n", " ", geo_metadata$abstract)
 geo_metadata$overall_design <- gsub("\n", " ", geo_metadata$overall_design)
 geo_metadata$platform_ids <- gsub("\n", "; ", geo_metadata$platform_ids)
@@ -56,4 +56,4 @@ geo_metadata$pubmed_ids <- gsub("\n", "; ", geo_metadata$pubmed_ids)
 geo_metadata$urls <- gsub("\n", "; ", geo_metadata$urls)
 geo_metadata$supplementary_files <- gsub("\n", "; ", geo_metadata$supplementary_files)
 
-write_tsv(geo_metadata, snakemake@output[[1]])
+write_feather(geo_metadata, snakemake@output[[1]])

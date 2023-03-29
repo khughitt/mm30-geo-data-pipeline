@@ -6,12 +6,13 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
+library(arrow)
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
+dat <- read_feather(snakemake@input[[1]])
 
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
-pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+fdata <- read_feather(snakemake@input[[2]])
+pdata <- read_feather(snakemake@input[[3]])
 
 # add gene symbol column
 expr_dat <- dat %>%
@@ -29,10 +30,10 @@ expr_dat <- expr_dat %>%
 # drop rows with missing values
 expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
-# columns to include
-# skipping "stage:ch1"; unclear what it represents..
+# based on the manuscript, "stage:ch1" appears to correspond to the Durie-Salmon Stage
+# https://pubmed.ncbi.nlm.nih.gov/23660628/
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, age = `age:ch1`)
+  select(geo_accession, platform_id, title, age = `age:ch1`, durie_salmon_stage = `stage:ch1`)
 
 # add disease stage
 sample_metadata$disease_stage <- "MM"
@@ -49,6 +50,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(sample_metadata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(sample_metadata, snakemake@output[[3]])

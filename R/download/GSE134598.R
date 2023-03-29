@@ -6,6 +6,7 @@
 ###############################################################################
 library(GEOquery)
 library(tidyverse)
+library(arrow)
 
 acc <- snakemake@wildcards[["acc"]]
 cache_dir <- file.path("/data/raw", acc)
@@ -36,6 +37,6 @@ pdata <- pData(eset)
 # metadata is available via fData)
 fdata <- data.frame("feature" = expr_dat$feature)
 
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(pdata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(pdata, snakemake@output[[3]])

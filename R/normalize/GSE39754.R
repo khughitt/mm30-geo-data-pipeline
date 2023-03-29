@@ -12,13 +12,14 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
+library(arrow)
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
+dat <- read_feather(snakemake@input[[1]]) %>%
   column_to_rownames("feature")
 
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
-pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+fdata <- read_feather(snakemake@input[[2]])
+pdata <- read_feather(snakemake@input[[3]])
 
 # exclude any probes with zero variance (uninformative)
 dat <- dat[apply(dat, 1, var, na.rm = TRUE) > 0, ]
@@ -77,6 +78,6 @@ expr_dat <- expr_dat[mask, ]
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(sample_metadata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(sample_metadata, snakemake@output[[3]])

@@ -6,12 +6,13 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
+library(arrow)
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
+dat <- read_feather(snakemake@input[[1]])
 
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
-pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+fdata <- read_feather(snakemake@input[[2]])
+pdata <- read_feather(snakemake@input[[3]])
 
 # add gene symbol column
 expr_dat <- dat %>%
@@ -65,6 +66,6 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(sample_metadata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(sample_metadata, snakemake@output[[3]])

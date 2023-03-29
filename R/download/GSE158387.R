@@ -6,6 +6,7 @@
 ###############################################################################
 library(GEOquery)
 library(tidyverse)
+library(arrow)
 
 acc <- snakemake@wildcards[["acc"]]
 cache_dir <- file.path("/data/raw", acc)
@@ -46,6 +47,6 @@ expr_dat <- expr_dat[, -2]
 
 colnames(expr_dat) <- c("symbol", pdata$geo_accession)
 
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(pdata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(pdata, snakemake@output[[3]])

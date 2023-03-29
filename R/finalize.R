@@ -7,15 +7,16 @@
 #
 ###############################################################################
 library(tidyverse)
+library(arrow)
 
 # directory to store raw and processed data
 data_dir <- dirname(snakemake@output[[1]])
 
 # load data & metadata
-dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE)
+dat <- read_feather(snakemake@input[[1]])
 
-fdata <- read_csv(snakemake@input[[2]], show_col_types = FALSE)
-pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+fdata <- read_feather(snakemake@input[[2]])
+pdata <- read_feather(snakemake@input[[3]])
 
 # check to make sure no missing values are present in the normalized version of the
 # dataset
@@ -29,6 +30,6 @@ dat <- dat %>%
   group_by(symbol) %>%
   summarize_all(median)
 
-write_csv(dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(pdata, snakemake@output[[3]])
+write_feather(dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(pdata, snakemake@output[[3]])

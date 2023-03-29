@@ -6,12 +6,13 @@
 ###############################################################################
 library(annotables)
 library(tidyverse)
+library(arrow)
 
 # load data & metadata
-expr_dat <- read_csv(snakemake@input[[1]], show_col_types = FALSE) %>%
+expr_dat <- read_feather(snakemake@input[[1]]) %>%
   column_to_rownames("feature")
 
-pdata <- read_csv(snakemake@input[[3]], show_col_types = FALSE)
+pdata <- read_feather(snakemake@input[[3]])
 
 # load cell-level metadata from supplemental file downloaded in previous step
 cell_mdat <- read_csv("/data/raw/GSE193531/GSE193531_cell-level-metadata.csv.gz",
@@ -93,6 +94,6 @@ fdata <- data.frame(list(
 ))
 
 # store results
-write_csv(expr_dat, snakemake@output[[1]])
-write_csv(fdata, snakemake@output[[2]])
-write_csv(sample_metadata, snakemake@output[[3]])
+write_feather(expr_dat, snakemake@output[[1]])
+write_feather(fdata, snakemake@output[[2]])
+write_feather(sample_metadata, snakemake@output[[3]])
