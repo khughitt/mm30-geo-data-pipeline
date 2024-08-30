@@ -35,7 +35,9 @@ expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 # get relevant sample metadata
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, iss_stage = `iss:ch1`,
+  select(geo_accession,
+         platform_id,
+         iss_stage = `iss:ch1`,
          patient_subgroup = `cluster:ch1`)
 
 # add platform, cell type and disease (same for all samples)
@@ -73,6 +75,14 @@ sample_metadata <- sample_metadata[mask, ]
 # combine metadata
 sample_metadata <- sample_metadata %>%
   inner_join(survival_mdata, by = "geo_accession")
+
+sample_metadata <- sample_metadata %>%
+  mutate(os_event = as.logical(os_event),
+         os_time = as.numeric(os_time),
+         pfs_event = as.logical(pfs_event),
+         pfs_time = as.numeric(pfs_time),
+         iss_stage = factor(iss_stage, levels = c("I", "II", "III"), ordered = TRUE),
+         patient_subgroup = as.factor(patient_subgroup))
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

@@ -51,7 +51,7 @@ expr_dat <- dat %>%
   add_column(symbol = symbols, .before = 1) %>%
   filter(symbol != "")
 
-if(!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
+if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")
 }
 
@@ -73,6 +73,8 @@ expr_dat$symbol[grch37_mask] <- gene_symbols
 
 mask <- expr_dat$symbol %in% grch38$symbol
 expr_dat <- expr_dat[mask, ]
+
+expr_dat <- expr_dat[expr_dat$symbol != "", ]
 
 # update feature annotations
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]

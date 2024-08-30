@@ -43,6 +43,12 @@ sample_metadata <- pdata %>%
 sample_metadata <- sample_metadata %>%
   inner_join(clinical_metadata, by = "patient_id")
 
+sample_metadata <- sample_metadata %>%
+  mutate(os_event = as.logical(os_event),
+         os_time = as.numeric(os_time),
+         iss_stage = factor(iss_stage, levels = c("I", "II", "III"), ordered = TRUE),
+         sex = as.factor(sex))
+
 # clinical_metadata
 #                         MM02 MM16 MM17
 # Sex                        M    F    F
@@ -105,6 +111,8 @@ mapped_mask <- ensgenes %in% grch38$ensgene
 gene_symbols[mapped_mask] <- grch38$symbol[match(ensgenes[mapped_mask], grch38$ensgene)]
 
 expr_dat$symbol[grch37_mask] <- gene_symbols
+
+expr_dat <- expr_dat[expr_dat$symbol != "", ]
 
 # table(expr_dat$symbol %in% grch38$symbol)
 #

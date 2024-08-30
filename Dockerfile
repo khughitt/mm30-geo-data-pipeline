@@ -2,7 +2,7 @@
 # MM30 GEO Data Docker Image Construction
 # V. Keith Hughitt
 #
-FROM rocker/r-ver:4.2.0
+FROM rocker/r-ver:4
 MAINTAINER keith.hughitt@nih.gov
 
 # conda/snakemake setup
@@ -30,13 +30,11 @@ ENV PATH /opt/conda/envs/snakemake/bin:${PATH}
 # copy code over
 WORKDIR /geo
 
-COPY identifiers/ identifiers/
 COPY R/ R/
 COPY python/ python/
 COPY Snakefile Snakefile
 COPY metadata/ metadata/
 COPY supp/ supp/
-COPY config/ config/
 
 # launch bash when container is started
 ENTRYPOINT ["bash"]

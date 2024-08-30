@@ -27,6 +27,8 @@ expr_dat <- expr_dat %>%
 # drop rows with missing values
 expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
+expr_dat <- expr_dat[expr_dat$symbol != "", ]
+
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title)

@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v6.0"
+  version: "v7.0"
 biodat:
   assay: "single_cell_rnaseq"
   datatype: "experimental_dataset"
@@ -24,16 +24,17 @@ rows: "symbol"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  source: "Gene Expression Omnibus (GEO)"
-  date: "2019-10-17"
-  contacts:
-    - "Daeun Ryu <daeun.dawn.ryu@gmail.com>"
-  urls:
-    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE106218"
-  description: "To understand molecular events associated with myeloma progression, we applied single-cell RNA sequencing to myeloma cells in the bone marrow and extramedullary sites. Transcriptome analysis, at single cell level, demonstrates that proliferation and alterations in antigen presentation are associated with myeloma progression whereas NF-kB pathway activation has an anti-correlation. While these alterations are prominent in most of the extramedullary myeloma cells, some myeloma cells in the bone marrow show gene expression signatures resembling extramedullary cells even when the myeloma cells were taken at stable disease. Altogether single-cell transcriptome analysis reveals both common transcriptional programs and heterogeneity turned on during myeloma progression."
-  design: "We performed single cell RNA sequencing (RNA-seq) for multiple myeloma from the bone marrow and/or extramedullary sites from 10 patients. Additional bulk RNA sequencing was performed with CD138-negative non-myeloma populations from the same patients. Data contain 477 single-cell RNA-seq and 11 bulk RNA-seq."
-  citations:
-    - "10.1158/1078-0432.CCR-19-0694"
+  - action: "download"
+    source: "Gene Expression Omnibus (GEO)"
+    date: "2019-10-17"
+    contacts:
+      - "Daeun Ryu <daeun.dawn.ryu@gmail.com>"
+    urls:
+      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE106218"
+    description: "To understand molecular events associated with myeloma progression, we applied single-cell RNA sequencing to myeloma cells in the bone marrow and extramedullary sites. Transcriptome analysis, at single cell level, demonstrates that proliferation and alterations in antigen presentation are associated with myeloma progression whereas NF-kB pathway activation has an anti-correlation. While these alterations are prominent in most of the extramedullary myeloma cells, some myeloma cells in the bone marrow show gene expression signatures resembling extramedullary cells even when the myeloma cells were taken at stable disease. Altogether single-cell transcriptome analysis reveals both common transcriptional programs and heterogeneity turned on during myeloma progression."
+    design: "We performed single cell RNA sequencing (RNA-seq) for multiple myeloma from the bone marrow and/or extramedullary sites from 10 patients. Additional bulk RNA sequencing was performed with CD138-negative non-myeloma populations from the same patients. Data contain 477 single-cell RNA-seq and 11 bulk RNA-seq."
+    citations:
+      - "10.1158/1078-0432.CCR-19-0694"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"
