@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v7.0"
+  version: "v6.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
@@ -25,18 +25,17 @@ rows: "probe_id"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  - action: "download"
-    source: "Gene Expression Omnibus (GEO)"
-    date: "2019-07-18"
-    contacts:
-      - "Joshua Epstein <epsteinjoshua@uams.edu>"
-    urls:
-      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31161"
-    description: "Global gene expression profile of primary multiple myeloma plasma cells from patients treated in Myeloma Institute for Research and Therapy was done using Affymetrix microarrays."
-    design: "MMPC were isolated from patients following Total Therapy 2, 3 and Other treatments at baseline and/or after relapse and GEP was done."
-    citations:
-      - "10.1038/s41467-018-04989-w"
-      - "10.1038/ncomms12050"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2019-07-18"
+  contacts:
+    - "Joshua Epstein <epsteinjoshua@uams.edu>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31161"
+  description: "Global gene expression profile of primary multiple myeloma plasma cells from patients treated in Myeloma Institute for Research and Therapy was done using Affymetrix microarrays."
+  design: "MMPC were isolated from patients following Total Therapy 2, 3 and Other treatments at baseline and/or after relapse and GEP was done."
+  citations:
+    - "10.1038/s41467-018-04989-w"
+    - "10.1038/ncomms12050"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v7.0"
+  version: "v6.0"
 biodat:
   assay: "rnaseq"
   datatype: "experimental_dataset"
@@ -24,17 +24,16 @@ rows: "symbol"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  - action: "download"
-    source: "Gene Expression Omnibus (GEO)"
-    date: "2021-12-01"
-    contacts:
-      - "John Toubia <john.toubia@adelaide.edu.au>"
-    urls:
-      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144249"
-    description: "	RNA was extracted from myeloma cell lines that were either drug-naïve or resistant to bortezomib or carfilzomib and the transcriptome was characterised using RNA sequencing."
-    design: "5TGM1 or RPMI-8226 cells were cultured in increasing concentrations of bortezomib (for bortezomib-resistant) or carfilzomib (for carfilzomib resistant) over a period of several months in order to generate resistant cell lines. Resistant cell lines were given a drug holiday for 5 days prior to RNA extraction. RNA was extracted from 1x10^7 cells per sample using the Qiagen RNeasy mini kit and RNA-seq was performed."
-    citations:
-      - "10.1016/j.neo.2021.11.009"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2021-12-01"
+  contacts:
+    - "John Toubia <john.toubia@adelaide.edu.au>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144249"
+  description: "	RNA was extracted from myeloma cell lines that were either drug-naïve or resistant to bortezomib or carfilzomib and the transcriptome was characterised using RNA sequencing."
+  design: "5TGM1 or RPMI-8226 cells were cultured in increasing concentrations of bortezomib (for bortezomib-resistant) or carfilzomib (for carfilzomib resistant) over a period of several months in order to generate resistant cell lines. Resistant cell lines were given a drug holiday for 5 days prior to RNA extraction. RNA was extracted from 1x10^7 cells per sample using the Qiagen RNeasy mini kit and RNA-seq was performed."
+  citations:
+    - "10.1016/j.neo.2021.11.009"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

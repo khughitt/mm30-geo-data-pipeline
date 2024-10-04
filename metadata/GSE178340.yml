@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v7.0"
+  version: "v6.0"
 biodat:
   assay: "rnaseq"
   datatype: "experimental_dataset"
@@ -24,17 +24,16 @@ rows: "symbol"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  - action: "download"
-    source: "Gene Expression Omnibus (GEO)"
-    date: "2021-12-31"
-    contacts:
-      - "Qiang Wang <qwang@houstonmethodist.org>"
-    urls:
-      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE178340"
-    description: "ATRA is important for sensitizing MM cells to Cfz. To determine what signalling pathways are affected by ATRA+Cfz in MM cells, MM.1S MM cell line was pulsed with Cfz and then cultured with DMSO or 10µM ATRA for 12 h. Total RNAs of 2 x 106 MM.1S cells for each sample were extracted by RNeasy Mini Kit (Qiagen). 5-10 µg RNA samples were sent to Cancer Genomics Center at The University of Texas (Houston, TX) for genearray followed by data analysis. We use gene experssion profiling data to determine differential expression of genes in MM cells in culture with DMSO, ATRA, Cfz or ATRA+Cfz."
-    design: "Examination of gene-profiling data in MM cells repsonse to control, ATRA, Cfz or ATRA+Cfz treatment."
-    citations:
-      - "10.1182/blood.2020009856"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2021-12-31"
+  contacts:
+    - "Qiang Wang <qwang@houstonmethodist.org>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE178340"
+  description: "ATRA is important for sensitizing MM cells to Cfz. To determine what signalling pathways are affected by ATRA+Cfz in MM cells, MM.1S MM cell line was pulsed with Cfz and then cultured with DMSO or 10µM ATRA for 12 h. Total RNAs of 2 x 106 MM.1S cells for each sample were extracted by RNeasy Mini Kit (Qiagen). 5-10 µg RNA samples were sent to Cancer Genomics Center at The University of Texas (Houston, TX) for genearray followed by data analysis. We use gene experssion profiling data to determine differential expression of genes in MM cells in culture with DMSO, ATRA, Cfz or ATRA+Cfz."
+  design: "Examination of gene-profiling data in MM cells repsonse to control, ATRA, Cfz or ATRA+Cfz treatment."
+  citations:
+    - "10.1182/blood.2020009856"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

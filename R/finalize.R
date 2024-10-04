@@ -28,7 +28,7 @@ if (sum(is.na(dat)) > 0) {
 # only entries which could be mapped to a known gene symbol
 dat <- dat %>%
   group_by(symbol) %>%
-  summarize(across(everything(), median))
+  summarize_all(median)
 
 write_feather(dat, snakemake@output[[1]])
 write_feather(fdata, snakemake@output[[2]])

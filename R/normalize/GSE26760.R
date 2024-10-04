@@ -43,13 +43,13 @@ sample_metadata$sample_type <- "Patient"
 # drop samples with unknown stage and normalize stage names
 sample_metadata <- sample_metadata %>%
   filter(disease_stage != "Unknown") %>%
-  mutate(disease_stage = recode(disease_stage,
-                                `Multiple Myeloma` = "MM",
-                                `Primary Plasma Cell Leukemia` = "PCL",
-                                `Smoldering Myeloma` = "SMM"))
+  mutate(disease_stage = recode(disease_stage, 
+                           `Multiple Myeloma` = "MM", 
+                           `Primary Plasma Cell Leukemia` = "PCL",
+                           `Smoldering Myeloma` = "SMM"))
 
 # update expression data to match samples & order in metadata
-expr_dat <- expr_dat[, c("symbol", sample_metadata$geo_accession)]
+expr_dat <- expr_dat[, c("symbol", sample_metadata$geo_accession)] 
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

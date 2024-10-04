@@ -28,8 +28,6 @@ expr_dat <- expr_dat[mask, ]
 # drop empty rows
 expr_dat <- expr_dat[rowSums(expr_dat[, -1]) > 0, ]
 
-expr_dat <- expr_dat[expr_dat$symbol != "", ]
-
 # get relevant sample metadata
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title,

@@ -32,7 +32,7 @@ expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title,
+  select(geo_accession, platform_id, title, 
          ploidy = characteristics_ch1,
          ch13_status = characteristics_ch1.1) %>%
   mutate(disease_stage = ifelse(grepl("Normal", title), "Normal",
@@ -44,7 +44,7 @@ sample_metadata <- pdata %>%
 
 # add disease stage
 sample_metadata <- sample_metadata %>%
-  mutate(disease_stage = recode(disease_stage,
+  mutate(disease_stage = recode(disease_stage, 
                                 Normal = "Healthy", New = "MM",
                                 Relapsed = "RRMM", Smoldering = "SMM"))
 

@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v7.0"
+  version: "v6.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
@@ -24,17 +24,16 @@ rows: "probe_id"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  - action: "download"
-    source: "Gene Expression Omnibus (GEO)"
-    date: "2019-03-25"
-    contacts:
-      - "Christoph J Heuck <cjheuck@uams.edu>"
-    urls:
-      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE57317"
-    description: "This Series represents the gene expression profiles of patients with multiple myeloma who have been treated previously. In brief, Total Therapy 6 (TT6) is an open label phase 2 protocol for patients with symptomatic multiple myeloma, who had been treated with more than one cycle of prior therapy excluding autologous hematopoietic stem cell transplant. This protocol was approved by the institutional review board on March 25, 2009 (IRB#108053). The TT6 treatment regimen consists of induction therapy with Melphalan/Bortezomib/Thalidomide/Dexamethasone/Cisplatin/Doxorubicin/Cyclophosphamide/Etoposide (M-VTD-PACE) followed by a high dose M-VTD-PACE based tandem transplant. Maintenance therapy consists of Bortezomib/Lenalidomide/Dexamethasone alternating with Borteomib/Melphalan/Dexamethasone every months for 3 years."
-    design: "We analyzed CD138+ selected cells of previously treated MM patients by microarray"
-    citations:
-      - "10.1038/leu.2014.232"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2019-03-25"
+  contacts:
+    - "Christoph J Heuck <cjheuck@uams.edu>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE57317"
+  description: "This Series represents the gene expression profiles of patients with multiple myeloma who have been treated previously. In brief, Total Therapy 6 (TT6) is an open label phase 2 protocol for patients with symptomatic multiple myeloma, who had been treated with more than one cycle of prior therapy excluding autologous hematopoietic stem cell transplant. This protocol was approved by the institutional review board on March 25, 2009 (IRB#108053). The TT6 treatment regimen consists of induction therapy with Melphalan/Bortezomib/Thalidomide/Dexamethasone/Cisplatin/Doxorubicin/Cyclophosphamide/Etoposide (M-VTD-PACE) followed by a high dose M-VTD-PACE based tandem transplant. Maintenance therapy consists of Bortezomib/Lenalidomide/Dexamethasone alternating with Borteomib/Melphalan/Dexamethasone every months for 3 years."
+  design: "We analyzed CD138+ selected cells of previously treated MM patients by microarray"
+  citations:
+    - "10.1038/leu.2014.232"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

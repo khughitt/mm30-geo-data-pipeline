@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v7.0"
+  version: "v6.0"
 biodat:
   assay: "rnaseq"
   datatype: "experimental_dataset"
@@ -25,17 +25,16 @@ rows: "ensgene"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  - action: "download"
-    source: "Gene Expression Omnibus (GEO)"
-    date: "2020-02-03"
-    contacts: 
-      - "Cecilia Bonolo de Campos <campos.cecilia@mayo.edu>"
-    urls:
-      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE134598"
-    description: "The cellular cytotoxicity of APY0201, a PIKfyve inhibitor, against multiple myeloma was initially identified in an unbiased in vitro chemical library screen. Activity was confirmed in all 25 cell lines tested and 40% of 100 ex vivo patient derived primary samples, and positively correlated with samples harboring trisomies and inversely related to t(11;14). The broad anti- multiple myeloma activity of PIKfyve inhibitors was further demonstrated in confirmatory screens and showed the superior potency of APY0201 when compared to the PIKfyve inhibitors YM201636 and apilimod, with a mid-point EC50 at nanomolar concentrations respectively in 65%, 40%, and 5% of the tested cell lines. An up-regulation of genes in the lysosomal pathway and increased cellular vacuolization was observed in vitro in cell lines following APY0201 treatment however this cellular response did not correlate well with responsiveness. We confirm that PIKfyve inhibition is associated with activation of the transcription factor EB, a master regulator of lysosomal biogenesis and autophagy. Furthermore, we established an assay measuring autophagy as a predictive marker of APY0201 sensitivity. Overall, these findings suggest promising activity of PIKfyve inhibitors secondary to disruption of autophagy in multiple myeloma and a strategy to enrich for likely responders."
-    design: "Five human myeloma cell lines were treated with a DMSO control or 100nM of APY0201 for 24 hours and four human multiple myeloma primary patient samples treated with a DMSO control or 50nM and 500nM of APY0201 for 24 hours and were sent for RNA sequencing"
-    citations:
-      - "10.3324/haematol.2019.222729"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2020-02-03"
+  contacts: 
+    - "Cecilia Bonolo de Campos <campos.cecilia@mayo.edu>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE134598"
+  description: "The cellular cytotoxicity of APY0201, a PIKfyve inhibitor, against multiple myeloma was initially identified in an unbiased in vitro chemical library screen. Activity was confirmed in all 25 cell lines tested and 40% of 100 ex vivo patient derived primary samples, and positively correlated with samples harboring trisomies and inversely related to t(11;14). The broad anti- multiple myeloma activity of PIKfyve inhibitors was further demonstrated in confirmatory screens and showed the superior potency of APY0201 when compared to the PIKfyve inhibitors YM201636 and apilimod, with a mid-point EC50 at nanomolar concentrations respectively in 65%, 40%, and 5% of the tested cell lines. An up-regulation of genes in the lysosomal pathway and increased cellular vacuolization was observed in vitro in cell lines following APY0201 treatment however this cellular response did not correlate well with responsiveness. We confirm that PIKfyve inhibition is associated with activation of the transcription factor EB, a master regulator of lysosomal biogenesis and autophagy. Furthermore, we established an assay measuring autophagy as a predictive marker of APY0201 sensitivity. Overall, these findings suggest promising activity of PIKfyve inhibitors secondary to disruption of autophagy in multiple myeloma and a strategy to enrich for likely responders."
+  design: "Five human myeloma cell lines were treated with a DMSO control or 100nM of APY0201 for 24 hours and four human multiple myeloma primary patient samples treated with a DMSO control or 50nM and 500nM of APY0201 for 24 hours and were sent for RNA sequencing"
+  citations:
+    - "10.3324/haematol.2019.222729"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

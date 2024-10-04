@@ -33,18 +33,10 @@ dat <- dat[apply(dat, 1, var) > 0, ]
 # "treatment_protocol_ch1" is another alias for death;
 # "grow_protocol_ch1" is an alias for relapse;
 sample_metadata <- pdata %>%
-  select(geo_accession,
-         platform_id,
-         patient_died = `death:ch1`,
-         pfs_event = `relapse:ch1`) %>%
-  mutate(pfs_event = ifelse(pfs_event == 0, 0, 1),
-         patient_died = as.logical(as.numeric(patient_died)))
+  select(geo_accession, platform_id, patient_died = `death:ch1`, pfs_event = `relapse:ch1`) %>%
+  mutate(pfs_event = ifelse(pfs_event == 0, 0, 1))
 
 sample_metadata$disease_stage <- ifelse(sample_metadata$pfs_event == 1, "RRMM", "MM")
-
-sample_metadata <- sample_metadata %>%
-  select(-pfs_event)
-
 sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
 
@@ -84,8 +76,6 @@ expr_dat$symbol[grch37_mask] <- gene_symbols
 
 mask <- expr_dat$symbol %in% grch38$symbol
 expr_dat <- expr_dat[mask, ]
-
-expr_dat <- expr_dat[expr_dat$symbol != "", ]
 
 # update feature annotations
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]

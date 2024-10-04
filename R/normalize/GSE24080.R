@@ -33,21 +33,8 @@ expr_dat <- expr_dat[complete.cases(expr_dat), ]
 # columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title,
-         age, race, sex, isotype, os_time,
-         os_event = os_censor,
-         pfs_event = efs_censor,
-         pfs_time = efs_time,
-         maqc_status = `maqc_distribution_status:ch1`)
-
-sample_metadata <- sample_metadata %>%
-  mutate(os_time = as.numeric(os_time),
-         os_time = as.logical(as.numeric(os_time)),
-         pfs_time = as.numeric(pfs_time),
-         pfs_time = as.logical(as.numeric(pfs_time)),
-         race = as.factor(race),
-         sex = as.factor(sex),
-         isotype = as.factor(isotype))
-
+         age, race, sex, isotype, os_time, os_censor, efs_censor, efs_time,
+         maqc_status = `maqc_distribution_status:ch1`) 
 
 # add platform & disease stage
 sample_metadata$platform_type <- "Microarray"

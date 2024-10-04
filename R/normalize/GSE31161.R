@@ -38,7 +38,7 @@ exclude_samples <- c("GSM771497", "GSM772341", "GSM772335")
 expr_dat <- expr_dat[, !colnames(expr_dat) %in% exclude_samples]
 
 # drop genes with missing symbols
-mask <- !is.na(fdata$`Gene Symbol`)
+mask <- !is.na(fdata$`Gene Symbol`) 
 expr_dat <- expr_dat[mask, ]
 fdata <- fdata[mask, ]
 
@@ -50,8 +50,6 @@ expr_dat <- expr_dat %>%
 # split multi-mapped symbols
 expr_dat <- expr_dat %>%
   separate_rows(symbol, sep = " ?//+ ?")
-
-expr_dat <- expr_dat[expr_dat$symbol != "", ]
 
 # columns to include
 sample_metadata <- pdata %>%

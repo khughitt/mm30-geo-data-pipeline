@@ -4,6 +4,10 @@ MM30 GEO Data Preparation Pipeline
 import os
 import yaml
 
+configfile: "config/config.yml"
+
+out_dir = config["output_dir"]
+
 accessions = ['GSE106218', 'GSE117847', 'GSE118900', 'GSE128251', 'GSE134598',
               'GSE13591', 'GSE144249', 'GSE14519', 'GSE158387', 'GSE162205', 'GSE16791', 
               'GSE178340', 'GSE193531', 'GSE19554', 'GSE19784', 'GSE24080', 'GSE26760', 'GSE2912',
@@ -12,50 +16,50 @@ accessions = ['GSE106218', 'GSE117847', 'GSE118900', 'GSE128251', 'GSE134598',
 
 rule all:
     input:
-        expand("/data/final/{acc}/datapackage.yml", acc=accessions),
-        "/data/metadata.feather"
+        expand(os.path.join(out_dir, "final/{acc}/datapackage.yml"), acc=accessions),
+        os.path.join(out_dir, "metadata.feather")
 
 rule build_metadata:
     output:
-        "/data/metadata.feather"
+        os.path.join(out_dir, "metadata.feather")
     script:
         "R/build_metadata.R"
 
 rule build_data_package:
     input:
-        "/data/final/{acc}/data.feather",
-        "/data/final/{acc}/row-metadata.feather",
-        "/data/final/{acc}/column-metadata.feather",
-        "metadata/{acc}.yml"
+        os.path.join(out_dir, "final/{acc}/data.feather"),
+        os.path.join(out_dir, "final/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "final/{acc}/column-metadata.feather"),
+        os.path.join("metadata", "{acc}.yml")
     output:
-        "/data/final/{acc}/datapackage.yml",
+        os.path.join(out_dir, "final/{acc}/datapackage.yml"),
     script: "python/build_data_package.py"
 
 rule finalize:
     input: 
-        "/data/normalized/{acc}/data.feather",
-        "/data/normalized/{acc}/row-metadata.feather",
-        "/data/normalized/{acc}/column-metadata.feather",
+        os.path.join(out_dir, "normalized/{acc}/data.feather"),
+        os.path.join(out_dir, "normalized/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "normalized/{acc}/column-metadata.feather"),
     output:
-        "/data/final/{acc}/data.feather",
-        "/data/final/{acc}/row-metadata.feather",
-        "/data/final/{acc}/column-metadata.feather",
+        os.path.join(out_dir, "final/{acc}/data.feather"),
+        os.path.join(out_dir, "final/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "final/{acc}/column-metadata.feather"),
     script: "R/finalize.R"
 
 rule normalize:
     input:
-        "/data/original/{acc}/data.feather",
-        "/data/original/{acc}/row-metadata.feather",
-        "/data/original/{acc}/column-metadata.feather",
+        os.path.join(out_dir, "original/{acc}/data.feather"),
+        os.path.join(out_dir, "original/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "original/{acc}/column-metadata.feather"),
     output:
-        "/data/normalized/{acc}/data.feather",
-        "/data/normalized/{acc}/row-metadata.feather",
-        "/data/normalized/{acc}/column-metadata.feather",
+        os.path.join(out_dir, "normalized/{acc}/data.feather"),
+        os.path.join(out_dir, "normalized/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "normalized/{acc}/column-metadata.feather"),
     script: "R/normalize/{wildcards.acc}.R"
 
 rule download:
     output:
-        "/data/original/{acc}/data.feather",
-        "/data/original/{acc}/row-metadata.feather",
-        "/data/original/{acc}/column-metadata.feather",
+        os.path.join(out_dir, "original/{acc}/data.feather"),
+        os.path.join(out_dir, "original/{acc}/row-metadata.feather"),
+        os.path.join(out_dir, "original/{acc}/column-metadata.feather"),
     script: "R/download/{wildcards.acc}.R"

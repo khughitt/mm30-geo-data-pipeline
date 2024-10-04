@@ -59,7 +59,7 @@ sample_metadata <- pdata %>%
     treatment_response = str_extract(characteristics_ch1.7, "\\w+$"),
     patient_subgroup   = str_extract(characteristics_ch1.8, "\\w+$")) %>%
   select(geo_accession, patient_id, platform_id, study_code, title, treatment, sex,
-         ethnicity, age, treatment_response, patient_subgroup)
+          ethnicity, age, treatment_response, patient_subgroup)
 
 pfs_event <- c()
 pfs_time <- c()
@@ -69,17 +69,8 @@ os_time <- c()
 
 pdata_df <- as.data.frame(pdata)
 
-# treatment response categories
-# https://ashpublications.org/blood/article/109/8/3177/23711/Gene-expression-profiling-and-correlation-with
-# 1. complete response (CR)
-# 2. partial response (PR)
-# 3. minimal response (MR)
-# 4. no change (NC)
-# 5. progressive disease (PD)
-# 6. IE (not documented)
-
 # iterate over samples and find relevant information
-for (sample_num in seq_len(nrow(pdata_df))) {
+for (sample_num in 1:nrow(pdata_df)) {
   # PGx Progression
   ind <- which(grepl("PGx_Prog", pdata_df[sample_num, ]))
 
@@ -104,7 +95,7 @@ for (sample_num in seq_len(nrow(pdata_df))) {
   if (length(ind) == 0) {
     pfs_event_reason <- c(pfs_event_reason, NA)
   } else {
-    pfs_event_reason <- c(pfs_event_reason,
+    pfs_event_reason <- c(pfs_event_reason, 
                           trimws(str_extract(pdata_df[sample_num, ind], "[ \\w]+$")))
   }
 
@@ -132,23 +123,6 @@ sample_metadata$patient_died <- patient_died
 sample_metadata$disease_stage <- "RRMM"
 sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
-
-sample_metadata <- sample_metadata %>%
-  mutate(treatment = as.factor(treatment),
-         sex = as.factor(sex),
-         ethnicity = as.factor(ethnicity),
-         treatment_response = as.factor(treatment_response),
-         patient_subgroup = as.factor(patient_subgroup),
-         pfs_event = as.logical(pfs_event),
-         pfs_time = as.numeric(pfs_time),
-         os_time = as.numeric(os_time),
-         patient_died = as.logical(patient_died))
-
-# exclude samples with treatment response listes as "IE" (undocumented/ambiguous)
-mask <- sample_metadata$treatment_response != "IE"
-
-sample_metadata <- sample_metadata[mask, ]
-expr_dat <- expr_dat[, c(TRUE, mask)]
 
 if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
   stop("Sample ID mismatch!")

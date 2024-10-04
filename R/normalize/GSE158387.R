@@ -17,7 +17,7 @@ dat[, -1] <- sweep(dat[, -1], 2, colSums(dat[, -1]), "/") * 1E6
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, title, description, platform_id,
+  select(geo_accession, title, description, platform_id, 
          cell_line = `cell line:ch1`, replicate = `replicate:ch1`,
          time_days = `time point:ch1`,
          treatment = `treatment:ch1`)

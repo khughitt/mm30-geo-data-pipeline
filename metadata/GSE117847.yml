@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v7.0"
+  version: "v6.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
@@ -25,18 +25,17 @@ rows: "probe_id"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  - action: "download"
-    source: "Gene Expression Omnibus (GEO)"
-    date: "2020-05-26"
-    contacts:
-      - "Luca Agnelli <luca.agnelli@unimi.it>"
-    urls:
-      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE117847"
-    description: "Smoldering myeloma (SMM) is a pre-malignant monoclonal gammopathy with a 10% annual risk to progress to active multiple myeloma (MM). SMM diagnostic criteria, as well of those of others monoclonal gammopathies, have been updated by the International Myeloma Working Group (IMWG) in 2014. In particular, the previously defined “ultra high-risk” SMM (characterized by the presence of specific biomarkers associated with a ≥ 80% risk of progression to symptomatic MM within 2 years) has been included among patients with active MM. SMM is biologically heterogeneous, including a subset of patients with biological pre-malignancy and a subset with biological malignancy who have not yet developed organ damage, defined as onset of the classical CRAB criteria or Myeloma Defining Events (MDE). Thus, SMM encompassed patients with a very low rate of progression to symptomatic MM, similar to patients with monoclonal gammopathy of uncertain significance (MGUS), as well as patients who acquired organ damage and progress to active MM within the first year from diagnosis. The molecular mechanisms involved in the SMM to MM progression are still far to be fully understood. Genomic studies indicate that the genetic alterations that characterize MM patients are already present in SMM ones, who present similar mutational and copy number alteration load. However, few data are available on the transcriptional profiles of SMM patients in relationship to the progression to active MM, overall indicating minimal differential expression either in coding or non-coding RNA fraction. To date, robust data are still lacking which describe the transcriptional profiles of plasma cells (PCs) from paired samples obtained at the time of SMM and at MM onset. Herein, we compared the transcriptome of purified CD138+ PCs from paired samples of SMM patients progressed to active MM (P-SMM), aimed at describing any possible common transcriptional discrepancy that may help to understand the intra-patient disease evolution; at the same time, we investigated the transcriptional differences between P-SMM and a subset of non-progressed SMM (NP-SMM) at a minimum of 36 months."
-    design: "A total number of 20 SMM patients, admitted to the Hematological Unit of our Institution over the last 11 years, were considered: 12 non-progressed(NP)-SMM and 8 progressed(P)-SMM for whom paired active MM samples were available"
-    citations:
-      - "10.3324/haematol.2018.209999"
-      - "10.3390/cancers12040782"
+  source: "Gene Expression Omnibus (GEO)"
+  date: "2020-05-26"
+  contacts:
+    - "Luca Agnelli <luca.agnelli@unimi.it>"
+  urls:
+    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE117847"
+  description: "Smoldering myeloma (SMM) is a pre-malignant monoclonal gammopathy with a 10% annual risk to progress to active multiple myeloma (MM). SMM diagnostic criteria, as well of those of others monoclonal gammopathies, have been updated by the International Myeloma Working Group (IMWG) in 2014. In particular, the previously defined “ultra high-risk” SMM (characterized by the presence of specific biomarkers associated with a ≥ 80% risk of progression to symptomatic MM within 2 years) has been included among patients with active MM. SMM is biologically heterogeneous, including a subset of patients with biological pre-malignancy and a subset with biological malignancy who have not yet developed organ damage, defined as onset of the classical CRAB criteria or Myeloma Defining Events (MDE). Thus, SMM encompassed patients with a very low rate of progression to symptomatic MM, similar to patients with monoclonal gammopathy of uncertain significance (MGUS), as well as patients who acquired organ damage and progress to active MM within the first year from diagnosis. The molecular mechanisms involved in the SMM to MM progression are still far to be fully understood. Genomic studies indicate that the genetic alterations that characterize MM patients are already present in SMM ones, who present similar mutational and copy number alteration load. However, few data are available on the transcriptional profiles of SMM patients in relationship to the progression to active MM, overall indicating minimal differential expression either in coding or non-coding RNA fraction. To date, robust data are still lacking which describe the transcriptional profiles of plasma cells (PCs) from paired samples obtained at the time of SMM and at MM onset. Herein, we compared the transcriptome of purified CD138+ PCs from paired samples of SMM patients progressed to active MM (P-SMM), aimed at describing any possible common transcriptional discrepancy that may help to understand the intra-patient disease evolution; at the same time, we investigated the transcriptional differences between P-SMM and a subset of non-progressed SMM (NP-SMM) at a minimum of 36 months."
+  design: "A total number of 20 SMM patients, admitted to the Hematological Unit of our Institution over the last 11 years, were considered: 12 non-progressed(NP)-SMM and 8 progressed(P)-SMM for whom paired active MM samples were available"
+  citations:
+    - "10.3324/haematol.2018.209999"
+    - "10.3390/cancers12040782"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

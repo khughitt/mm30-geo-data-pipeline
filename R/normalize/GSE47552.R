@@ -32,7 +32,7 @@ expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title,
+  select(geo_accession, platform_id, title, 
          disease_stage_raw = `cell type:ch1`)
 
 # add disease stage
