@@ -14,7 +14,7 @@ pdata <- read_feather(snakemake@input[[3]])
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, description, 
+  select(geo_accession, platform_id, title, description,
          cell_line = `cell line:ch1`, tissue = `tissue:ch1`, treatment = `treatment:ch1`)
 
 sample_metadata$replicate <- as.numeric(str_split(pdata$description, " ", simplify = TRUE)[, 2])

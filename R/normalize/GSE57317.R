@@ -32,10 +32,13 @@ expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, 
+  select(geo_accession, platform_id, title,
          patient_subgroup = `molecular subgroup:ch1`,
          os_time = `OS time:ch1`,
-         os_event = `os censored:ch1`)
+         os_censor = `os censored:ch1`) %>%
+  mutate(os_censor = as.logical(as.numeric(os_censor)),
+         os_time = as.numeric(os_time),
+         patient_subgroup = as.factor(patient_subgroup))
 
 # add disease stage
 sample_metadata$disease_stage <- "MM"

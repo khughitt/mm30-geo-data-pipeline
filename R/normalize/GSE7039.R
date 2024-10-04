@@ -60,6 +60,8 @@ expr_dat$symbol[grch37_mask] <- gene_symbols
 mask <- expr_dat$symbol %in% grch38$symbol
 expr_dat <- expr_dat[mask, ]
 
+expr_dat <- expr_dat[expr_dat$symbol != "", ]
+
 # update feature annotations
 fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 

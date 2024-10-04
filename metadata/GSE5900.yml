@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v6.0"
+  version: "v7.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
@@ -26,18 +26,19 @@ rows: "probe_id"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  source: "Gene Expression Omnibus (GEO)"
-  date: "2021-02-16"
-  contacts: 
-    - "Shaughnessy Jr. John <shaughnessyjohn@uams.edu>"
-  urls:
-    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE5900"
-  description: "This series represents bone marrow aspirates from smoldering multiple myeloma patients"
-  design: "We analyzed arrays for plasma cells from 22 cases of healthy donors, 44 cases of MGUS, and 12 cases of smoldering myeloma"
-  citations:
-    - "10.1182/blood-2006-07-037077"
-    - "10.1182/blood-2009-03-211045"
-    - "10.3390/cancers13030517"
+  - action: "download"
+    source: "Gene Expression Omnibus (GEO)"
+    date: "2021-02-16"
+    contacts: 
+      - "Shaughnessy Jr. John <shaughnessyjohn@uams.edu>"
+    urls:
+      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE5900"
+    description: "This series represents bone marrow aspirates from smoldering multiple myeloma patients"
+    design: "We analyzed arrays for plasma cells from 22 cases of healthy donors, 44 cases of MGUS, and 12 cases of smoldering myeloma"
+    citations:
+      - "10.1182/blood-2006-07-037077"
+      - "10.1182/blood-2009-03-211045"
+      - "10.3390/cancers13030517"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

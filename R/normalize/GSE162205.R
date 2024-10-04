@@ -22,18 +22,18 @@ dat$symbol <- fdata$symbol
 
 # columns to include
 sample_metadata <- pdata %>%
-  select(geo_accession, platform_id, title, 
-         cell_line = `cell type:ch1`, 
-         time_hours =`time point:ch1`,
+  select(geo_accession, platform_id, title,
+         cell_line = `cell type:ch1`,
+         time_hours = `time point:ch1`,
          treatment = `treatment:ch1`)
 
 sample_metadata$time_hours <- as.numeric(sub("h", "", sample_metadata$time_hours))
 
 # GSE162205 includes three replicates and two technical replicates for each condition
 sample_metadata$replicate <- letters[as.numeric(factor(substr(sample_metadata$title, 7, 7)))]
-sample_metadata$technical_replicate <- factor(substr(sample_metadata$title, 
-                                                     nchar(sample_metadata$title), 
-                                                     nchar(sample_metadata$title))) 
+sample_metadata$technical_replicate <- factor(substr(sample_metadata$title,
+                                                     nchar(sample_metadata$title),
+                                                     nchar(sample_metadata$title)))
 
 # replace NA values for control samples; for "time", the earlier time point of 4 hours
 # is arbitrarily used

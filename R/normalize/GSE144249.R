@@ -24,12 +24,12 @@ expr_dat <- dat %>%
 # sample metadata columns to include
 sample_metadata <- pdata %>%
   select(geo_accession, platform_id, title, description,
-         drug_resistance=`drug resistance:ch1`)
+         drug_resistance = `drug resistance:ch1`)
 
 sample_metadata$replicate <- as.numeric(substr(sample_metadata$description, 12, 12))
 
 # add platform, etc.
-sample_metadata$platform_type <- "Microarray"
+sample_metadata$platform_type <- "RNA-Seq"
 sample_metadata$sample_type <- "Cell Line"
 sample_metadata$cell_line <- "RPMI-8226"
 sample_metadata$disease_stage <- NA
@@ -39,7 +39,7 @@ if (!all(colnames(expr_dat)[-1] == sample_metadata$geo_accession)) {
 }
 
 # update feature annotations
-fdata <- grch37[match(expr_dat$symbol, grch38$symbol), ]
+fdata <- grch38[match(expr_dat$symbol, grch38$symbol), ]
 
 # store results
 write_feather(expr_dat, snakemake@output[[1]])

@@ -36,7 +36,7 @@ pdata <- pData(esets[[1]]) %>%
   select(geo_accession, platform_id, patient_id) %>%
   inner_join(survival_dat, by = "patient_id") %>%
   add_column(geo_accession2 = pData(esets[[2]])$geo_accession, .after = 1) %>%
-  mutate(patient_died = ifelse(deceased == "yes", 1, 0)) %>%
+  mutate(os_censor = ifelse(deceased == "yes", 1, 0)) %>%
   rename(os_time = follow_up_days) %>%
   select(-deceased)
 

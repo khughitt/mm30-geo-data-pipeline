@@ -7,6 +7,7 @@
 #
 ###############################################################################
 library(tidyverse)
+library(annotables)
 library(arrow)
 
 # directory to store raw and processed data
@@ -24,11 +25,11 @@ if (sum(is.na(dat)) > 0) {
   stop(sprintf("Missing values encountered for dataset: %s!", snakemake@output[[1]]))
 }
 
-# create a version of gene expression data with a single entry per gene, including
-# only entries which could be mapped to a known gene symbol
+# collapse duplicated entries and exclude genes which could not be mapped to GRCh38
 dat <- dat %>%
+  filter(symbol %in% grch38$symbol) %>%
   group_by(symbol) %>%
-  summarize_all(median)
+  summarize(across(everything(), median))
 
 write_feather(dat, snakemake@output[[1]])
 write_feather(fdata, snakemake@output[[2]])

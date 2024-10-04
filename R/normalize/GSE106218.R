@@ -24,11 +24,11 @@ supp_file <- "/data/raw/GSE106218/GSE106218_GEO_clinical_information_MM.txt.gz"
 clinical_metadata <- as.data.frame(t(read.delim(gzfile(supp_file), row.names = 1))) %>%
   rownames_to_column("patient_id") %>%
   select(patient_id,
-         iss_stage = `ISS stage`, os_event = `Death(alive=0; death=1)`,
+         iss_stage = `ISS stage`, os_censor = `Death(alive=0; death=1)`,
          os_time = `Survival time(EM;month)`,
          heavy_chain = `Heavy chain`,
          light_chain = `Light chain`) %>%
-  mutate(os_event = os_event == "1",
+  mutate(os_censor = os_censor == "1",
          disease_stage = "MM")
 
 # drop the month component of survival time
@@ -42,6 +42,12 @@ sample_metadata <- pdata %>%
 
 sample_metadata <- sample_metadata %>%
   inner_join(clinical_metadata, by = "patient_id")
+
+sample_metadata <- sample_metadata %>%
+  mutate(os_censor = as.logical(os_censor),
+         os_time = as.numeric(os_time),
+         iss_stage = factor(iss_stage, levels = c("I", "II", "III"), ordered = TRUE),
+         sex = as.factor(sex))
 
 # clinical_metadata
 #                         MM02 MM16 MM17
@@ -105,6 +111,8 @@ mapped_mask <- ensgenes %in% grch38$ensgene
 gene_symbols[mapped_mask] <- grch38$symbol[match(ensgenes[mapped_mask], grch38$ensgene)]
 
 expr_dat$symbol[grch37_mask] <- gene_symbols
+
+expr_dat <- expr_dat[expr_dat$symbol != "", ]
 
 # table(expr_dat$symbol %in% grch38$symbol)
 #

@@ -8,7 +8,7 @@ data:
     name: "geo"
     title: "Gene Expression Omnibus"
     url: "https://www.ncbi.nlm.nih.gov/geo/"
-  version: "v6.0"
+  version: "v7.0"
 biodat:
   assay: "microarray"
   datatype: "experimental_dataset"
@@ -24,16 +24,17 @@ rows: "probe_id"
 columns: "sample_id"
 profile: "biodat"
 provenance:
-  source: "Gene Expression Omnibus (GEO)"
-  date: "2019-03-25"
-  contacts: 
-    - "Carolina Terragna <carolina.terragna@unibo.it>"
-  urls:
-    - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE16791"
-  description: "Thalidomide-dexamethasone (TD) combination is an effective induction therapy for newly diagnosed multiple myeloma patients, candidates for subsequent autologous stem cell transplantation (ASCT). Since maximization of tumor response before ASCT may favorably affect the clinical outcomes, we designed a study to identify a gene expression profile (GEP) signature predictive of attainment of complete response to TD induction therapy. CD138+ bone marrow samples obtained at diagnosis from 112/311 patients were analyzed. Two subsequent time phases were planned. Firstly, a GEP supervised analysis, performed on a training set of 32 patients, allowed to identify 157 probe sets differentially expressed in complete responder + near complete responder (CR+nCR) versus ≤partial responder patients. Than, we generated an 8-gene GEP signature predicting at diagnosis the probability to achieve CR+nCR to TD induction therapy. The performance of this assay was subsequently validated in an 80 patients training set. The 8-gene signature provide a negative predictive value of 93% and a positive predictive value of 44%. The 8 genes were down-regulated in patients who achieved at least a nCR. These results could be an important first step to adopting a diagnostic assay, used to determine, at diagnosis, patients who will respond more favourably to a particular treatment strategy."
-  design: "This series of microarray experiments contains the gene expression profiles of purified plasma cells (PCs) obtained from 32 newly diagnosed multiple myeloma (MM). PCs were purified from bone marrow specimens, using CD138 immunomagnetic microbeads. The purity of the positively selected PCs was assessed by flow cytometry and was > 90% in all cases. 5 micrograms of total RNA was processed and hybridized to the Affymetrix HG U133 Plus 2.0 GeneChip following the manufacturer's instructions."
-  citations:
-    - "10.1007/s00277-013-1757-6"
+  - action: "download"
+    source: "Gene Expression Omnibus (GEO)"
+    date: "2019-03-25"
+    contacts: 
+      - "Carolina Terragna <carolina.terragna@unibo.it>"
+    urls:
+      - "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE16791"
+    description: "Thalidomide-dexamethasone (TD) combination is an effective induction therapy for newly diagnosed multiple myeloma patients, candidates for subsequent autologous stem cell transplantation (ASCT). Since maximization of tumor response before ASCT may favorably affect the clinical outcomes, we designed a study to identify a gene expression profile (GEP) signature predictive of attainment of complete response to TD induction therapy. CD138+ bone marrow samples obtained at diagnosis from 112/311 patients were analyzed. Two subsequent time phases were planned. Firstly, a GEP supervised analysis, performed on a training set of 32 patients, allowed to identify 157 probe sets differentially expressed in complete responder + near complete responder (CR+nCR) versus ≤partial responder patients. Than, we generated an 8-gene GEP signature predicting at diagnosis the probability to achieve CR+nCR to TD induction therapy. The performance of this assay was subsequently validated in an 80 patients training set. The 8-gene signature provide a negative predictive value of 93% and a positive predictive value of 44%. The 8 genes were down-regulated in patients who achieved at least a nCR. These results could be an important first step to adopting a diagnostic assay, used to determine, at diagnosis, patients who will respond more favourably to a particular treatment strategy."
+    design: "This series of microarray experiments contains the gene expression profiles of purified plasma cells (PCs) obtained from 32 newly diagnosed multiple myeloma (MM). PCs were purified from bone marrow specimens, using CD138 immunomagnetic microbeads. The purity of the positively selected PCs was assessed by flow cytometry and was > 90% in all cases. 5 micrograms of total RNA was processed and hybridized to the Affymetrix HG U133 Plus 2.0 GeneChip following the manufacturer's instructions."
+    citations:
+      - "10.1007/s00277-013-1757-6"
 contributors:
   - title: "V. Keith Hughitt"
     email: "keith.hughitt@nih.gov"

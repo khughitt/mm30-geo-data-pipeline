@@ -47,7 +47,7 @@ for (patient_id in patient_ids) {
   # patient_samples <- sample_metadata %>%
   #   filter(title == patient_id) %>%
   #   pull(geo_accession)
-  cell_ids <- cell_mdat %>% 
+  cell_ids <- cell_mdat %>%
     filter(sample_ID == patient_id) %>%
     pull(index) %>%
     make.names()

@@ -54,6 +54,8 @@ expr_dat <- expr_dat[, c(TRUE, mask)]
 # drop rows with missing values
 expr_dat <- expr_dat[complete.cases(expr_dat), ]
 
+expr_dat <- expr_dat[expr_dat$symbol != "", ]
+
 # add platform
 sample_metadata$platform_type <- "Microarray"
 sample_metadata$sample_type <- "Patient"
