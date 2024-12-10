@@ -26,6 +26,9 @@ expr_dat <- exprs(eset) %>%
     as.data.frame() %>%
     rownames_to_column("feature")
 
+# clip small number of negative values present (5868 / 30557457)
+expr_dat[, -1][expr_dat[, -1] < 0] <- 0
+
 # load supplemental clinical metadata;
 # ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE24nnn/GSE24080/suppl/GSE24080%5FMM%5FUAMS565%5FClinInfo%5F27Jun2008%5FLS%5Fclean%2Exls%2Egz
 clinical_metadata <- read_tsv("supp/clean/GSE24080_MM_UAMS565_ClinInfo_27Jun2008_LS_clean.tsv", 

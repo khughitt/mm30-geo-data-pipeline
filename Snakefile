@@ -59,3 +59,5 @@ rule download:
         "/data/original/{acc}/row-metadata.feather",
         "/data/original/{acc}/column-metadata.feather",
     script: "R/download/{wildcards.acc}.R"
+
+# vi:ft=snakemake
