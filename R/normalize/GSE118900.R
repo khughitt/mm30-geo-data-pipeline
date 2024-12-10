@@ -66,7 +66,8 @@ expr_dat <- expr_dat[mask, ]
 sample_metadata <- sample_metadata %>%
   group_by(patient) %>%
   slice(1) %>%
-  select(-geo_accession)
+  select(-geo_accession) %>%
+  ungroup()
 
 # normalize expr data / metadata order
 expr_dat <- expr_dat[, c("symbol", sample_metadata$patient)]

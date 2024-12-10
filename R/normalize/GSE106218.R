@@ -88,7 +88,8 @@ colnames(expr_dat) <- unique(expr_patient_ids)
 sample_metadata <- sample_metadata %>%
   group_by(patient_id) %>%
   arrange(geo_accession) %>%
-  slice(1)
+  slice(1) %>%
+  ungroup()
 
 if (!all(sample_metadata$patient_id == colnames(expr_dat))) {
   stop("Column mismatch!")
