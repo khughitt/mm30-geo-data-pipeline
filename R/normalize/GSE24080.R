@@ -41,9 +41,9 @@ sample_metadata <- pdata %>%
 
 sample_metadata <- sample_metadata %>%
   mutate(os_time = as.numeric(os_time),
-         os_time = as.logical(as.numeric(os_time)),
+         os_censor = as.logical(as.numeric(os_censor)),
          pfs_time = as.numeric(pfs_time),
-         pfs_time = as.logical(as.numeric(pfs_time)),
+         pfs_censor = as.logical(as.numeric(pfs_censor)),
          race = as.factor(race),
          sex = as.factor(sex),
          isotype = as.factor(isotype))
